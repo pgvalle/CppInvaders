@@ -14,7 +14,6 @@
 #define IMG_EXP1 "./res/img/exp1.png"
 #define IMG_EXP2 "./res/img/exp2.png"
 #define IMG_EXP3 "./res/img/exp3.png"
-
 #define FONT "./res/font.ttf"
 
 struct Global {
