@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Screen.h"
+
 #define WHITE { 255, 255, 255, 255 }
 #define GREEN { 32, 255, 32, 255 }
 #define RED { 255, 32, 32, 255 }
@@ -15,8 +17,9 @@
 
 #define FONT "./res/font.ttf"
 
-struct global {
+struct Global {
+    Screen *screen;
     int score, hi_score;
 };
 
-extern global g;
+extern Global g;

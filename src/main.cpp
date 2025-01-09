@@ -1,4 +1,3 @@
-#include <pico.h>
 #include "global.h"
 
 int main() {
@@ -11,6 +10,10 @@ int main() {
     pico_set_anchor(PICO_LEFT, PICO_TOP);
     pico_set_font(FONT, 8);
     pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
+
+    g.score = 0;
+    g.hi_score = 0;
+    g.screen = nullptr;
 
     while (1) {
         int delta = 16;
