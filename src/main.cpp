@@ -1,4 +1,7 @@
 #include "global.h"
+#include "screens/SplashScreen.h"
+
+Global g;
 
 int main() {
     pico_init(1);
@@ -9,14 +12,13 @@ int main() {
     pico_set_grid(0);
     pico_set_anchor(PICO_LEFT, PICO_TOP);
     pico_set_font(FONT, 8);
-    pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
 
     g.score = 0;
     g.hi_score = 0;
-    g.screen = nullptr;
+    g.screen = new SplashScreen;
 
     while (1) {
-        int delta = 16;
+        int delta = 16, time = 0;
         bool should_quit = false;
         while (delta > 0) {
             int old = SDL_GetTicks();
@@ -27,17 +29,17 @@ int main() {
                 break;
             }
 
-            // processamento de input
+            g.screen->process_event(e);
 
             int dt = SDL_GetTicks() - old;
             delta -= dt;
+            time += dt;
         }
 
         if (should_quit) break;
 
-        // processamento de eventos que dependem do tempo
-        
-        pico_output_clear();
+        g.screen->update(0.001f * time);
+        g.screen->draw();
 
         pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
         char text[32];
