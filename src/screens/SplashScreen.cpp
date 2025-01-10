@@ -65,7 +65,7 @@ void SplashScreen::update(float delta) {
         break;
 
     case TYPEWRITING1:
-        if (time < TYPEWRITING_INTERVAL) {
+        if (time >= TYPEWRITING_INTERVAL) {
             time = 0;
             // increment word count
             if (j++ == STRINGS[i].length()) {
