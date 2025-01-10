@@ -2,7 +2,7 @@
 SRC_DIR = src
 PICO_DIR = deps/pico-sdl/src
 OUT_DIR = out
-EXECUTABLE = cppi
+EXECUTABLE = cppi.out
 
 # Compiler and flags
 CXX = g++
@@ -41,4 +41,4 @@ clean:
 
 # Rebuild
 .PHONY: all
-all: clean $(EXECUTABLE).out
+all: clean $(EXECUTABLE)
