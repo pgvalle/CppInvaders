@@ -1,5 +1,4 @@
 #include "SplashScreen.h"
-#include "../global.h"
 //#include "PlayScreen.h"
 #include <string>
 
@@ -114,13 +113,18 @@ void SplashScreen::process_event(const SDL_Event &event)
 {
     switch (event.type) {
     case SDL_KEYDOWN:
-        if (event.key.keysym.sym != SDLK_RETURN)
+        if (event.key.keysym.sym != SDLK_RETURN) {
             break;
+        }
 
         if (state == WAITING_KEYPRESS) {
             g.score = 0;
             g.hi_score = 0;
             //app->stack.popThenPush(new PlayScreen(3));
+            /*
+            g.next_screen = new SomeScreen(...);
+            g.next_screen->prev_screen = g.screen
+            */
             break;
         }
 
@@ -130,7 +134,7 @@ void SplashScreen::process_event(const SDL_Event &event)
         break;
 
     case SDL_QUIT:
-        g.next_screen = nullptr;
+        Screen::next = nullptr;
         break;
     }
 }
