@@ -39,7 +39,7 @@ int main() {
 
         pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
         char text[32];
-        sprintf(text, "%06d          %06d", 123, 123);
+        sprintf(text, "%06d          %06d", g.score, g.hi_score);
         pico_output_draw_text({ 24, 24 }, text);
         pico_output_draw_text({ 144, 240 }, "CREDIT --");
 
