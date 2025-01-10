@@ -40,7 +40,10 @@ int main() {
         current_screen->draw();
         pico_output_present();
         
-        current_screen = next_screen;
+        if (current_screen != next_screen) {
+            delete current_screen;
+            current_screen = next_screen;
+        }
     }
 
     pico_init(false);
