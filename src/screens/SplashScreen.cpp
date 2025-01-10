@@ -5,21 +5,24 @@
 
 #define TYPEWRITING_INTERVAL 0.05f
 #define TIME_WAITING 1.5f
-#define TYPEWRITE1_INDEX_STOP SCREEN_STR.find('*')
 
-// TODO: Find another way to create a new line because pico doesn't like \n.
-static std::string SCREEN_STR =
-    "         PLAY\n\n\n"
-    "    SPACE INVADERS\n\n\n\n"
-    "*SCORE ADVANCES TABLE*\n\n"
-    "       =? MYSTERY\n\n"
-    "       =30 POINTS\n\n"
-    "       =20 POINTS\n\n"
-    "       =10 POINTS";
+static std::string STRINGS[7] = {
+    "PLAY",
+    "SPACE INVADERS",
+    "*SCORE ADVANCES TABLE*",
+    "=? MYSTERY",
+    "=30 POINTS",
+    "=20 POINTS",
+    "=10 POINTS",
+};
+
+static int STRINGS_XOFF[7] = { 9, 4, 0, 7, 7, 7, 7 };
+static int STRINGS_YOFF[7] = { 0, 3, 7, 9, 11, 13, 15 };
 
 SplashScreen::SplashScreen() {
     state = WAITING1;
-    i = 1;
+    i = 0;
+    j = 0;
     time = 0;
 }
 
@@ -31,10 +34,22 @@ void SplashScreen::draw() {
 
     //ui_draw();
 
-    std::string screen_substr = SCREEN_STR.substr(0, i);
-    pico_output_draw_text({ 24, 64 }, (char *)screen_substr.c_str());
+    for (int k = 0; k < i; k++) {
+        std::string &str = STRINGS[k];
+        int xoff = 24 + 8 * STRINGS_XOFF[k];
+        int yoff = 64 + 8 * STRINGS_YOFF[k];
+        pico_output_draw_text({ xoff, yoff }, (char *)str.c_str());
+    }
 
-    if (i > TYPEWRITE1_INDEX_STOP) {
+    if (j > 0) {
+        std::string str = STRINGS[i].substr(0, j);
+        int xoff = 24 + 8 * STRINGS_XOFF[i];
+        int yoff = 64 + 8 * STRINGS_YOFF[i];
+        pico_output_draw_text({ xoff, yoff }, (char *)str.c_str());
+    }
+    
+
+    if (i > 2 && j > 0) {
         pico_set_image_crop({ 0, 0, 24, 8 });
         pico_output_draw_image({ 59, 136 }, IMG_UFO);
         pico_set_image_crop({ 0, 0, 8, 8 });
@@ -60,14 +75,16 @@ void SplashScreen::update(float delta) {
     case TYPEWRITING1:
         if (time >= TYPEWRITING_INTERVAL) {
             time = 0;
-            // skip spaces and escape sequences
-            while (++i < TYPEWRITE1_INDEX_STOP && SCREEN_STR[i] <= ' ');
+            // increment word count
+            if (j++ == STRINGS[i].length()) {
+                i++;
+                j = 0;
+            }
         }
 
-        if (i == TYPEWRITE1_INDEX_STOP) {
+        if (i == 3) { // i = 2 and j == length str[i]
             state = WAITING2;
             time = 0;
-            i--;
         }
         break;
 
@@ -75,18 +92,22 @@ void SplashScreen::update(float delta) {
         if (time >= TIME_WAITING) {
             state = TYPEWRITING2;
             time = 0;
-            i += 23;
         }
         break;
 
     case TYPEWRITING2:
         if (time >= TYPEWRITING_INTERVAL) {
             time = 0;
-            // skip spaces and escape sequences
-            while (++i < SCREEN_STR.length() && SCREEN_STR[i] <= ' ');
+            // increment word count
+            if (j++ == STRINGS[i].length()) {
+                i++;
+                j = 0;
+            }
         }
 
-        if (i == SCREEN_STR.length()) {
+        if (i == 7) { // i = 6 and j == length str[i]
+            i = 6;
+            j = STRINGS[i].length();
             state = WAITING_KEYPRESS;
         }
         break;
@@ -98,8 +119,7 @@ void SplashScreen::update(float delta) {
 
 void SplashScreen::process_event(const SDL_Event &event)
 {
-    switch (event.type)
-    {
+    switch (event.type) {
     case SDL_KEYDOWN:
         if (event.key.keysym.sym != SDLK_RETURN)
             break;
@@ -112,7 +132,8 @@ void SplashScreen::process_event(const SDL_Event &event)
         }
 
         state = WAITING_KEYPRESS;
-        i = SCREEN_STR.length();
+        i = 6;
+        j = STRINGS[i].length();
         break;
 
     case SDL_QUIT:

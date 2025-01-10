@@ -11,7 +11,7 @@ private:
         TYPEWRITING2,
         WAITING_KEYPRESS
     } state;
-    int i;
+    int i, j;
     float time;
 
 public:
