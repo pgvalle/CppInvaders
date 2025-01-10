@@ -4,10 +4,9 @@
 
 class Screen
 {
-protected:
+public:
     Screen *prev_screen = nullptr;
 
-public:
     virtual ~Screen() {};
 
     virtual void draw() = 0;
