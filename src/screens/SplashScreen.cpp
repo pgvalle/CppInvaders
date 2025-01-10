@@ -130,7 +130,7 @@ void SplashScreen::process_event(const SDL_Event &event)
         break;
 
     case SDL_QUIT:
-        //app->should_quit = true;
+        g.next_screen = nullptr;
         break;
     }
 }
