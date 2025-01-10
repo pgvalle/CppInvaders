@@ -1,4 +1,5 @@
 deps/
 out/
+.vscode/
 *.out
 *.o
