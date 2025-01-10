@@ -1,12 +1,11 @@
 #pragma once
 
 #include <pico.h>
+#include "../global.h"
 
 class Screen
 {
-public:
-    Screen *prev_screen = nullptr;
-
+public
     virtual ~Screen() {};
 
     virtual void draw() = 0;
