@@ -5,7 +5,7 @@
 
 class Screen
 {
-public
+public:
     virtual ~Screen() {};
 
     virtual void draw() = 0;
