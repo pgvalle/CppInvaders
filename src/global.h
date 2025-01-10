@@ -17,7 +17,7 @@
 #define FONT "./res/font.ttf"
 
 struct Global {
-    Screen *screen;
+    Screen *screen, *next_screen;
     int score, hi_score;
 };
 

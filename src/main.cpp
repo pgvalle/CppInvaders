@@ -16,29 +16,25 @@ int main() {
     g.score = 0;
     g.hi_score = 0;
     g.screen = new SplashScreen;
+    g.next_screen = g.screen;
 
-    while (1) {
-        int delta = 16, time = 0;
-        bool should_quit = false;
-        while (delta > 0) {
-            int old = SDL_GetTicks();
-            SDL_Event e;
-            pico_input_event_timeout(&e, SDL_ANY, delta);
-            if (e.type == SDL_QUIT) {
-                should_quit = true;
-                break;
-            }
+    while (g.screen) {
+        int timeout = 16, accum = 0;
+        while (timeout > 0) {
+            int before = pico_get_ticks();
 
-            g.screen->process_event(e);
+            SDL_Event event;
+            pico_input_event_timeout(&event, SDL_ANY, timeout);
+            g.screen->process_event(event);
 
-            int dt = SDL_GetTicks() - old;
-            delta -= dt;
-            time += dt;
+            int delta = pico_get_ticks() - before;
+            timeout -= delta;
+            accum += delta;
         }
 
-        if (should_quit) break;
-
-        g.screen->update(0.001f * time);
+        pico_assert(g.screen);
+        g.screen->update(0.001f * accum); // to seconds
+        pico_assert(g.screen);
         g.screen->draw();
 
         pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
@@ -48,6 +44,11 @@ int main() {
         pico_output_draw_text({ 144, 240 }, "CREDIT --");
 
         pico_output_present();
+        
+        if (g.screen != g.next_screen) {
+            delete g.screen;
+            g.screen = g.next_screen;
+        }
     }
 
     pico_init(0);
