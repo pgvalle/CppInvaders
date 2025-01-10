@@ -4,15 +4,17 @@
 
 class SplashScreen : public Screen {
 private:
-    enum State {
+    enum {
         WAITING1,
         TYPEWRITING1,
         WAITING2,
         TYPEWRITING2,
         WAITING_KEYPRESS
     } state;
-    int i, j;
+    int l, c; // line iterator and character iterator for typewritting lines of text
     float time;
+
+    bool typewrite_next_character();
 
 public:
     SplashScreen();
