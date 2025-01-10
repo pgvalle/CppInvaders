@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Screen.h"
+#include "../global.h"
 
 class SplashScreen : public Screen {
 private:

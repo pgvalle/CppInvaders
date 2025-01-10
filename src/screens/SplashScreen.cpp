@@ -17,7 +17,7 @@ static std::string LINES[] = {
 };
 
 static int LINES_XOFF[] = { 9, 4, 0, 7, 7, 7, 7, 0 };
-static int LINES_YOFF[] = { 0, 3, 7, 9, 11, 13, 0 };
+static int LINES_YOFF[] = { 0, 3, 7, 9, 11, 13, 15, 0 };
 
 SplashScreen::SplashScreen() {
     state = WAITING1;
@@ -122,6 +122,8 @@ void SplashScreen::process_event(const SDL_Event &event)
         }
         else {
             state = WAITING_KEYPRESS;
+            l = 7;
+            c = 1;
         }
 
         break;
