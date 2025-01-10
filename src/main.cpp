@@ -45,10 +45,7 @@ int main() {
 
         pico_output_present();
         
-        if (g.screen != g.next_screen) {
-            delete g.screen;
-            g.screen = g.next_screen;
-        }
+        g.screen = g.next_screen;
     }
 
     pico_init(0);

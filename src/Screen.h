@@ -4,6 +4,9 @@
 
 class Screen
 {
+protected:
+    Screen *prev_screen = nullptr;
+
 public:
     virtual ~Screen() {};
 
