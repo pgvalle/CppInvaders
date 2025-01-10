@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Screen.h"
+#include "../global.h"
 
 class OverScreen : public Screen {
 private:
-    enum State {
+    enum {
         TYPEWRITING,
         WAITING
     } state;
