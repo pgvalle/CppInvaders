@@ -44,7 +44,7 @@ void SplashScreen::draw() {
     pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
     pico_output_clear();
 
-    //ui_draw();
+    app->draw_counters();
 
     for (int k = 0; k <= l; k++) {
         std::string str = (k < l ? LINES[k] : LINES[l].substr(0, c));
@@ -102,8 +102,7 @@ void SplashScreen::update(float delta) {
     }
 }
 
-void SplashScreen::process_event(const SDL_Event &event)
-{
+void SplashScreen::process_event(const SDL_Event &event) {
     switch (event.type) {
     case SDL_KEYDOWN:
         if (event.key.keysym.sym != SDLK_RETURN) {
@@ -111,8 +110,7 @@ void SplashScreen::process_event(const SDL_Event &event)
         }
 
         if (state == WAITING_KEYPRESS) {
-            score = 0;
-            hi_score = 0;
+            app->score = 0;
             //next_screen = new OverScreen;
             //app->stack.popThenPush(new PlayScreen(3));
             /*
@@ -129,7 +127,7 @@ void SplashScreen::process_event(const SDL_Event &event)
         break;
 
     case SDL_QUIT:
-        next_screen = nullptr;
+        app->next_screen = nullptr;
         break;
     }
 }

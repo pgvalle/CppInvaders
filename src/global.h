@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Screen.h"
+#include "App.h"
+
+#define FRAMERATE 60
 
 #define WHITE { 255, 255, 255, 255 }
 #define GREEN { 32, 255, 32, 255 }
@@ -16,7 +18,4 @@
 #define IMG_EXP3 "./res/img/exp3.png"
 #define FONT "./res/font.ttf"
 
-extern int credits, score, hi_score;
-extern Screen *current_screen, *next_screen;
-
-void draw_ui_elements();
+extern App *app;
