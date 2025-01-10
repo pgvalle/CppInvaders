@@ -16,9 +16,7 @@
 #define IMG_EXP3 "./res/img/exp3.png"
 #define FONT "./res/font.ttf"
 
-struct Global {
-    Screen *screen, *next_screen;
-    int score, hi_score;
-};
+extern int credits, score, hi_score;
+extern Screen *current_screen, *next_screen;
 
-extern Global g;
+void draw_ui_elements();
