@@ -7,7 +7,7 @@ EXECUTABLE = cppi.out
 # Compiler and flags
 CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -g -std=c++17 -I$(PICO_DIR)
+CXXFLAGS = -Wall -Wextra -g -std=c++17
 CFLAGS = -Wall -Wextra -g -std=c11
 PKG_CONFIG = pkg-config
 PKG_FLAGS = $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
@@ -27,7 +27,7 @@ $(EXECUTABLE): $(OBJ_FILES)
 # Rule to compile C++ source files
 $(OUT_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(PKG_FLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -I$(PICO_DIR) $(PKG_FLAGS) -c $< -o $@
 
 # Rule to compile C source files (pico-sdl)
 $(OUT_DIR)/deps/%.o: $(PICO_DIR)/%.c
