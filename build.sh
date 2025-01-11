@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir -p deps out
-
 command_exists() {
     if ! command -v "$1" >/dev/null 2>&1; then
         echo "$1 is not installed. Please install it and try again."
@@ -15,8 +13,8 @@ if [ ! -d "deps/pico-sdl" ]; then
     git clone https://github.com/fsantanna/pico-sdl deps/pico-sdl
 fi
 
-command_exists make
 command_exists gcc
 command_exists g++
+command_exists make
 
 make
