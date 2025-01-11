@@ -1,9 +1,8 @@
 #pragma once
 
-#include <pico.h>
+union SDL_Event;
 
-class Screen
-{
+class Screen {
 public:
     virtual ~Screen() {};
 

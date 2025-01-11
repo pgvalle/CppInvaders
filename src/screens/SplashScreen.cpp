@@ -1,6 +1,4 @@
-#include "SplashScreen.h"
-//#include "PlayScreen.h"
-#include <string>
+#include "App.h"
 
 #define TYPEWRITE_STEP_DELTA 0.05f
 #define TIME_WAITING 1.5f

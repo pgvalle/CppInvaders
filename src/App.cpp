@@ -1,10 +1,9 @@
 #include "App.h"
-#include "global.h"
 
 App *app = nullptr;
 
 App::App() {
-    credits = 1;
+    credits = 99;
     score = 0;
     hi_score = load_hi_score();
 
@@ -30,6 +29,39 @@ void App::start() {
     }
 }
 
+int App::load_hi_score() {
+    // create file if it doesn't exist
+
+    // read from it
+    // try converting to an int
+    return 0;
+}
+
+void App::save_hi_score() {
+
+}
+
+void App::draw_counters() {
+    static char text[32];
+    
+    pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
+    sprintf(text, "%06d          %06d", score, hi_score);
+    pico_output_draw_text({ 24, 24 }, text);
+
+    sprintf(text, "CREDIT %02d", credits);
+    pico_output_draw_text({ 144, 240 }, text);
+}
+
+void App::update_and_draw(float delta) {
+    assert(current_screen);
+    current_screen->update(delta);
+
+    assert(current_screen);
+    current_screen->draw();
+
+    pico_output_present();
+}
+
 int App::process_frame_events(int timeout) {
     int accum = 0;
 
@@ -47,38 +79,4 @@ int App::process_frame_events(int timeout) {
     }
 
     return accum;
-}
-
-void App::update_and_draw(float delta) {
-    assert(current_screen);
-    current_screen->update(delta);
-
-    assert(current_screen);
-    current_screen->draw();
-
-    pico_output_present();
-}
-
-void App::draw_counters() {
-    static char text[32];
-    
-    pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
-    sprintf(text, "%06d          %06d", score, hi_score);
-    pico_output_draw_text({ 24, 24 }, text);
-
-    sprintf(text, "CREDIT %02d", credits);
-    pico_output_draw_text({ 144, 240 }, text);
-}
-
-
-int App::load_hi_score() {
-    // create file if it doesn't exist
-
-    // read from it
-    // try converting to an int
-    return 0;
-}
-
-void App::save_hi_score() {
-
 }

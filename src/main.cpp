@@ -1,5 +1,4 @@
-#include "global.h"
-#include "screens/SplashScreen.h"
+#include "App.h"
 
 int main() {
     pico_init(true);
