@@ -31,9 +31,7 @@ void init() {
 
 void quit() {
     delete cppinv;
-    printf("hello!\n");
     pico_init(false);
-    printf("hello 2!\n");
 }
 
 void loop() {
