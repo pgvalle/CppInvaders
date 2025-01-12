@@ -1,4 +1,5 @@
-#include "App.h"
+#include "Splash.h"
+#include <string>
 
 #define TYPEWRITE_STEP_DELTA 0.05f
 #define TIME_WAITING 1.5f
@@ -17,16 +18,16 @@ static std::string LINES[] = {
 static int LINES_XOFF[] = { 9, 4, 0, 7, 7, 7, 7, 0 };
 static int LINES_YOFF[] = { 0, 3, 7, 9, 11, 13, 15, 0 };
 
-SplashScreen::SplashScreen() {
+CppInvaders::Splash::Splash() {
     state = WAITING1;
     l = 0;
     c = 1;
     time = 0;
 }
 
-SplashScreen::~SplashScreen() {}
+CppInvaders::Splash::~Splash() {}
 
-bool SplashScreen::typewrite_next_character() {
+bool CppInvaders::Splash::typewrite_next_character() {
     if (time >= TYPEWRITE_STEP_DELTA) {
         if (c++ == LINES[l].length()) {
             l++;
@@ -38,11 +39,11 @@ bool SplashScreen::typewrite_next_character() {
     return false;
 }
 
-void SplashScreen::draw() {
+void CppInvaders::Splash::draw() {
     pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
     pico_output_clear();
 
-    app->draw_counters();
+    cppinv->draw_counters();
 
     for (int k = 0; k <= l; k++) {
         std::string str = (k < l ? LINES[k] : LINES[l].substr(0, c));
@@ -63,7 +64,7 @@ void SplashScreen::draw() {
     }
 }
 
-void SplashScreen::update(float delta) {
+void CppInvaders::Splash::update(float delta) {
     time += delta;
 
     switch (state) {
@@ -73,13 +74,11 @@ void SplashScreen::update(float delta) {
             time = 0;
         }
         break;
-
     case TYPEWRITING1:
         if (typewrite_next_character() && l == 2) {
             state = WAITING2;
         }
         break;
-
     case WAITING2:
         if (time >= TIME_WAITING) {
             state = TYPEWRITING2;
@@ -88,19 +87,17 @@ void SplashScreen::update(float delta) {
             time = 0;
         }
         break;
-
     case TYPEWRITING2:
         if (typewrite_next_character() && l == 7) {
             state = WAITING_KEYPRESS;
         }
         break;
-
     case WAITING_KEYPRESS:
         break;
     }
 }
 
-void SplashScreen::process_event(const SDL_Event &event) {
+void CppInvaders::Splash::process_event(const SDL_Event &event) {
     switch (event.type) {
     case SDL_KEYDOWN:
         if (event.key.keysym.sym != SDLK_RETURN) {
@@ -108,7 +105,7 @@ void SplashScreen::process_event(const SDL_Event &event) {
         }
 
         if (state == WAITING_KEYPRESS) {
-            app->score = 0;
+            cppinv->score = 0;
             //next_screen = new OverScreen;
             //app->stack.popThenPush(new PlayScreen(3));
             /*
@@ -125,7 +122,7 @@ void SplashScreen::process_event(const SDL_Event &event) {
         break;
 
     case SDL_QUIT:
-        app->next_screen = nullptr;
+        cppinv->should_close = true;
         break;
     }
 }

@@ -1,26 +1,28 @@
 #pragma once
 
-#include "Screen.h"
+#include "CppInvaders.h"
 
-class SplashScreen : public Screen {
+class CppInvaders::Splash {
 private:
-    enum {
+    enum State {
         WAITING1,
         TYPEWRITING1,
         WAITING2,
         TYPEWRITING2,
         WAITING_KEYPRESS
-    } state;
+    };
+
+    State state;
     int l, c; // line iterator and character iterator for typewritting lines of text
     float time;
 
     bool typewrite_next_character();
 
 public:
-    SplashScreen();
-    ~SplashScreen();
+    Splash();
+    ~Splash();
 
-    void draw() override;
-    void update(float delta) override;
-    void process_event(const SDL_Event &event) override;
+    void draw();
+    void update(float delta);
+    void process_event(const SDL_Event &event);
 };

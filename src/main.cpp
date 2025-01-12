@@ -1,6 +1,20 @@
-#include "App.h"
+#include "CppInvaders.h"
 
-int main() {
+CppInvaders *cppinv = nullptr;
+
+void init();
+void quit();
+void loop();
+
+int main(int argc, char **argv) {
+    init();
+    loop();
+    quit();
+
+    return 0;
+}
+
+void init() {
     pico_init(true);
     
     pico_set_title("CppInvaders");
@@ -12,13 +26,35 @@ int main() {
     
     pico_set_font(FONT, 8);
 
-    app = new App;
-    app->current_screen = new SplashScreen;
-    app->start();
-    delete app;
-    app = nullptr;
+    cppinv = new CppInvaders;
+}
 
+void quit() {
+    delete cppinv;
+    printf("hello!\n");
     pico_init(false);
+    printf("hello 2!\n");
+}
 
-    return 0;
+void loop() {
+    pico_assert(cppinv);
+
+    while (!cppinv->should_close) {
+        int timeout = 16, accum = 0;
+        while (timeout > 0) {
+            int before = pico_get_ticks();
+
+            SDL_Event event;
+            pico_input_event_timeout(&event, SDL_ANY, timeout);
+            cppinv->process_event(event);
+
+            int delta = pico_get_ticks() - before;
+            timeout -= delta;
+            accum += delta;
+        }
+
+        float delta = 0.001f * accum;
+        cppinv->update_and_draw(delta);
+        pico_output_present();
+    }
 }

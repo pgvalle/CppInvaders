@@ -1,16 +1,10 @@
 #pragma once
 
-// common includes
-#include <string>
-
 #include <pico.h>
-#include "Screens.h"
-
-#define FRAMERATE 60
 
 #define WHITE { 255, 255, 255, 255 }
 #define GREEN { 32, 255, 32, 255 }
-#define RED { 255, 32, 32, 255 }
+#define RED { 216, 32, 32, 255 }
 
 #define IMG_CANNON "./res/img/cannon.png"
 #define IMG_UFO "./res/img/ufo.png"
@@ -22,23 +16,37 @@
 #define IMG_EXP3 "./res/img/exp3.png"
 #define FONT "./res/font.ttf"
 
-class App {
-public:
+struct CppInvaders {
+protected:
+    class Splash;
+    class Game;
+    class Pause;
+    class Over;
+
+    Splash *splash;
+    Game *game;
+    Pause *pause;
+    Over *over;
+
+    enum Screen {
+        SPLASH, GAME, PAUSE, OVER
+    };
+    
+    Screen screen;
     int credits, score, hi_score;
-    Screen *current_screen, *next_screen;
-
-    App();
-    ~App();
-
-    void start();
 
     int load_hi_score();
     void save_hi_score();
     void draw_counters();
 
-private:
+public:
+    bool should_close;
+
+    CppInvaders();
+    ~CppInvaders();
+
     void update_and_draw(float delta);
-    int process_frame_events(int timeout);
+    void process_event(const SDL_Event& event);
 };
 
-extern App *app;
+extern CppInvaders *cppinv;
