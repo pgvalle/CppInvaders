@@ -2,7 +2,7 @@
 SRC_DIR = src
 PICO_DIR = deps/pico-sdl/src
 OUT_DIR = out
-EXECUTABLE = cppi.out
+EXECUTABLE = cppinv.out
 
 # Compiler and flags
 CXX = g++

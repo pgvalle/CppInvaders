@@ -9,7 +9,7 @@ command_exists() {
 
 command_exists git
 
-if [ ! -d "deps/pico-sdl" ]; then
+if [ ! -d "deps/pico-sdl/.git" ]; then
     git clone https://github.com/fsantanna/pico-sdl deps/pico-sdl
 fi
 
