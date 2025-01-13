@@ -8,7 +8,7 @@
 
 #define SCOREBOARD_FILE "./scoreboard"
 
-#define IMG_CANNON "./res/img/cannon.png"
+#define IMG_SPACESHIP "./res/img/cannon.png"
 #define IMG_UFO "./res/img/ufo.png"
 #define IMG_INV1 "./res/img/inv1.png"
 #define IMG_INV2 "./res/img/inv2.png"

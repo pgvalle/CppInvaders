@@ -3,7 +3,8 @@
 
 void GAMESCOPE::Shot::draw() {
     int rx = round(x), ry = round(y);
-    const char *explosion_img = (vy >= 0 ? IMG_EXP3 : IMG_EXP2);
+    char *explosion_img = (char *)(vy >= 0 ? IMG_EXP3 : IMG_EXP2);
+
     switch (state) {
     case ALIVE:
         pico_set_color_draw(WHITE);
@@ -11,7 +12,7 @@ void GAMESCOPE::Shot::draw() {
         break;
     case EXPLODING:
         pico_set_image_crop({ 0, 0, 0, 0 });
-        pico_output_draw_image({ rx - 3, ry }, (char *)explosion_img);
+        pico_output_draw_image({ rx - 3, ry }, explosion_img);
         break;
     case DEAD:
         break;

@@ -89,6 +89,10 @@
 
 CppInvaders::Game::Game() {
     state = POPULATING_HORDE;
+    ufo = new UFO;
+    spaceship = new Spaceship;
+    horde_shot = new Shot;
+    spaceship_shot = new Shot;
     // time = 0;
     // cannon.lives = cannon_lives;
 }
@@ -139,6 +143,7 @@ void CppInvaders::Game::draw() {
 void CppInvaders::Game::update(float delta) {
     horde_shot->update(delta);
     spaceship_shot->update(delta);
+
 
     switch (state) {
     case POPULATING_HORDE:
@@ -221,15 +226,6 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
     switch (event.type) {
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
-        case SDLK_q:
-            if (spaceship_shot->state == Shot::DEAD) {
-                delete spaceship_shot;
-                spaceship_shot = new Shot;
-                spaceship_shot->x = 100;
-                spaceship_shot->y = 220;
-                spaceship_shot->vy = -7;
-            }
-            break;
         case SDLK_ESCAPE:
             cppinv->screen = PAUSE;
             cppinv->pause = new Pause;

@@ -1,26 +1,19 @@
 #include "UFO.h"
 #include "CppInvaders.h"
 
-#define Y  40
-#define VX  25
-#define LEFT_LIMIT  8
-#define RIGHT_LIMIT  192
+#define Y 40
+#define VX 25
+#define LEFT_LIMIT 8
+#define RIGHT_LIMIT 192
 
 #define TIME_DEAD 1.5f
 #define TIME_EXPLODING 1.5f
 #define TIME_TO_RESPAWN 10.0f
 
-UFO::UFO() {
-    state = AWAY;
-    x = 1e10;
-    vx = 0;
-    time = 0;
-    score = 0;
-}
-
-void UFO::draw() {
+void GAMESCOPE::UFO::draw() {
     static char text[4];
     int rx = (int)round(x);
+
     switch (state) {
     case AWAY:
         break;
@@ -40,11 +33,12 @@ void UFO::draw() {
     }
 }
 
-void UFO::update(float delta) {
+void GAMESCOPE::UFO::update(float delta) {
     time += delta; // update timer regartless of state
 
     switch (state) {
     case AWAY:
+        time += delta;
         if (time >= TIME_TO_RESPAWN) {
             state = ALIVE;
             x = (rand() % 2 ? LEFT_LIMIT : RIGHT_LIMIT); // choose a corner
@@ -60,25 +54,24 @@ void UFO::update(float delta) {
         }
         break;
     case EXPLODING:
+        time += delta;
         if (time >= TIME_EXPLODING) {
             state = DEAD;
             time = 0;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
-            //cppinv->score += score;
+            cppinv->add_to_score(score);
         }
         break;
     case DEAD:
+        time += delta;
         if (time > TIME_DEAD) {
             state = AWAY;
-            x = 1e10;
-            vx = 0;
-            time = 0;
         }
         break;
     }
 }
 
-// bool UFO::collidedWithShot(const Shot *shot) {
+// bool GAMESCOPE::UFO::collidedWithShot(const Shot *shot) {
 //     if (state != ALIVE) {
 //         return false;
 //     }

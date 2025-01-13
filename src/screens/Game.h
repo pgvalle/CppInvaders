@@ -22,13 +22,18 @@ private:
 
     State state;
 
+    struct UFO;
+    //struct Horde;
+    struct Bunker;
+    struct Spaceship;
     struct Shot;
+
     //float time;
-    //UFO ufo;
-    //Horde horde;
-    //Cannon cannon;
-    //Bunker bunkers[4];
-    Shot *spaceship_shot, *horde_shot;
+    UFO *ufo;
+    //Horde *horde;
+    //Bunker *bunkers[4];
+    Spaceship *spaceship;
+    Shot *horde_shot, *spaceship_shot;
 
     void process_collisions(float delta);
 

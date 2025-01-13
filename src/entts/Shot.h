@@ -3,9 +3,11 @@
 #include "screens/Game.h"
 
 struct GAMESCOPE::Shot {
-    enum State { ALIVE, EXPLODING, DEAD };
+    enum State {
+        ALIVE, EXPLODING, DEAD
+    };
 
-    State state = ALIVE;
+    State state = DEAD;
     float x, y, vy;
     float explosion_time = 0;
 
