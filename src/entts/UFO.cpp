@@ -11,8 +11,10 @@
 #define TIME_TO_RESPAWN 10.0f
 
 void GAMESCOPE::UFO::explode() {
-    state = EXPLODING;
-    time = 0;
+    if (state == ALIVE) {
+        state = EXPLODING;
+        time = 0;
+    }
 }
 
 void GAMESCOPE::UFO::draw() {
