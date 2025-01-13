@@ -10,6 +10,11 @@
 #define TIME_EXPLODING 1.5f
 #define TIME_TO_RESPAWN 10.0f
 
+void GAMESCOPE::UFO::explode() {
+    state = EXPLODING;
+    time = 0;
+}
+
 void GAMESCOPE::UFO::draw() {
     static char text[4];
     int rx = (int)round(x);
@@ -34,8 +39,6 @@ void GAMESCOPE::UFO::draw() {
 }
 
 void GAMESCOPE::UFO::update(float delta) {
-    time += delta; // update timer regartless of state
-
     switch (state) {
     case AWAY:
         time += delta;
@@ -43,7 +46,6 @@ void GAMESCOPE::UFO::update(float delta) {
             state = ALIVE;
             x = (rand() % 2 ? LEFT_LIMIT : RIGHT_LIMIT); // choose a corner
             vx = (x == LEFT_LIMIT ? VX : -VX);           // set correct velocity
-            time = 0;
         }
         break;
     case ALIVE:
@@ -66,6 +68,7 @@ void GAMESCOPE::UFO::update(float delta) {
         time += delta;
         if (time > TIME_DEAD) {
             state = AWAY;
+            time = 0;
         }
         break;
     }
