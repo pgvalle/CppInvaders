@@ -23,11 +23,11 @@ void GAMESCOPE::Spaceship::draw() {
     case DEPLOYING:
         break;
     case DEPLOYED:
-        pico_set_image_crop({0, 0, 16, 8});
+        pico_set_image_crop({ 0, 0, 16, 8 });
         pico_output_draw_image({ rx, Y }, IMG_SPACESHIP);
         break;
     case EXPLODING:
-        pico_set_image_crop({16 * (1 + explosion_frames % 2), 0, 16, 8});
+        pico_set_image_crop({ 16 * (1 + explosion_frames % 2), 0, 16, 8 });
         pico_output_draw_image({ rx, Y }, IMG_SPACESHIP);
         break;
     }
@@ -55,7 +55,7 @@ void GAMESCOPE::Spaceship::update(float delta) {
             shot->state = Shot::ALIVE;
             shot->x = x + 8;
             shot->y = Y;
-            shot->vy = -40;
+            shot->vy = -200;
             cppinv->game->spaceship_shot = shot;
         }
         break;

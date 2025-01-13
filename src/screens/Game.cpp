@@ -109,6 +109,9 @@ void CppInvaders::Game::draw() {
     cppinv->draw_scoreboard();
     cppinv->draw_credit_counter();
 
+    ufo->draw();
+    spaceship->draw();
+
     horde_shot->draw();
     spaceship_shot->draw();
     // SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
@@ -141,26 +144,20 @@ void CppInvaders::Game::draw() {
 }
 
 void CppInvaders::Game::update(float delta) {
-    horde_shot->update(delta);
-    spaceship_shot->update(delta);
-
-
     switch (state) {
     case POPULATING_HORDE:
         // horde.populate();
         // if (horde.invaders.size() == 55)
-            state = WAITING_CANNON;
-        break;
-
-    case WAITING_CANNON:
-        // horde.move();
-        // cannon.update(delta);
-
-        // if (cannon.state == Cannon::ALIVE)
             state = PLAYING;
         break;
 
     case PLAYING: // player playing
+        ufo->update(delta);
+        spaceship->update(delta);
+
+        horde_shot->update(delta);
+        spaceship_shot->update(delta);
+
         // update_explosions(delta);
         // process_collisions(delta);
         // ufo.update(delta);

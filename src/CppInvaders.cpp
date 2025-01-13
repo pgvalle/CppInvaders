@@ -108,7 +108,7 @@ void CppInvaders::update_and_draw(float delta) {
 
     pico_set_style(PICO_STROKE);
     pico_set_color_draw(WHITE);
-    pico_output_draw_rect({ 3, 3, 218, 250 });
+    pico_output_draw_rect({ 3, 3, 217/*216*/, 249 });
 }
 
 void CppInvaders::process_event(const SDL_Event& event) {

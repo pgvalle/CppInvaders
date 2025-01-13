@@ -13,7 +13,6 @@ class CppInvaders::Game {
 private:
     enum State {
         POPULATING_HORDE,
-        WAITING_CANNON,
         PLAYING,
         CANNON_EXPLODING,
         CANNON_DEAD,
