@@ -34,7 +34,7 @@ void GAMESCOPE::Spaceship::draw() {
 }
 
 void GAMESCOPE::Spaceship::update(float delta) {
-    const Uint8 *keys = SDL_GetKeyboardState(NULL);
+    const Uint8 *keys = SDL_GetKeyboardState(nullptr);
     Shot *shot = cppinv->game->spaceship_shot;
 
     switch (state) {
