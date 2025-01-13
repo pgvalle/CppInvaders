@@ -34,7 +34,7 @@ private:
     Spaceship *spaceship;
     Shot *horde_shot, *spaceship_shot;
 
-    void process_collisions(float delta);
+    void process_collisions();
 
 public:
     Game();

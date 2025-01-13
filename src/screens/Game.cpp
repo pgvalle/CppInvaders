@@ -1,91 +1,122 @@
 #include "Screens.h"
 #include "entts/Entities.h"
 
-// void CppInvaders::Game::process_collisions(float delta)
-// {
-//     for (Bunker &bun : bunkers)
-//         bun.collideWithHorde(horde);
+void CppInvaders::Game::process_collisions()
+{
+    SDL_FRect ufo_rect = { ufo->x + 4, 40, 16, 8 },
+              spaceship_rect = { spaceship->x, 216, 15, 8 },
+              horde_shot_rect = { horde_shot->x - 1, horde_shot->y, 3, 7 },
+              spaceship_shot_rect = { spaceship_shot->x, spaceship_shot->y, 1, 7 };
 
-//     horde.shoottime += delta;
-//     if (horde.shoottime > horde.shoottimer && !horde.invaders.empty())
-//         shots.push_back(horde.shoot(cannon.x));
+    // between shots
+    if (horde_shot->state == Shot::ALIVE && spaceship_shot->state == Shot::ALIVE &&
+        SDL_HasIntersectionF(&horde_shot_rect, &spaceship_shot_rect))
+    {
+        if (rand() % 2) {
+            horde_shot->state = Shot::EXPLODING;
+        }
 
-//     for (int i = 0; i < shots.size(); i++)
-//     {
-//         shots[i]->update(delta);
+        if (rand() % 2) {
+            spaceship_shot->state = Shot::EXPLODING;
+        }
+    }
 
-//         bool out_of_bounds = shots[i]->y > 232 || shots[i]->y < UFO::Y - 6;
-//         bool collided = ufo.collidedWithShot(shots[i]) ||
-//                         (shots[i]->vy > 0 && cannon.collidedWithShot(shots[i]));
+    // spaceship shot and ufo
+    if (ufo->state == UFO::ALIVE && spaceship_shot->state == Shot::ALIVE &&
+        SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
+    {
+        ufo->explode();
+        spaceship_shot->state = Shot::DEAD;
+    }
 
-//         if (out_of_bounds || collided)
-//         {
-//             create_shot_explosion(shots[i]);
-//             delete shots[i];
-//             shots.erase(shots.begin() + i--);
-//             continue;
-//         }
+    // horde shot and spaceship
+    
 
-//         if (shots[i]->vy < 0)
-//         {
-//             Explosion *exp = horde.collidedWithShot(shots[i]);
-//             if (exp) {
-//                 explosions.push_back(exp);
-//                 delete shots[i];
-//                 shots.erase(shots.begin() + i--);
-//                 continue;
-//             }
-//         }
+        
 
-//         bool a = false;
-//         for (Bunker &bun : bunkers)
-//         {
-//             if (bun.collidedWithShot(shots[i])) {
-//                 create_shot_explosion(shots[i]);
-//                 delete shots[i];
-//                 shots.erase(shots.begin() + i--);
-//                 a = true;
-//                 break;
-//             }
-//         }
+    // for (Bunker &bun : bunkers)
+    //     bun.collideWithHorde(horde);
 
-//         if (a) continue;
+    // horde.shoottime += delta;
+    // if (horde.shoottime > horde.shoottimer && !horde.invaders.empty())
+    //     shots.push_back(horde.shoot(cannon.x));
 
-//         SDL_Rect shotRectI = shots[i]->getRect();
-//         shotRectI.x -= 2;
-//         shotRectI.w += 4;
+    // for (int i = 0; i < shots.size(); i++)
+    // {
+    //     shots[i]->update(delta);
 
-//         for (int j = i + 1; j < shots.size(); j++)
-//         {
-//             SDL_Rect shotRectJ = shots[j]->getRect();
+    //     bool out_of_bounds = shots[i]->y > 232 || shots[i]->y < UFO::Y - 6;
+    //     bool collided = ufo.collidedWithShot(shots[i]) ||
+    //                     (shots[i]->vy > 0 && cannon.collidedWithShot(shots[i]));
 
-//             if (!SDL_HasIntersection(&shotRectI, &shotRectJ))
-//                 continue;
+    //     if (out_of_bounds || collided)
+    //     {
+    //         create_shot_explosion(shots[i]);
+    //         delete shots[i];
+    //         shots.erase(shots.begin() + i--);
+    //         continue;
+    //     }
+
+    //     if (shots[i]->vy < 0)
+    //     {
+    //         Explosion *exp = horde.collidedWithShot(shots[i]);
+    //         if (exp) {
+    //             explosions.push_back(exp);
+    //             delete shots[i];
+    //             shots.erase(shots.begin() + i--);
+    //             continue;
+    //         }
+    //     }
+
+    //     bool a = false;
+    //     for (Bunker &bun : bunkers)
+    //     {
+    //         if (bun.collidedWithShot(shots[i])) {
+    //             create_shot_explosion(shots[i]);
+    //             delete shots[i];
+    //             shots.erase(shots.begin() + i--);
+    //             a = true;
+    //             break;
+    //         }
+    //     }
+
+    //     if (a) continue;
+
+    //     SDL_Rect shotRectI = shots[i]->getRect();
+    //     shotRectI.x -= 2;
+    //     shotRectI.w += 4;
+
+    //     for (int j = i + 1; j < shots.size(); j++)
+    //     {
+    //         SDL_Rect shotRectJ = shots[j]->getRect();
+
+    //         if (!SDL_HasIntersection(&shotRectI, &shotRectJ))
+    //             continue;
             
-//             switch (rand() % 3)
-//             {
-//             case 0:
-//                 create_shot_explosion(shots[j]);
-//                 create_shot_explosion(shots[i]);
-//                 break;
+    //         switch (rand() % 3)
+    //         {
+    //         case 0:
+    //             create_shot_explosion(shots[j]);
+    //             create_shot_explosion(shots[i]);
+    //             break;
 
-//             case 1:
-//                 create_shot_explosion(shots[i]);
-//                 break;
+    //         case 1:
+    //             create_shot_explosion(shots[i]);
+    //             break;
 
-//             case 2:
-//                 create_shot_explosion(shots[j]);
-//                 break;
-//             }
+    //         case 2:
+    //             create_shot_explosion(shots[j]);
+    //             break;
+    //         }
 
-//             delete shots[j];
-//             shots.erase(shots.begin() + j);
-//             delete shots[i];
-//             shots.erase(shots.begin() + i--);
-//             break;
-//         }
-//     }
-// }
+    //         delete shots[j];
+    //         shots.erase(shots.begin() + j);
+    //         delete shots[i];
+    //         shots.erase(shots.begin() + i--);
+    //         break;
+    //     }
+    // }
+}
 
 CppInvaders::Game::Game() {
     state = POPULATING_HORDE;
@@ -159,7 +190,7 @@ void CppInvaders::Game::update(float delta) {
         spaceship_shot->update(delta);
 
         // update_explosions(delta);
-        // process_collisions(delta);
+        process_collisions();
         // ufo.update(delta);
         // horde.move();
         // cannon.update(delta);
