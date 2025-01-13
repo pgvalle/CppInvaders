@@ -1,5 +1,6 @@
 #include "CppInvaders.h"
 #include "screens/Splash.h"
+#include "screens/Game.h"
 #include "screens/Over.h"
 
 int CppInvaders::load_hi_score() {
@@ -43,7 +44,7 @@ CppInvaders::CppInvaders() {
     score = 0;
     hi_score = load_hi_score();
 
-    should_close = false;
+    should_quit = false;
 }
 
 CppInvaders::~CppInvaders() {
@@ -63,9 +64,9 @@ void CppInvaders::update_and_draw(float delta) {
         splash->update(delta);
         break;
     case GAME:
-        // pico_assert(game);
-        // game->draw();
-        // game->update(delta);
+        pico_assert(game);
+        game->draw();
+        game->update(delta);
         break;
     case PAUSE:
         // pico_assert(pause);
@@ -81,14 +82,19 @@ void CppInvaders::update_and_draw(float delta) {
 }
 
 void CppInvaders::process_event(const SDL_Event& event) {
+    if (event.type == SDL_QUIT) {
+        should_quit = true;
+        return;
+    }
+
     switch (screen) {
     case SPLASH:
         pico_assert(splash);
         splash->process_event(event);
         break;
     case GAME:
-        // pico_assert(game);
-        // game->process_event(event);
+        pico_assert(game);
+        game->process_event(event);
         break;
     case PAUSE:
         // pico_assert(pause);

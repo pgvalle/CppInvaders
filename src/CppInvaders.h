@@ -40,7 +40,7 @@ protected:
     void draw_counters();
 
 public:
-    bool should_close;
+    bool should_quit;
 
     CppInvaders();
     ~CppInvaders();
