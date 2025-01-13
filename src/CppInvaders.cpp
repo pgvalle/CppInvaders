@@ -1,33 +1,62 @@
 #include "CppInvaders.h"
 #include "screens/Screens.h"
 
-int CppInvaders::load_hi_score() {
-    // create file if it doesn't exist
+void CppInvaders::load_scoreboard() {
+    score = 0;
+    hi_score = 0;
 
-    // read from it
-    // try converting to an int
-    // close file
-    return 0;
+    FILE *file = fopen(SCOREBOARD_FILE, "r");
+    if (!file) {
+        file = fopen(SCOREBOARD_FILE, "w");
+        fclose(file);
+        return;
+    }
+
+    if (!file) {
+        printf("Couldn't open scoreboard file\n");
+        return;
+    }
+
+    fscanf(file, "%6d", &hi_score);
+    fclose(file);
 }
 
-void CppInvaders::save_hi_score() {
+void CppInvaders::save_scoreboard() {
     // open file to write (will exist bc load was called b4)
     // write hi_score to file
     // closefile
-    printf("Score saved sucessfully!\n");
+    FILE *file = fopen(SCOREBOARD_FILE, "w");
+    if (!file) {
+        printf("Couldn't open scoreboard file\n");
+        return;
+    }
+
+    fprintf(file, "%6d", hi_score);
+    fclose(file);
 }
 
-void CppInvaders::draw_counters() {
+void CppInvaders::add_to_score(int value) {
+    score += value;
+    if (hi_score < score) {
+        hi_score = score;
+        save_scoreboard();
+    }
+}
+
+void CppInvaders::draw_scoreboard() {
     static char text[32];
+    sprintf(text, "%06d          %06d", score, hi_score);
     
     pico_set_color_draw(WHITE);
-    
     pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
-
-    sprintf(text, "%06d          %06d", score, hi_score);
     pico_output_draw_text({ 24, 24 }, text);
+}
 
+void CppInvaders::draw_credit_counter() {
+    static char text[16];
     sprintf(text, "CREDIT %02d", credits);
+
+    pico_set_color_draw(WHITE);
     pico_output_draw_text({ 144, 240 }, text);
 }
 
@@ -39,14 +68,13 @@ CppInvaders::CppInvaders() {
 
     screen = SPLASH;
     credits = 99;
-    score = 0;
-    hi_score = load_hi_score();
+    load_scoreboard();
 
     should_quit = false;
 }
 
 CppInvaders::~CppInvaders() {
-    save_hi_score();
+    save_scoreboard();
 
     delete splash;
     delete game;
@@ -77,6 +105,10 @@ void CppInvaders::update_and_draw(float delta) {
         over->update(delta);
         break;
     }
+
+    pico_set_style(PICO_STROKE);
+    pico_set_color_draw(WHITE);
+    pico_output_draw_rect({ 3, 3, 218, 250 });
 }
 
 void CppInvaders::process_event(const SDL_Event& event) {

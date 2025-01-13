@@ -2,12 +2,12 @@
 
 //#include "entts/Cannon.h"
 //#include "entts/Horde.h"
-#include "entts/Shot.h"
 //#include "entts/UFO.h"
 //#include "entts/Bunker.h"
 
 #include "CppInvaders.h"
-#include <vector>
+
+#define GAMESCOPE CppInvaders::Game
 
 class CppInvaders::Game {
 private:
@@ -21,14 +21,15 @@ private:
     };
 
     State state;
+
+    struct Shot;
     //float time;
     //UFO ufo;
     //Horde horde;
     //Cannon cannon;
     //Bunker bunkers[4];
-    std::vector<Shot *> spaceship_shots, horde_shots;
+    Shot *spaceship_shot, *horde_shot;
 
-    void update_shots(float delta);
     void process_collisions(float delta);
 
 public:

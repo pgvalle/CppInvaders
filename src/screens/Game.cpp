@@ -1,4 +1,5 @@
 #include "Screens.h"
+#include "entts/Entities.h"
 
 // void CppInvaders::Game::process_collisions(float delta)
 // {
@@ -100,35 +101,12 @@ CppInvaders::Game::~Game() {
     //     delete explosion;
 }
 
-void CppInvaders::Game::update_shots(float delta) {
-    for (int i = 0; i < spaceship_shots.size(); i++) {
-        Shot *shot = spaceship_shots[i];
-        shot->update(delta);
-        if (shot->state == Shot::DEAD) {
-            spaceship_shots.erase(spaceship_shots.begin() + i--);
-            delete shot;
-        }
-    }
-
-    for (int i = 0; i < horde_shots.size(); i++) {
-        Shot *shot = horde_shots[i];
-        shot->update(delta);
-        if (shot->state == Shot::DEAD) {
-            horde_shots.erase(horde_shots.begin() + i--);
-            delete shot;
-        }
-    }
-}
-
 void CppInvaders::Game::draw() {
-    cppinv->draw_counters();
-    for (Shot *shot : spaceship_shots) {
-        shot->draw();
-    }
+    cppinv->draw_scoreboard();
+    cppinv->draw_credit_counter();
 
-    for (Shot *shot : horde_shots) {
-        shot->draw();
-    }
+    horde_shot->draw();
+    spaceship_shot->draw();
     // SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     // SDL_RenderClear(app->renderer);
 
@@ -159,7 +137,8 @@ void CppInvaders::Game::draw() {
 }
 
 void CppInvaders::Game::update(float delta) {
-    update_shots(delta);
+    horde_shot->update(delta);
+    spaceship_shot->update(delta);
 
     switch (state) {
     case POPULATING_HORDE:
@@ -243,12 +222,12 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
     case SDL_KEYDOWN:
         switch (event.key.keysym.sym) {
         case SDLK_q:
-            if (spaceship_shots.size() < 1) {
-                Shot *shot = new Shot;
-                shot->x = 100;
-                shot->y = 220;
-                shot->vy = -7;
-                spaceship_shots.push_back(shot);
+            if (spaceship_shot->state == Shot::DEAD) {
+                delete spaceship_shot;
+                spaceship_shot = new Shot;
+                spaceship_shot->x = 100;
+                spaceship_shot->y = 220;
+                spaceship_shot->vy = -7;
             }
             break;
         case SDLK_ESCAPE:

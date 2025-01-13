@@ -25,8 +25,11 @@ void CppInvaders::Pause::draw() {
     cppinv->game->draw();
 
     // make the pause menu effect
+    pico_set_style(PICO_FILL);
     pico_set_color_draw({ 0, 0, 0, 204 });
     pico_output_draw_rect({ 0, 0, 224, 256 });
+
+    cppinv->draw_credit_counter();
 
     pico_set_color_draw(WHITE);
     switch (state) {

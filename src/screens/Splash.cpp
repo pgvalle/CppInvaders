@@ -43,7 +43,8 @@ void CppInvaders::Splash::draw() {
     pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
     pico_output_clear();
 
-    cppinv->draw_counters();
+    cppinv->draw_scoreboard();
+    cppinv->draw_credit_counter();
 
     pico_set_color_draw(WHITE);
     for (int k = 0; k <= l; k++) {

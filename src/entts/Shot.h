@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
+#include "screens/Game.h"
 
-struct Shot {
+struct GAMESCOPE::Shot {
     enum State { ALIVE, EXPLODING, DEAD };
 
     State state = ALIVE;

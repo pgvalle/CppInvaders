@@ -1,7 +1,7 @@
 #include "Shot.h"
 #include "CppInvaders.h"
 
-void Shot::draw() {
+void GAMESCOPE::Shot::draw() {
     int rx = round(x), ry = round(y);
     const char *explosion_img = (vy >= 0 ? IMG_EXP3 : IMG_EXP2);
     switch (state) {
@@ -18,11 +18,11 @@ void Shot::draw() {
     }
 }
 
-void Shot::update(float delta) {
+void GAMESCOPE::Shot::update(float delta) {
     switch (state) {
     case ALIVE:
         y += delta * vy;
-        if (y <= 16 || y >=  250) {
+        if (y < 34 || y >  232) {
             state = EXPLODING;
         }
         break;

@@ -6,6 +6,8 @@
 #define GREEN { 32, 255, 32, 255 }
 #define RED { 216, 32, 32, 255 }
 
+#define SCOREBOARD_FILE "./scoreboard"
+
 #define IMG_CANNON "./res/img/cannon.png"
 #define IMG_UFO "./res/img/ufo.png"
 #define IMG_INV1 "./res/img/inv1.png"
@@ -17,7 +19,7 @@
 #define FONT "./res/font.ttf"
 
 struct CppInvaders {
-protected:
+private:
     class Splash;
     class Game;
     class Pause;
@@ -35,9 +37,12 @@ protected:
     Screen screen;
     int credits, score, hi_score;
 
-    int load_hi_score();
-    void save_hi_score();
-    void draw_counters();
+    void load_scoreboard();
+    void save_scoreboard();
+    void add_to_score(int value);
+
+    void draw_scoreboard();
+    void draw_credit_counter();
 
 public:
     bool should_quit;
