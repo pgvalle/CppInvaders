@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Screens.h"
 
 // void CppInvaders::Game::process_collisions(float delta)
 // {
@@ -121,6 +121,7 @@ void CppInvaders::Game::update_shots(float delta) {
 }
 
 void CppInvaders::Game::draw() {
+    cppinv->draw_counters();
     for (Shot *shot : spaceship_shots) {
         shot->draw();
     }
@@ -240,7 +241,8 @@ void CppInvaders::Game::update(float delta) {
 void CppInvaders::Game::process_event(const SDL_Event &event) {
     switch (event.type) {
     case SDL_KEYDOWN:
-        if (event.key.keysym.sym == SDLK_q) {
+        switch (event.key.keysym.sym) {
+        case SDLK_q:
             if (spaceship_shots.size() < 1) {
                 Shot *shot = new Shot;
                 shot->x = 100;
@@ -248,6 +250,11 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
                 shot->vy = -7;
                 spaceship_shots.push_back(shot);
             }
+            break;
+        case SDLK_ESCAPE:
+            cppinv->screen = PAUSE;
+            cppinv->pause = new Pause;
+            break;
         }
         // switch (event.key.keysym.sym)
         // {

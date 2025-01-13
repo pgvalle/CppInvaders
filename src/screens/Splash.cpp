@@ -1,6 +1,4 @@
-#include "Splash.h"
-#include "Over.h"
-#include "Game.h"
+#include "Screens.h"
 #include <string>
 
 #define TYPEWRITE_STEP_DELTA 0.05f
@@ -108,13 +106,13 @@ void CppInvaders::Splash::process_event(const SDL_Event &event) {
         }
 
         if (state == WAITING_KEYPRESS) {
-            cppinv->score = 0;
-
-            delete this;
-            cppinv->splash = nullptr;
-
             cppinv->screen = GAME;
             cppinv->game = new Game;
+
+            delete cppinv->splash;
+            cppinv->splash = nullptr;
+
+            cppinv->score = 0;
         }
         else {
             state = WAITING_KEYPRESS;

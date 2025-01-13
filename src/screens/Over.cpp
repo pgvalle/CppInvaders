@@ -1,5 +1,4 @@
-#include "Over.h"
-#include "Splash.h"
+#include "Screens.h"
 #include <string>
 
 #define TYPEWRITING_INTERVAL 0.1f
@@ -51,15 +50,14 @@ void CppInvaders::Over::update(float delta) {
 
     case WAITING:
         if (time >= TIME_WAITING) {
+            cppinv->screen = SPLASH;
+            cppinv->splash = new Splash;
+
             delete cppinv->game;
             cppinv->game = nullptr;
 
-            delete this;
+            delete cppinv->over;
             cppinv->over = nullptr;
-
-            cppinv->screen = SPLASH;
-            delete cppinv->splash;
-            cppinv->splash = new Splash;
         }
         break;
     }
