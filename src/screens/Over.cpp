@@ -51,6 +51,9 @@ void CppInvaders::Over::update(float delta) {
 
     case WAITING:
         if (time >= TIME_WAITING) {
+            delete cppinv->game;
+            cppinv->game = nullptr;
+
             delete this;
             cppinv->over = nullptr;
 
@@ -75,10 +78,6 @@ void CppInvaders::Over::process_event(const SDL_Event &event) {
                 time = TIME_WAITING;
             }
         }
-        break;
-
-    case SDL_QUIT:
-        cppinv->should_close = true;
         break;
     }
 }

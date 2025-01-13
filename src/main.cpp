@@ -37,7 +37,7 @@ void quit() {
 void loop() {
     pico_assert(cppinv);
 
-    while (!cppinv->should_close) {
+    while (!cppinv->should_quit) {
         int timeout = 16, accum = 0;
         while (timeout > 0) {
             int before = pico_get_ticks();
