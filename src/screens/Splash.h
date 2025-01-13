@@ -16,7 +16,7 @@ private:
     int l, c; // line iterator and character iterator for typewritting lines of text
     float time;
 
-    bool typewrite_next_character();
+    bool typewrite_next_char();
 
 public:
     Splash();

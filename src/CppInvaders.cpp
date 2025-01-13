@@ -1,5 +1,6 @@
 #include "CppInvaders.h"
 #include "screens/Splash.h"
+#include "screens/Over.h"
 
 int CppInvaders::load_hi_score() {
     // create file if it doesn't exist
@@ -19,6 +20,8 @@ void CppInvaders::save_hi_score() {
 
 void CppInvaders::draw_counters() {
     static char text[32];
+    
+    pico_set_color_draw(WHITE);
     
     pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
 
@@ -55,14 +58,24 @@ CppInvaders::~CppInvaders() {
 void CppInvaders::update_and_draw(float delta) {
     switch (screen) {
     case SPLASH:
-        splash->update(delta);
+        pico_assert(splash);
         splash->draw();
+        splash->update(delta);
         break;
     case GAME:
+        // pico_assert(game);
+        // game->draw();
+        // game->update(delta);
         break;
     case PAUSE:
+        // pico_assert(pause);
+        // pause->draw();
+        // pause->update(delta);
         break;
     case OVER:
+        pico_assert(over);
+        over->draw();
+        over->update(delta);
         break;
     }
 }
@@ -70,13 +83,20 @@ void CppInvaders::update_and_draw(float delta) {
 void CppInvaders::process_event(const SDL_Event& event) {
     switch (screen) {
     case SPLASH:
+        pico_assert(splash);
         splash->process_event(event);
         break;
     case GAME:
+        // pico_assert(game);
+        // game->process_event(event);
         break;
     case PAUSE:
+        // pico_assert(pause);
+        // pause->process_event(event);
         break;
     case OVER:
+        pico_assert(over);
+        over->process_event(event);
         break;
     }
 }

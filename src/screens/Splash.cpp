@@ -1,4 +1,5 @@
 #include "Splash.h"
+#include "Over.h"
 #include <string>
 
 #define TYPEWRITE_STEP_DELTA 0.05f
@@ -27,7 +28,7 @@ CppInvaders::Splash::Splash() {
 
 CppInvaders::Splash::~Splash() {}
 
-bool CppInvaders::Splash::typewrite_next_character() {
+bool CppInvaders::Splash::typewrite_next_char() {
     if (time >= TYPEWRITE_STEP_DELTA) {
         if (c++ == LINES[l].length()) {
             l++;
@@ -45,6 +46,7 @@ void CppInvaders::Splash::draw() {
 
     cppinv->draw_counters();
 
+    pico_set_color_draw(WHITE);
     for (int k = 0; k <= l; k++) {
         std::string str = (k < l ? LINES[k] : LINES[l].substr(0, c));
         int xoff = 16 + 8 * LINES_XOFF[k];
@@ -75,7 +77,7 @@ void CppInvaders::Splash::update(float delta) {
         }
         break;
     case TYPEWRITING1:
-        if (typewrite_next_character() && l == 2) {
+        if (typewrite_next_char() && l == 2) {
             state = WAITING2;
         }
         break;
@@ -88,7 +90,7 @@ void CppInvaders::Splash::update(float delta) {
         }
         break;
     case TYPEWRITING2:
-        if (typewrite_next_character() && l == 7) {
+        if (typewrite_next_char() && l == 7) {
             state = WAITING_KEYPRESS;
         }
         break;
@@ -106,12 +108,9 @@ void CppInvaders::Splash::process_event(const SDL_Event &event) {
 
         if (state == WAITING_KEYPRESS) {
             cppinv->score = 0;
-            //next_screen = new OverScreen;
-            //app->stack.popThenPush(new PlayScreen(3));
-            /*
-            next_screen = new SomeScreen(...);
-            next_screen->prev_screen = g.screen
-            */
+
+            cppinv->screen = OVER;
+            cppinv->over = new Over;
         }
         else {
             state = WAITING_KEYPRESS;
