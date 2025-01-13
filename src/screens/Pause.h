@@ -5,8 +5,7 @@
 class CppInvaders::Pause {
 private:
     enum State {
-        PAUSED,
-        RESUMING
+        PAUSED, RESUMING
     };
 
     State state;

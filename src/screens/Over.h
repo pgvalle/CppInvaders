@@ -5,8 +5,7 @@
 class CppInvaders::Over {
 private:
     enum State {
-        TYPEWRITING,
-        WAITING
+        TYPEWRITING, WAITING
     };
 
     State state;
