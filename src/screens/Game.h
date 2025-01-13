@@ -3,7 +3,7 @@
 //#include "entts/Cannon.h"
 //#include "entts/Horde.h"
 #include "entts/Shot.h"
-#include "entts/UFO.h"
+//#include "entts/UFO.h"
 //#include "entts/Bunker.h"
 
 #include "CppInvaders.h"
