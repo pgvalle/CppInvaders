@@ -1,4 +1,5 @@
 #include "CppInvaders.h"
+#include <ctime>
 
 CppInvaders *cppinv = nullptr;
 
@@ -15,6 +16,8 @@ int main(int argc, char **argv) {
 }
 
 void init() {
+    srand(time(nullptr));
+
     pico_init(true);
     
     pico_set_title("CppInvaders");

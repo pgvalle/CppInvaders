@@ -21,6 +21,12 @@ void CppInvaders::Game::process_collisions()
         }
     }
 
+    // horde shot and spaceship
+
+    // horde shot and bunkers
+
+    // horde and bunkers
+
     // spaceship shot and ufo
     if (ufo->state == UFO::ALIVE && spaceship_shot->state == Shot::ALIVE &&
         SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
@@ -29,7 +35,8 @@ void CppInvaders::Game::process_collisions()
         spaceship_shot->state = Shot::DEAD;
     }
 
-    // horde shot and spaceship
+    // spaceship shot and horde
+
     
 
         
