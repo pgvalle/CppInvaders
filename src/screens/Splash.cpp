@@ -29,7 +29,7 @@ CppInvaders::Splash::~Splash() {}
 
 bool CppInvaders::Splash::typewrite_next_char() {
     if (time >= TYPEWRITE_STEP_DELTA) {
-        if (c++ == LINES[l].length()) {
+        if (c++ == (int)LINES[l].length()) {
             l++;
             c = 1;
         }

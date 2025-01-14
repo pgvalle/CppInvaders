@@ -20,7 +20,7 @@ CppInvaders::Pause::~Pause() {
 }
 
 void CppInvaders::Pause::draw() {
-    static char text[3];
+    static char text[16];
 
     cppinv->game->draw();
 

@@ -41,7 +41,7 @@ void CppInvaders::Over::update(float delta) {
     case TYPEWRITING:
         if (time >= TYPEWRITING_INTERVAL) {
             time = 0;
-            if (i++ == STRING.length()) {
+            if (i++ == (int)STRING.length()) {
                 state = WAITING;
                 time = 0;
             }
