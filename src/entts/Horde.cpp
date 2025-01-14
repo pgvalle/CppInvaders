@@ -1,5 +1,6 @@
 #include "Horde.h"
 #include "Entities.h"
+#include <vector>
 
 int GAMESCOPE::Horde::count_alive_invaders() {
     int count = 0;
@@ -16,7 +17,7 @@ void GAMESCOPE::Horde::explode_invader(int index) {
     index_dying_invader = index;
     time = 0;
 
-    int value = 100 * (invaders[index_dying_invader].type + 1);
+    int value = 10 * (3 - invaders[index_dying_invader].type);
     invaders[index_dying_invader].state = Invader::DEAD;
     cppinv->add_to_score(value);
 }
@@ -27,31 +28,56 @@ void GAMESCOPE::Horde::try_shooting() {
         return;
     }
 
-    float spaceship_cx = GAMEVAR->spaceship->x + 8;
-    int inv_x = -1, inv_y = -1;
-    float range = (rand() % 3 ? 1000 : 5);
+    // get invaders that are alive
+    std::vector<int> indices_alive_invaders;
 
-    // FIXME: Only first invader shoots
+    for (int i = 0; i < 55; i++) {
+        if (invaders[i].state != Invader::DEAD) {
+            indices_alive_invaders.push_back(i);
+        }
+    }
 
-    do {
-        for (Invader& inv : invaders) {
-            if (inv.state != Invader::DEAD && inv.y > inv_y &&
-                fabsf(spaceship_cx - inv.x - 5) <= range)
-            {
-                inv_x = inv.x;
-                inv_y = inv.y;
-            }
+    // choose a random invader from alive invaders
+    int r = rand() % indices_alive_invaders.size();
+    r = indices_alive_invaders[r];
+
+    SDL_Point rand_xy = { invaders[r].x, invaders[r].y },
+              best_xy = { -1000, -1000 };
+
+    float spaceship_x = GAMEVAR->spaceship->x + 3;
+
+    for (Invader& inv : invaders) {
+        if (inv.state == Invader::DEAD) {
+            continue;
         }
 
-        range = 10000;
-    } while (inv_x == -1 && inv_y == -1);
+        bool best_above_spaceship = (abs(spaceship_x - inv.x) <= 5);
+        bool best_lower_y = inv.y > best_xy.y;
+
+        if (best_above_spaceship && best_lower_y) {
+            best_xy = { inv.x, inv.y };
+        }
+        
+        bool rand_same_x = abs(rand_xy.x - inv.x) <= 3;
+        bool rand_lower_y = inv.y >= rand_xy.y;
     
+        if (rand_same_x && rand_lower_y) {
+            rand_xy = { inv.x, inv.y };
+        }
+    }
+
+    bool invalid_best_xy = (best_xy.x < 0 && best_xy.y < 0);
+    bool random_shot = (rand() % 3 > 0);
+
+    if (invalid_best_xy || random_shot) {
+        best_xy = rand_xy;
+    }
 
     delete shot;
     shot = new Shot;
     shot->state = Shot::ALIVE;
-    shot->x = inv_x + 5;
-    shot->y = inv_y + 8;
+    shot->x = best_xy.x + 5;
+    shot->y = best_xy.y + 8;
     shot->vy = 120;
     GAMEVAR->horde_shot = shot;
 }
@@ -125,90 +151,3 @@ void GAMESCOPE::Horde::update(float delta) {
         break;
     }
 }
-
-// Shot *GAMESCOPE::Horde::shoot(float target_x)
-// {
-//     shoottime = 0;
-//     shoottimer = rand() % 2 + 1;
-
-//     float prob = (float)rand() / RAND_MAX;
-//     int x, y;
-
-//     if (prob > 0.5f)
-//     {
-//         int i = rand() % invaders.size();
-//         x = invaders[i].x;
-//         y = invaders[i].y;
-
-//         for (const Invader &inv : invaders)
-//         {
-//             if (abs(inv.x - x) < 4 && inv.y > y)
-//                 y = inv.y;
-//         }
-//     }
-//     else
-//     {
-//         x = -10000;
-//         y = -1;
-//         int dx = abs(target_x - x);
-
-//         for (const Invader &inv : invaders)
-//         {
-//             int new_dx = abs(inv.x - x);
-
-//             if (new_dx < dx && inv.y > y)
-//             {
-//                 dx = new_dx;
-//                 x = inv.x;
-//                 y = inv.y;
-//             }
-//         }
-//     }
-
-//     Shot *shot = new Shot;
-//     shot->x = x + 5;
-//     shot->y = y + 8;
-//     shot->vy = 90;
-//     return shot;
-// }
-
-// Explosion *GAMESCOPE::Horde::collidedWithShot(Shot *shot)
-// {
-//     SDL_Rect shotRect = shot->getRect();
-
-//     for (int j = 0; j < invaders.size(); j++)
-//     {
-//         SDL_Rect invRect = invaders[j].getRect();
-
-//         if (SDL_HasIntersection(&shotRect, &invRect))
-//         {
-//             Explosion *exp = new Explosion;
-//             exp->x = invaders[j].x;
-//             exp->y = invaders[j].y;
-//             exp->lifespan = 0.2;
-//             exp->src = {0, 0, 13, 8};
-//             exp->tex = g->tex_inv_death;
-
-//             g->score += (3 - invaders[j].type) * 10;
-
-//             invaders.erase(invaders.begin() + j);
-//             if (i > j && invaders.size() > 0)
-//                 i--;
-
-//             return exp;
-//         }
-//     }
-
-//     return nullptr;
-// }
-
-// bool GAMESCOPE::Horde::hasReachedCannon() const
-// {
-//     for (const Invader &inv : invaders)
-//     {
-//         if (inv.y >= Cannon::Y)
-//             return true;
-//     }
-
-//     return false;
-// }
