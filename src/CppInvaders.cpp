@@ -57,7 +57,7 @@ void CppInvaders::draw_credit_counter() {
     sprintf(text, "CREDIT %02d", credits);
 
     pico_set_color_draw(WHITE);
-    pico_output_draw_text({ 144, 240 }, text);
+    pico_output_draw_text({ 136, 240 }, text);
 }
 
 CppInvaders::CppInvaders() {
