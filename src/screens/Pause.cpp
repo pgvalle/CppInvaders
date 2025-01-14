@@ -1,6 +1,6 @@
 #include "Screens.h"
 
-#define PAUSE_SYMBOL_BLINK 0.5
+#define PAUSE_SYMBOL_BLINK 0.3
 #define TIME_TO_RESUME 3
 
 extern SDL_Window *WIN;
