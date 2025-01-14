@@ -43,7 +43,7 @@ void GAMESCOPE::Horde::update(float delta) {
             dy = 0;
         }
         break;
-    case MARCHING: {
+    case MARCHING: { // TODO: Fix invaader wrong placement when changing direction
         GAMEVAR;
         bool cycle_complete = false;
         int j = i;
