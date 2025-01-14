@@ -4,8 +4,8 @@
 void CppInvaders::Game::process_collisions() {
     SDL_FRect ufo_rect = { ufo->x + 4, 40, 16, 8 },
               spaceship_rect = { spaceship->x, 216, 15, 8 },
-              horde_shot_rect = { horde_shot->x - 1, horde_shot->y, 3, 7 },
-              spaceship_shot_rect = { spaceship_shot->x, spaceship_shot->y, 1, 7 };
+              horde_shot_rect = { horde_shot->x - 1, horde_shot->y, 3, 4 },
+              spaceship_shot_rect = { spaceship_shot->x, spaceship_shot->y, 1, 4 };
 
     // between shots
     if (horde_shot->state == Shot::ALIVE && spaceship_shot->state == Shot::ALIVE &&
@@ -69,7 +69,7 @@ void CppInvaders::Game::process_collisions() {
 }
 
 CppInvaders::Game::Game() {
-    state = PLAYING;
+    state = STARTING;
     ufo = new UFO;
     horde = new Horde;
     spaceship = new Spaceship;
@@ -99,7 +99,7 @@ void CppInvaders::Game::draw() {
     spaceship_shot->draw();
 
     pico_set_color_draw(GREEN);
-    pico_output_draw_line({ 8, 239 }, { 215, 239 });
+    pico_output_draw_line({ 0, 239 }, { 224, 239 });
 
     static char lives_text[12];
     sprintf(lives_text, "%1d", SDL_max(spaceship->lives, 0));
@@ -142,10 +142,32 @@ void CppInvaders::Game::draw() {
 
 void CppInvaders::Game::update(float delta) {
     switch (state) {
-    case PLAYING: // player playing
+    case STARTING:
+        horde->update(delta);
+        spaceship->update(delta);
+        if (spaceship->state == Spaceship::DEPLOYED) {
+            state = PLAYING;
+            time = 0;
+        }
+        break;
+    case PLAYING:
+        time += delta;
+        if (time >= 1 && spaceship->state == Spaceship::DEPLOYED) {
+            if (horde_shot->state == Shot::DEAD) {
+                Shot *shot = horde->shoot(spaceship->x);
+                delete horde_shot;
+                horde_shot = shot;
+            }
+        }
+
         horde->update(delta);
         ufo->update(delta);
         spaceship->update(delta);
+
+        if (spaceship->state == Spaceship::EXPLODING) {
+            state = RESTARTING;
+            time = 0;
+        }
 
         horde_shot->update(delta);
         spaceship_shot->update(delta);
@@ -173,39 +195,31 @@ void CppInvaders::Game::update(float delta) {
         //         delete shot;
         //     shots.clear();
         // }
-
         break;
-
-    case CANNON_EXPLODING:
-        // update_explosions(delta);
-        // // cannon.update(delta);
-
-        // if (cannon.state == Cannon::DEAD)
-        //     state = CANNON_DEAD;
-
-        // if (cannon.state == Cannon::DEAD && horde.hasReachedCannon())
-        //     cannon.lives = 0;        
-
-        // if (!cannon.lives)
-        //     app->stack.push(new OverScreen(this));
-        break;
-
-    case CANNON_DEAD:
-        // cannon.update(delta);
-        // if (cannon.state == Cannon::ALIVE)
-        //     state = PLAYING;
-        break;
-
     case RESTARTING:
-        // update_explosions(delta);
-        // time += delta;
-        // if (time > TIME_RESTARTING)
-        //     app->stack.popThenPush(new Game(cannon.lives), 1);
+        time += delta;
+
+        ufo->update(delta);
+        if (horde->state == Horde::FROZEN) {
+            horde->update(delta);
+        }
+
+        spaceship->update(delta);
+        if (spaceship->state == Spaceship::DEPLOYING && !spaceship->lives) {
+            cppinv->screen = OVER;
+            cppinv->over = new Over;
+        }
+        else if (spaceship->state == Spaceship::DEPLOYED) {
+            state = PLAYING;
+            time = 0;
+        }
+
+        horde_shot->update(delta);
+        spaceship_shot->update(delta);
+
+        process_collisions();
         break;
     }
-
-    // if (g->score > g->hi_score)
-    //     g->hi_score = g->score;
 }
 
 void CppInvaders::Game::process_event(const SDL_Event &event) {
@@ -217,17 +231,6 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
             cppinv->pause = new Pause;
             break;
         }
-        // switch (event.key.keysym.sym)
-        // {
-        // case SDLK_SPACE:
-        //     if (state == PLAYING && cannon.time1 >= 0.75)
-        //         shots.push_back(cannon.shoot());
-        //     break;
-
-        // case SDLK_ESCAPE:
-        //     app->stack.push(new PauseScreen(this));
-        //     break;
-        // }
         break;
     }
 }

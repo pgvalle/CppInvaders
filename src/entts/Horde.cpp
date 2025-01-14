@@ -22,12 +22,7 @@ void GAMESCOPE::Horde::explode_invader(int index) {
     cppinv->add_to_score(value);
 }
 
-void GAMESCOPE::Horde::try_shooting() {
-    Shot *shot = GAMEVAR->horde_shot;
-    if (shot->state != Shot::DEAD) {
-        return;
-    }
-
+GAMESCOPE::Shot *GAMESCOPE::Horde::shoot(float spaceship_x) {
     // get invaders that are alive
     std::vector<int> indices_alive_invaders;
 
@@ -43,8 +38,6 @@ void GAMESCOPE::Horde::try_shooting() {
 
     SDL_Point rand_xy = { invaders[r].x, invaders[r].y },
               best_xy = { -1000, -1000 };
-
-    float spaceship_x = GAMEVAR->spaceship->x + 3;
 
     for (Invader& inv : invaders) {
         if (inv.state == Invader::DEAD) {
@@ -73,13 +66,12 @@ void GAMESCOPE::Horde::try_shooting() {
         best_xy = rand_xy;
     }
 
-    delete shot;
-    shot = new Shot;
+    Shot *shot = new Shot;
     shot->state = Shot::ALIVE;
     shot->x = best_xy.x + 5;
     shot->y = best_xy.y + 8;
     shot->vy = 120;
-    GAMEVAR->horde_shot = shot;
+    return shot;
 }
 
 void GAMESCOPE::Horde::draw() {
@@ -103,11 +95,10 @@ void GAMESCOPE::Horde::update(float delta) {
             i = 0;
             dx = 2;
             dy = 0;
+            time = 0;
         }
         break;
     case MARCHING: { // TODO: Fix invaader wrong placement when changing direction
-        try_shooting();
-
         bool cycle_complete = false;
         int j = i;
         while (invaders[j].state == Invader::DEAD) {
