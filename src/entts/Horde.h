@@ -19,16 +19,17 @@ struct Invader {
 
 struct GAMESCOPE::Horde {
     enum State {
-        DEPLOYING, ADVANCING, FROZEN
+        DEPLOYING, MARCHING, FROZEN
     };
 
     State state = DEPLOYING;
     Invader invaders[55];
-    int alive_invaders_count;
-    int i = 0, dx, dy;
+    int i = 0, index_dying_invader;
+    int dx, dy;
     float time;
 
-    void freeze();
+    int count_alive_invaders();
+    void explode_invader(int index);
 
     void draw();
     void update(float delta);

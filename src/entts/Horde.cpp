@@ -1,8 +1,23 @@
 #include "Horde.h"
 
-void GAMESCOPE::Horde::freeze() {
+int GAMESCOPE::Horde::count_alive_invaders() {
+    int count = 0;
+    for (int i = 0; i < 55; i++) {
+        if (invaders[i].state != Invader::DEAD) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void GAMESCOPE::Horde::explode_invader(int index) {
     state = FROZEN;
+    index_dying_invader = index;
     time = 0;
+
+    int value = 100 * (invaders[index_dying_invader].type + 1);
+    invaders[index_dying_invader].state = Invader::DEAD;
+    cppinv->add_to_score(value);
 }
 
 void GAMESCOPE::Horde::draw() {
@@ -11,10 +26,9 @@ void GAMESCOPE::Horde::draw() {
     }
 
     if (state == FROZEN) {
-        SDL_Rect r = invaders[i].get_rect();
-        pico_set_style(PICO_FILL);
-        pico_set_color_draw(WHITE);
-        pico_output_draw_rect(r);
+        Invader &inv = invaders[index_dying_invader];
+        pico_set_image_crop({ 0, 0, 13, 8 });
+        pico_output_draw_image({ inv.x, inv.y }, IMG_EXP1);
     }
 }
 
@@ -23,18 +37,26 @@ void GAMESCOPE::Horde::update(float delta) {
     case DEPLOYING:
         invaders[i].deploy(i);
         if (++i % 55 == 0) {
-            state = ADVANCING;
-            alive_invaders_count = 55;
+            state = MARCHING;
             i = 0;
             dx = 2;
             dy = 0;
         }
         break;
-    case ADVANCING:
-        invaders[i].move(dx, dy);
-        i = (i + 1) % 55;
+    case MARCHING: {
+        GAMEVAR;
+        bool cycle_complete = false;
+        int j = i;
+        while (invaders[j].state == Invader::DEAD) {
+            j = (j + 1) % 55;
+        }
 
-        if (i != 0) { // Check for direction change when all invaders are updated
+        invaders[j].move(dx, dy);
+        j = (j + 1) % 55;
+        cycle_complete = j <= i;
+        i = j;
+    
+        if (!cycle_complete) { // Check for direction change when all invaders are updated
             break;
         }
 
@@ -44,24 +66,23 @@ void GAMESCOPE::Horde::update(float delta) {
         }
 
         for (Invader& inv : invaders) { // all invaders updated and direction may change
-            if (inv.x < 12 || inv.x > 200) {
+            bool out_of_bounds = (inv.x < 12 || inv.x > 200);
+            if (inv.state != Invader::DEAD && out_of_bounds) {
                 dx = -dx;
                 dy = 8;
                 break;
             }
         }
-        break;
+        break; }
     case FROZEN:
         time += delta;
         if (time >= 0.3) {
-            invaders[i].state = Invader::DEAD;
-
-            if (--alive_invaders_count <= 0) {
+            if (count_alive_invaders() == 0) {
                 state = DEPLOYING;
                 i = 0;
             }
             else {
-                state = ADVANCING;
+                state = MARCHING;
             }
         }
         break;
