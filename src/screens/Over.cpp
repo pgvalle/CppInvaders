@@ -23,7 +23,7 @@ CppInvaders::Over::~Over() {
 }
 
 void CppInvaders::Over::draw() {
-    cppinv->splash->draw();
+    cppinv->game->draw();
 
     // make the pause menu effect
     pico_set_color_draw({ 0, 0, 0, 204 });

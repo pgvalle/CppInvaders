@@ -57,7 +57,7 @@ void CppInvaders::draw_credit_counter() {
     sprintf(text, "CREDIT %02d", credits);
 
     pico_set_color_draw(WHITE);
-    pico_output_draw_text({ 136, 240 }, text);
+    pico_output_draw_text({ 144, 240 }, text);
 }
 
 CppInvaders::CppInvaders() {
@@ -106,9 +106,9 @@ void CppInvaders::update_and_draw(float delta) {
         break;
     }
 
-    pico_set_style(PICO_STROKE);
-    pico_set_color_draw(WHITE);
-    pico_output_draw_rect({ 3, 3, 217/*216*/, 249 });
+    // pico_set_style(PICO_STROKE);
+    // pico_set_color_draw(WHITE);
+    // pico_output_draw_rect({ 3, 3, 217/*216*/, 249 });
 }
 
 void CppInvaders::process_event(const SDL_Event& event) {
