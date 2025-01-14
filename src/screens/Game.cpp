@@ -12,125 +12,60 @@ void CppInvaders::Game::process_collisions() {
         SDL_HasIntersectionF(&horde_shot_rect, &spaceship_shot_rect))
     {
         if (rand() % 2) {
-            horde_shot->state = Shot::EXPLODING;
+            horde_shot->explode(0.3);
         }
 
         if (rand() % 2) {
-            spaceship_shot->state = Shot::EXPLODING;
+            horde_shot->explode(0.3);
         }
     }
 
     // horde shot and spaceship
-
-    // horde shot and bunkers
-
-    // horde and bunkers
+    if (horde_shot->state == Shot::ALIVE && spaceship->state == Spaceship::DEPLOYED &&
+        SDL_HasIntersectionF(&horde_shot_rect, &spaceship_rect))
+    {
+        horde_shot->explode_without_img(0.3);
+        spaceship->explode();
+    }
 
     // spaceship shot and ufo
     if (ufo->state == UFO::ALIVE && spaceship_shot->state == Shot::ALIVE &&
         SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
     {
         ufo->explode();
-        spaceship_shot->explode_without_img(0.3);
+        spaceship_shot->explode(0.3);
     }
 
-    // spaceship shot and horde
+    // horde and other stuff
     for (int i = 0; i < 55; i++) {
         Invader& inv = horde->invaders[i];
+        if (inv.state == Invader::DEAD) {
+            continue;
+        }
+
         SDL_Rect tmp = inv.get_rect();
         SDL_FRect inv_rect = { tmp.x, tmp.y, tmp.w, tmp.h };
 
-        if (spaceship_shot->state == Shot::ALIVE && inv.state != Invader::DEAD &&
+        // invaderr and spaceship shot
+        if (spaceship_shot->state == Shot::ALIVE &&
             SDL_HasIntersectionF(&spaceship_shot_rect, &inv_rect))
         {
             spaceship_shot->explode_without_img(0.3);
             horde->explode_invader(i);
             break;
         }
+
+        // invader and spaceship (game over)
+        if (spaceship->state == Spaceship::DEPLOYED && inv.y >= 216) {
+            spaceship->explode();
+            horde->explode_invader(i);
+            break;
+        }
     }
 
-    // for (Bunker &bun : bunkers)
-    //     bun.collideWithHorde(horde);
+    // horde shot and bunkers
 
-    // horde.shoottime += delta;
-    // if (horde.shoottime > horde.shoottimer && !horde.invaders.empty())
-    //     shots.push_back(horde.shoot(cannon.x));
-
-    // for (int i = 0; i < shots.size(); i++)
-    // {
-    //     shots[i]->update(delta);
-
-    //     bool out_of_bounds = shots[i]->y > 232 || shots[i]->y < UFO::Y - 6;
-    //     bool collided = ufo.collidedWithShot(shots[i]) ||
-    //                     (shots[i]->vy > 0 && cannon.collidedWithShot(shots[i]));
-
-    //     if (out_of_bounds || collided)
-    //     {
-    //         create_shot_explosion(shots[i]);
-    //         delete shots[i];
-    //         shots.erase(shots.begin() + i--);
-    //         continue;
-    //     }
-
-    //     if (shots[i]->vy < 0)
-    //     {
-    //         Explosion *exp = horde.collidedWithShot(shots[i]);
-    //         if (exp) {
-    //             explosions.push_back(exp);
-    //             delete shots[i];
-    //             shots.erase(shots.begin() + i--);
-    //             continue;
-    //         }
-    //     }
-
-    //     bool a = false;
-    //     for (Bunker &bun : bunkers)
-    //     {
-    //         if (bun.collidedWithShot(shots[i])) {
-    //             create_shot_explosion(shots[i]);
-    //             delete shots[i];
-    //             shots.erase(shots.begin() + i--);
-    //             a = true;
-    //             break;
-    //         }
-    //     }
-
-    //     if (a) continue;
-
-    //     SDL_Rect shotRectI = shots[i]->getRect();
-    //     shotRectI.x -= 2;
-    //     shotRectI.w += 4;
-
-    //     for (int j = i + 1; j < shots.size(); j++)
-    //     {
-    //         SDL_Rect shotRectJ = shots[j]->getRect();
-
-    //         if (!SDL_HasIntersection(&shotRectI, &shotRectJ))
-    //             continue;
-            
-    //         switch (rand() % 3)
-    //         {
-    //         case 0:
-    //             create_shot_explosion(shots[j]);
-    //             create_shot_explosion(shots[i]);
-    //             break;
-
-    //         case 1:
-    //             create_shot_explosion(shots[i]);
-    //             break;
-
-    //         case 2:
-    //             create_shot_explosion(shots[j]);
-    //             break;
-    //         }
-
-    //         delete shots[j];
-    //         shots.erase(shots.begin() + j);
-    //         delete shots[i];
-    //         shots.erase(shots.begin() + i--);
-    //         break;
-    //     }
-    // }
+    // horde and bunkers
 }
 
 CppInvaders::Game::Game() {
@@ -145,11 +80,11 @@ CppInvaders::Game::Game() {
 }
 
 CppInvaders::Game::~Game() {
-    // for (Shot *shot : shots)
-    //     delete shot;
-    
-    // for (Explosion *explosion : explosions)
-    //     delete explosion;
+    delete ufo;
+    delete horde;
+    delete spaceship;
+    delete horde_shot;
+    delete spaceship_shot;
 }
 
 void CppInvaders::Game::draw() {
