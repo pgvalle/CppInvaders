@@ -1,8 +1,7 @@
 #include "Screens.h"
 #include "entts/Entities.h"
 
-void CppInvaders::Game::process_collisions()
-{
+void CppInvaders::Game::process_collisions() {
     SDL_FRect ufo_rect = { ufo->x + 4, 40, 16, 8 },
               spaceship_rect = { spaceship->x, 216, 15, 8 },
               horde_shot_rect = { horde_shot->x - 1, horde_shot->y, 3, 7 },
@@ -32,14 +31,23 @@ void CppInvaders::Game::process_collisions()
         SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
     {
         ufo->explode();
-        spaceship_shot->state = Shot::DEAD;
+        spaceship_shot->explode_without_img(0.3);
     }
 
     // spaceship shot and horde
+    for (int i = 0; i < 55; i++) {
+        Invader& inv = horde->invaders[i];
+        SDL_Rect tmp = inv.get_rect();
+        SDL_FRect inv_rect = { tmp.x, tmp.y, tmp.w, tmp.h };
 
-    
-
-        
+        if (spaceship_shot->state == Shot::ALIVE && inv.state != Invader::DEAD &&
+            SDL_HasIntersectionF(&spaceship_shot_rect, &inv_rect))
+        {
+            spaceship_shot->explode_without_img(0.3);
+            horde->explode_invader(i);
+            break;
+        }
+    }
 
     // for (Bunker &bun : bunkers)
     //     bun.collideWithHorde(horde);
@@ -126,8 +134,9 @@ void CppInvaders::Game::process_collisions()
 }
 
 CppInvaders::Game::Game() {
-    state = POPULATING_HORDE;
+    state = PLAYING;
     ufo = new UFO;
+    horde = new Horde;
     spaceship = new Spaceship;
     horde_shot = new Shot;
     spaceship_shot = new Shot;
@@ -148,6 +157,7 @@ void CppInvaders::Game::draw() {
     cppinv->draw_credit_counter();
 
     ufo->draw();
+    horde->draw();
     spaceship->draw();
 
     horde_shot->draw();
@@ -183,24 +193,16 @@ void CppInvaders::Game::draw() {
 
 void CppInvaders::Game::update(float delta) {
     switch (state) {
-    case POPULATING_HORDE:
-        // horde.populate();
-        // if (horde.invaders.size() == 55)
-            state = PLAYING;
-        break;
-
     case PLAYING: // player playing
+        horde->update(delta);
         ufo->update(delta);
         spaceship->update(delta);
 
         horde_shot->update(delta);
         spaceship_shot->update(delta);
 
-        // update_explosions(delta);
         process_collisions();
-        // ufo.update(delta);
-        // horde.move();
-        // cannon.update(delta);
+
 
         // if (horde.hasReachedCannon())
         //     cannon.explode();

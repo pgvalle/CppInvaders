@@ -13,7 +13,6 @@
 class CppInvaders::Game {
 private:
     enum State {
-        POPULATING_HORDE,
         PLAYING,
         CANNON_EXPLODING,
         CANNON_DEAD,
@@ -23,14 +22,14 @@ private:
     State state;
 
     struct UFO;
-    //struct Horde;
+    struct Horde;
     struct Bunker;
     struct Spaceship;
     struct Shot;
 
     //float time;
     UFO *ufo;
-    //Horde *horde;
+    Horde *horde;
     //Bunker *bunkers[4];
     Spaceship *spaceship;
     Shot *horde_shot, *spaceship_shot;
