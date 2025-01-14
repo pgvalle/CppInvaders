@@ -38,7 +38,7 @@ void GAMESCOPE::Shot::update(float delta) {
     case ALIVE:
         y += delta * vy;
         if (y < 36 || y >  232) {
-            state = EXPLODING;
+            explode(0.3);
         }
         break;
     case EXPLODING:
