@@ -35,7 +35,7 @@ void GAMESCOPE::Spaceship::draw() {
 
 void GAMESCOPE::Spaceship::update(float delta) {
     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
-    Shot *shot = cppinv->game->spaceship_shot;
+    Shot *shot = GAMEVAR->spaceship_shot;
 
     switch (state) {
     case DEPLOYING:
@@ -56,7 +56,7 @@ void GAMESCOPE::Spaceship::update(float delta) {
             shot->x = x + 8;
             shot->y = Y;
             shot->vy = -200;
-            cppinv->game->spaceship_shot = shot;
+            GAMEVAR->spaceship_shot = shot;
         }
         break;
     case EXPLODING:

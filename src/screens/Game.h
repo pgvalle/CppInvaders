@@ -8,6 +8,7 @@
 #include "CppInvaders.h"
 
 #define GAMESCOPE CppInvaders::Game
+#define GAMEVAR cppinv->game
 
 class CppInvaders::Game {
 private:
