@@ -30,6 +30,7 @@ struct GAMESCOPE::Horde {
 
     int count_alive_invaders();
     void explode_invader(int index);
+    void try_shooting();
 
     void draw();
     void update(float delta);

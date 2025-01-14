@@ -1,4 +1,5 @@
 #include "Horde.h"
+#include "Entities.h"
 
 int GAMESCOPE::Horde::count_alive_invaders() {
     int count = 0;
@@ -18,6 +19,41 @@ void GAMESCOPE::Horde::explode_invader(int index) {
     int value = 100 * (invaders[index_dying_invader].type + 1);
     invaders[index_dying_invader].state = Invader::DEAD;
     cppinv->add_to_score(value);
+}
+
+void GAMESCOPE::Horde::try_shooting() {
+    Shot *shot = GAMEVAR->horde_shot;
+    if (shot->state != Shot::DEAD) {
+        return;
+    }
+
+    float spaceship_cx = GAMEVAR->spaceship->x + 8;
+    int inv_x = -1, inv_y = -1;
+    float range = (rand() % 3 ? 1000 : 5);
+
+    // FIXME: Only first invader shoots
+
+    do {
+        for (Invader& inv : invaders) {
+            if (inv.state != Invader::DEAD && inv.y > inv_y &&
+                fabsf(spaceship_cx - inv.x - 5) <= range)
+            {
+                inv_x = inv.x;
+                inv_y = inv.y;
+            }
+        }
+
+        range = 10000;
+    } while (inv_x == -1 && inv_y == -1);
+    
+
+    delete shot;
+    shot = new Shot;
+    shot->state = Shot::ALIVE;
+    shot->x = inv_x + 5;
+    shot->y = inv_y + 8;
+    shot->vy = 120;
+    GAMEVAR->horde_shot = shot;
 }
 
 void GAMESCOPE::Horde::draw() {
@@ -44,7 +80,8 @@ void GAMESCOPE::Horde::update(float delta) {
         }
         break;
     case MARCHING: { // TODO: Fix invaader wrong placement when changing direction
-        GAMEVAR;
+        try_shooting();
+
         bool cycle_complete = false;
         int j = i;
         while (invaders[j].state == Invader::DEAD) {
