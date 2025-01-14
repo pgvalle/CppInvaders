@@ -16,7 +16,7 @@ void CppInvaders::Game::process_collisions() {
         }
 
         if (rand() % 2) {
-            horde_shot->explode(0.3);
+            spaceship_shot->explode(0.3);
         }
     }
 
@@ -33,7 +33,7 @@ void CppInvaders::Game::process_collisions() {
         SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
     {
         ufo->explode();
-        spaceship_shot->explode(0.3);
+        spaceship_shot->explode_without_img(0.3);
     }
 
     // horde and other stuff
@@ -97,6 +97,20 @@ void CppInvaders::Game::draw() {
 
     horde_shot->draw();
     spaceship_shot->draw();
+
+    pico_set_color_draw(GREEN);
+    pico_output_draw_line({ 8, 239 }, { 215, 239 });
+
+    static char lives_text[12];
+    sprintf(lives_text, "%1d", SDL_max(spaceship->lives, 0));
+
+    pico_set_color_draw(WHITE);
+    pico_output_draw_text({ 8, 240 }, lives_text);
+
+    pico_set_image_crop({ 0, 0, 16, 8 });
+    for (int i = 0; i < spaceship->lives - 1; i++) {
+        pico_output_draw_image({ 24 + 16 * i, 240 }, IMG_SPACESHIP);
+    }
     // SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     // SDL_RenderClear(app->renderer);
 
