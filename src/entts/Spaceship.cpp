@@ -46,7 +46,6 @@ void Spaceship::draw() {
 
 void Spaceship::update(float delta) {
     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
-    // Shot *shot = GAMEVAR->spaceship_shot;
 
     switch (state) {
     case DEPLOYING:
