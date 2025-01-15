@@ -1,7 +1,7 @@
 #include "Screens.h"
 #include <string>
 
-#define TYPEWRITING_INTERVAL 0.1f
+#define TYPEWRITING_INTERVAL 0.2f
 #define TIME_WAITING 2.5f
 
 extern SDL_Window *WIN;
@@ -35,10 +35,9 @@ void CppInvaders::Over::draw() {
 }
 
 void CppInvaders::Over::update(float delta) {
-    time += delta;
-
     switch (state) {
     case TYPEWRITING:
+        time += delta;
         if (time >= TYPEWRITING_INTERVAL) {
             time = 0;
             if (i++ == (int)STRING.length()) {
@@ -47,8 +46,8 @@ void CppInvaders::Over::update(float delta) {
             }
         }
         break;
-
     case WAITING:
+        time += delta;
         if (time >= TIME_WAITING) {
             cppinv->screen = SPLASH;
             cppinv->splash = new Splash;

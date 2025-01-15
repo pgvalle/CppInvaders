@@ -20,8 +20,9 @@ void Horde::explode_invader(int index) {
     time = 0;
 
     int value = 10 * (3 - invaders[index_dying_invader].type);
-    invaders[index_dying_invader].state = Invader::DEAD;
     cppinv->add_to_score(value);
+
+    invaders[index_dying_invader].state = Invader::DEAD;
 }
 
 Shot *Horde::shoot(float spaceship_x) {
@@ -50,8 +51,8 @@ Shot *Horde::shoot(float spaceship_x) {
         }
     }
 
-    bool invalid_best_xy = (best_xy.x < 0 && best_xy.y < 0);
-    bool random_shot = (rand() % 3 == 0);
+    bool invalid_best_xy = (best_xy.x < 0 && best_xy.y < 0),
+         random_shot = (rand() % 3 == 0);
 
     if (invalid_best_xy || random_shot) {
         best_xy = rand_xy;
