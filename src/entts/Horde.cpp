@@ -51,7 +51,7 @@ Shot *Horde::shoot(float spaceship_x) {
     }
 
     bool invalid_best_xy = (best_xy.x < 0 && best_xy.y < 0);
-    bool random_shot = (rand() % 3 > 0);
+    bool random_shot = (rand() % 3 == 0);
 
     if (invalid_best_xy || random_shot) {
         best_xy = rand_xy;
