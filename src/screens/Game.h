@@ -26,7 +26,7 @@ private:
 
     UFO *ufo;
     Horde *horde;
-    //Bunker *bunkers[4];
+    Shield shields[4];
     Spaceship *spaceship;
     Shot *horde_shot, *spaceship_shot;
 

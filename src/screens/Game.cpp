@@ -11,12 +11,17 @@ void CppInvaders::Game::process_collisions() {
     if (horde_shot->state == Shot::ALIVE && spaceship_shot->state == Shot::ALIVE &&
         SDL_HasIntersectionF(&horde_shot_rect, &spaceship_shot_rect))
     {
-        if (rand() % 2) {
+        switch (rand() % 3) {
+        case 0: // horde shot explodes
             horde_shot->explode(0.3);
-        }
-
-        if (rand() % 2) {
+            break;
+        case 1: // spaceship shot explodes
             spaceship_shot->explode(0.3);
+            break;
+        case 2: // both explode
+            horde_shot->explode(0.3);
+            spaceship_shot->explode(0.3);
+            break;
         }
     }
 
@@ -76,8 +81,12 @@ CppInvaders::Game::Game() {
     spaceship = new Spaceship;
     horde_shot = new Shot;
     spaceship_shot = new Shot;
-    // time = 0;
-    // cannon.lives = cannon_lives;
+
+    int x = 32;
+    for (Shield &shield : shields) {
+        shield.deploy(x);
+        x += 46;
+    }
 }
 
 CppInvaders::Game::~Game() {
@@ -95,50 +104,26 @@ void CppInvaders::Game::draw() {
     ufo->draw();
     horde->draw();
     spaceship->draw();
-
     horde_shot->draw();
     spaceship_shot->draw();
 
     pico_set_color_draw(GREEN);
     pico_output_draw_line({ 0, 239 }, { 224, 239 });
 
-    static char lives_text[12];
-    sprintf(lives_text, "%1d", SDL_max(spaceship->lives, 0));
+    static char text[12];
+    sprintf(text, "%1d", SDL_max(spaceship->lives, 0));
 
     pico_set_color_draw(WHITE);
-    pico_output_draw_text({ 8, 240 }, lives_text);
+    pico_output_draw_text({ 8, 240 }, text);
 
     pico_set_image_crop({ 0, 0, 16, 8 });
     for (int i = 0; i < spaceship->lives - 1; i++) {
         pico_output_draw_image({ 24 + 16 * i, 240 }, IMG_SPACESHIP);
     }
-    // SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
-    // SDL_RenderClear(app->renderer);
 
-    // ui_draw();
-
-    // for (Shot *shot : shots)
-    //     shot->draw();
-
-    // for (Explosion *explosion : explosions)
-    //     explosion->draw();
-
-    // ufo.draw();
-    // horde.draw();
-    // cannon.draw();
-
-    // for (auto &bun : bunkers)
-    //     bun.draw();
-
-    // cannon life counter drawn as backup cannons
-    // for (int i = 0; i < cannon.lives - 1; i++)
-    //     app->draw_clip(g->tex_cannon, 24 + 16 * i, 240, {0, 0, 16, 8});
-
-    // cannon life counter
-    // app->draw_text(g->font, 8, 240, "%d", cannon.lives);
-
-    // SDL_SetRenderDrawColor(app->renderer, 0, 255, 0, 255);
-    // SDL_RenderDrawLine(app->renderer, 0, 239, WIDTH, 239);
+    for (Shield &shield : shields) {
+        shield.draw();
+    }
 }
 
 void CppInvaders::Game::update(float delta) {
@@ -175,30 +160,7 @@ void CppInvaders::Game::update(float delta) {
 
         horde_shot->update(delta);
         spaceship_shot->update(delta);
-
         process_collisions();
-
-
-        // if (horde.hasReachedCannon())
-        //     cannon.explode();
-
-        // if (cannon.state == Cannon::EXPLODING)
-        // {
-        //     state = CANNON_EXPLODING;
-
-        //     for (Shot *shot : shots)
-        //         delete shot;
-        //     shots.clear();
-        // }
-
-        // if (horde.invaders.empty())
-        // {
-        //     state = RESTARTING;
-
-        //     for (Shot *shot : shots)
-        //         delete shot;
-        //     shots.clear();
-        // }
         break;
     case RESTARTING:
         ufo->update(delta);
@@ -243,6 +205,12 @@ void CppInvaders::Game::update(float delta) {
             spaceship_shot = new Shot;
             state = STARTING;
             spaceship->lives = lives;
+
+            int x = 32;
+            for (Shield &shield : shields) {
+                shield.deploy(x);
+                x += 46;
+            }
         }
         break;
     }
