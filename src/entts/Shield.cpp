@@ -1,6 +1,17 @@
 #include "Shield.h"
 #include "screens/Game.h"
 
+static SDL_Point damage_pattern_1[] = {
+                   {-1,0},
+    {-3,1},                       {1,1},
+                   {-1,2}, {0,2},        {2,2},
+           {-2,3}, {-1,3}, {0,3}, {1,3},
+    {-3,4},        {-1,4}, {0,4}, {1,4},
+           {-2,5}, {-1,5}, {0,5}, {1,5}, {2,5},
+    {-3,6},        {-1,6}, {0,6}, {1,6},
+           {-2,7},         {0,7},        {2,7},
+};
+
 void Shield::deploy(int x_) {
     memset(bits, true, 352);
     x = x_;
@@ -9,7 +20,6 @@ void Shield::deploy(int x_) {
         for (int j = 0; j < 4 - i; j++) { // top edges by column
             bits[22 * i + j] = bits[22 * i - j + 21] = false;
         }
-
         
         const int l = 15 - i; // bottom-up
         for (int j = 5 + i; j < 18 - i; j++) { // // bottom part by column
@@ -18,22 +28,8 @@ void Shield::deploy(int x_) {
     }
 }
 
-void Shield::set_bit(int x, int y, bool value) {
-    // x -= outerBounds.x;
-    // y -= outerBounds.y;
-
-    // if (x >= 0 && x < outerBounds.w && y >= 0 && y < outerBounds.h)
-    //     bits[y * 22 + x] = value;
-}
-
-bool Shield::get_bit(int x, int y)
-{
-    // x -= outerBounds.x;
-    // y -= outerBounds.y;
-
-    // if (x >= 0 && x < outerBounds.w && y >= 0 && y < outerBounds.h)
-    //     return bits[y * 22 + x];
-
+bool Shield::damage(Shot *shot) {
+    // TODO: implement shield damage
     return false;
 }
 

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Shot.h"
+
 struct Shield {
     int x;
     bool bits[352];
 
-    void set_bit(int x, int y, bool value);
-    bool get_bit(int x, int y);
     void deploy(int x);
+    bool damage(Shot *shot);
 
     void draw();
     // bool collidedWithShot(Shot *shot);

@@ -4,10 +4,13 @@
 void CppInvaders::Game::process_collisions() {
     SDL_FRect ufo_rect = { ufo->x + 4, 40, 16, 8 },
               spaceship_rect = { spaceship->x, 216, 15, 8 },
-              horde_shot_rect = { horde_shot->x - 1, horde_shot->y, 3, 4 },
+              horde_shot_rect = { horde_shot->x, horde_shot->y, 1, 4 },
               spaceship_shot_rect = { spaceship_shot->x, spaceship_shot->y, 1, 4 };
 
     // between shots
+    horde_shot_rect.x -= 1;
+    horde_shot_rect.w = 3;
+    
     if (horde_shot->state == Shot::ALIVE && spaceship_shot->state == Shot::ALIVE &&
         SDL_HasIntersectionF(&horde_shot_rect, &spaceship_shot_rect))
     {
@@ -24,6 +27,9 @@ void CppInvaders::Game::process_collisions() {
             break;
         }
     }
+
+    horde_shot_rect.x += 1;
+    horde_shot_rect.w = 1;
 
     // horde shot and spaceship
     if (horde_shot->state == Shot::ALIVE && spaceship->state == Spaceship::DEPLOYED &&
@@ -48,8 +54,8 @@ void CppInvaders::Game::process_collisions() {
             continue;
         }
 
-        SDL_Rect tmp = inv.get_rect();
-        SDL_FRect inv_rect = { (float)tmp.x, (float)tmp.y, (float)tmp.w, (float)tmp.h };
+        SDL_Rect r = inv.get_rect();
+        SDL_FRect inv_rect = { (float)r.x, (float)r.y, (float)r.w, (float)r.h };
 
         // invader and spaceship shot
         if (spaceship_shot->state == Shot::ALIVE &&
@@ -57,18 +63,25 @@ void CppInvaders::Game::process_collisions() {
         {
             spaceship_shot->explode_without_img(0.3);
             horde->explode_invader(i);
-            break;
         }
 
         // invader and spaceship (game over)
         if (spaceship->state == Spaceship::DEPLOYED && inv.y >= 216) {
             horde_reached_spaceship = true;
             spaceship->explode();
-            break;
         }
     }
 
-    // horde shot and bunkers
+    // shield
+    for (Shield &shield : shields) {
+        if (horde_shot->state == Shot::ALIVE && shield.damage(horde_shot)) {
+            horde_shot->explode(0.3);
+        }
+
+        if (spaceship_shot->state == Shot::ALIVE && shield.damage(spaceship_shot)) {
+            spaceship_shot->explode(0.3);
+        }
+    }
 
     // horde and bunkers
 }
