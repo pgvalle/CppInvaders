@@ -162,14 +162,14 @@ void CppInvaders::Game::update(float delta) {
 
         ufo->update(delta);
         horde->update(delta);
-        if (horde->get_alive_invaders().size() == 0 && horde->state == Horde::MARCHING) {
-            // TODO: implement state transition here
+        if (horde->get_alive_invaders().size() == 0) {
+            state = RESTARTING2;
+            time = 0;
         }
 
         spaceship->update(delta);
         if (spaceship->state == Spaceship::EXPLODING) {
             state = RESTARTING;
-            time = 0;
         }
 
         horde_shot->update(delta);
@@ -219,6 +219,26 @@ void CppInvaders::Game::update(float delta) {
         spaceship_shot->update(delta);
 
         process_collisions();
+        break;
+    case RESTARTING2:
+        if (horde->state == Horde::FROZEN) {
+            horde->update(delta);
+        }
+
+        horde_shot->update(delta);
+        spaceship_shot->update(delta);
+
+        time += delta;
+        if (time >= 1) {
+            int lives = spaceship->lives;
+            delete ufo;
+            delete spaceship;
+
+            ufo = new UFO;
+            spaceship = new Spaceship;
+            state = STARTING; 
+            spaceship->lives = lives;
+        }
         break;
     }
 }

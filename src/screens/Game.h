@@ -16,7 +16,8 @@ private:
     enum State {
         STARTING,
         PLAYING,
-        RESTARTING
+        RESTARTING,
+        RESTARTING2  // TODO: Use better names for these states
     };
 
     State state;
