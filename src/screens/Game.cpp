@@ -44,9 +44,9 @@ void CppInvaders::Game::process_collisions() {
         }
 
         SDL_Rect tmp = inv.get_rect();
-        SDL_FRect inv_rect = { tmp.x, tmp.y, tmp.w, tmp.h };
+        SDL_FRect inv_rect = { (float)tmp.x, (float)tmp.y, (float)tmp.w, (float)tmp.h };
 
-        // invaderr and spaceship shot
+        // invader and spaceship shot
         if (spaceship_shot->state == Shot::ALIVE &&
             SDL_HasIntersectionF(&spaceship_shot_rect, &inv_rect))
         {
@@ -57,8 +57,8 @@ void CppInvaders::Game::process_collisions() {
 
         // invader and spaceship (game over)
         if (spaceship->state == Spaceship::DEPLOYED && inv.y >= 216) {
+            horde_reached_spaceship = true;
             spaceship->explode();
-            horde->explode_invader(i);
             break;
         }
     }
@@ -70,6 +70,7 @@ void CppInvaders::Game::process_collisions() {
 
 CppInvaders::Game::Game() {
     state = STARTING;
+    horde_reached_spaceship = false;
     ufo = new UFO;
     horde = new Horde;
     spaceship = new Spaceship;
@@ -206,7 +207,7 @@ void CppInvaders::Game::update(float delta) {
         }
 
         spaceship->update(delta);
-        if (spaceship->state == Spaceship::DEPLOYING && !spaceship->lives) {
+        if (spaceship->state == Spaceship::DEPLOYING && (!spaceship->lives || horde_reached_spaceship)) {
             cppinv->screen = OVER;
             cppinv->over = new Over;
         }
@@ -233,10 +234,14 @@ void CppInvaders::Game::update(float delta) {
             int lives = spaceship->lives;
             delete ufo;
             delete spaceship;
+            delete horde_shot;
+            delete spaceship_shot;
 
             ufo = new UFO;
             spaceship = new Spaceship;
-            state = STARTING; 
+            horde_shot = new Shot;
+            spaceship_shot = new Shot;
+            state = STARTING;
             spaceship->lives = lives;
         }
         break;

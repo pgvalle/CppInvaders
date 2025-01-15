@@ -22,6 +22,7 @@ private:
 
     State state;
     float time;
+    bool horde_reached_spaceship;
 
     UFO *ufo;
     Horde *horde;
