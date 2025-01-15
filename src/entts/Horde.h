@@ -2,6 +2,7 @@
 
 #include "Shot.h"
 #include <pico.h>
+#include <vector>
 
 struct Invader {
     enum State {
@@ -29,7 +30,7 @@ struct Horde {
     int dx, dy;
     float time;
 
-    int count_alive_invaders();
+    std::vector<int> get_alive_invaders();
     void explode_invader(int index);
     Shot *shoot(float spaceship_x);
 

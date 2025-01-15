@@ -1,15 +1,15 @@
 #include "Horde.h"
 #include "screens/Game.h"
-#include <vector>
 
-int Horde::count_alive_invaders() {
-    int count = 0;
+std::vector<int> Horde::get_alive_invaders() {
+    std::vector<int> alive_invaders;
     for (int i = 0; i < 55; i++) {
         if (invaders[i].state != Invader::DEAD) {
-            count++;
+            alive_invaders.push_back(i);
         }
     }
-    return count;
+
+    return alive_invaders;
 }
 
 void Horde::explode_invader(int index) {
@@ -27,18 +27,10 @@ void Horde::explode_invader(int index) {
 Shot *Horde::shoot(float spaceship_x) {
     pico_assert(state == MARCHING);
 
-    // get invaders that are alive
-    std::vector<int> indices_alive_invaders;
-
-    for (int i = 0; i < 55; i++) {
-        if (invaders[i].state != Invader::DEAD) {
-            indices_alive_invaders.push_back(i);
-        }
-    }
-
     // choose a random invader from alive invaders
-    int r = rand() % indices_alive_invaders.size();
-    r = indices_alive_invaders[r];
+    std::vector<int> alive_invaders = get_alive_invaders();
+    int r = rand() % alive_invaders.size();
+    r = alive_invaders[r];
 
     SDL_Point rand_xy = { invaders[r].x, invaders[r].y },
               best_xy = { -1000, -1000 };
@@ -135,7 +127,7 @@ void Horde::update(float delta) {
     case FROZEN:
         time += delta;
         if (time >= 0.3) {
-            if (count_alive_invaders() == 0) {
+            if (get_alive_invaders().size() == 0) {
                 state = DEPLOYING;
                 i = 0;
             }
