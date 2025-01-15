@@ -1,8 +1,6 @@
 #pragma once
 
-#include "screens/Game.h"
-
-struct GAMESCOPE::UFO {
+struct UFO {
     enum State {
         AWAY, ALIVE, EXPLODING, DEAD
     };

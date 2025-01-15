@@ -1,5 +1,5 @@
 #include "UFO.h"
-#include "CppInvaders.h"
+#include "screens/Game.h"
 
 #define Y 40
 #define VX 25
@@ -10,14 +10,14 @@
 #define TIME_EXPLODING 1.5f
 #define TIME_TO_RESPAWN 10.0f
 
-void GAMESCOPE::UFO::explode() {
+void UFO::explode() {
     if (state == ALIVE) {
         state = EXPLODING;
         time = 0;
     }
 }
 
-void GAMESCOPE::UFO::draw() {
+void UFO::draw() {
     static char text[4];
     int rx = (int)round(x);
 
@@ -40,7 +40,7 @@ void GAMESCOPE::UFO::draw() {
     }
 }
 
-void GAMESCOPE::UFO::update(float delta) {
+void UFO::update(float delta) {
     switch (state) {
     case AWAY:
         time += delta;
@@ -76,7 +76,7 @@ void GAMESCOPE::UFO::update(float delta) {
     }
 }
 
-// bool GAMESCOPE::UFO::collidedWithShot(const Shot *shot) {
+// bool UFO::collidedWithShot(const Shot *shot) {
 //     if (state != ALIVE) {
 //         return false;
 //     }

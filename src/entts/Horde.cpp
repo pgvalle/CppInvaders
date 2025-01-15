@@ -1,8 +1,8 @@
 #include "Horde.h"
-#include "Entities.h"
+#include "screens/Game.h"
 #include <vector>
 
-int GAMESCOPE::Horde::count_alive_invaders() {
+int Horde::count_alive_invaders() {
     int count = 0;
     for (int i = 0; i < 55; i++) {
         if (invaders[i].state != Invader::DEAD) {
@@ -12,7 +12,9 @@ int GAMESCOPE::Horde::count_alive_invaders() {
     return count;
 }
 
-void GAMESCOPE::Horde::explode_invader(int index) {
+void Horde::explode_invader(int index) {
+    pico_assert(state == MARCHING);
+
     state = FROZEN;
     index_dying_invader = index;
     time = 0;
@@ -22,7 +24,9 @@ void GAMESCOPE::Horde::explode_invader(int index) {
     cppinv->add_to_score(value);
 }
 
-GAMESCOPE::Shot *GAMESCOPE::Horde::shoot(float spaceship_x) {
+Shot *Horde::shoot(float spaceship_x) {
+    pico_assert(state == MARCHING);
+
     // get invaders that are alive
     std::vector<int> indices_alive_invaders;
 
@@ -74,7 +78,7 @@ GAMESCOPE::Shot *GAMESCOPE::Horde::shoot(float spaceship_x) {
     return shot;
 }
 
-void GAMESCOPE::Horde::draw() {
+void Horde::draw() {
     for (Invader& inv : invaders) {
         inv.draw();
     }
@@ -86,7 +90,7 @@ void GAMESCOPE::Horde::draw() {
     }
 }
 
-void GAMESCOPE::Horde::update(float delta) {
+void Horde::update(float delta) {
     switch (state) {
     case DEPLOYING:
         invaders[i].deploy(i);

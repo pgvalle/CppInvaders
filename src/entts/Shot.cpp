@@ -1,19 +1,23 @@
 #include "Shot.h"
-#include "CppInvaders.h"
+#include "screens/Game.h"
 
-void GAMESCOPE::Shot::explode(float time) {
+void Shot::explode(float time) {
+    assert(state == ALIVE);
+
     state = EXPLODING;
     explosion_time = time;
     show_explosion_img = true;
 }
 
-void GAMESCOPE::Shot::explode_without_img(float time) {
+void Shot::explode_without_img(float time) {
+    assert(state == ALIVE);
+
     state = EXPLODING;
     explosion_time = time;
     show_explosion_img = false;
 }
 
-void GAMESCOPE::Shot::draw() {
+void Shot::draw() {
     int rx = round(x), ry = round(y);
     const char *explosion_img = (vy >= 0 ? IMG_EXP3 : IMG_EXP2);
 
@@ -33,7 +37,7 @@ void GAMESCOPE::Shot::draw() {
     }
 }
 
-void GAMESCOPE::Shot::update(float delta) {
+void Shot::update(float delta) {
     switch (state) {
     case ALIVE:
         y += delta * vy;

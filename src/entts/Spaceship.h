@@ -1,8 +1,8 @@
 #pragma once
 
-#include "screens/Game.h"
+#include "Shot.h"
 
-struct GAMESCOPE::Spaceship {
+struct Spaceship {
     enum State {
         DEPLOYING, DEPLOYED, EXPLODING
     };
@@ -12,9 +12,9 @@ struct GAMESCOPE::Spaceship {
     int lives = 3, explosion_frames;
 
     void explode();
+    Shot *shoot();
     
     void draw();
     void update(float delta);
-    //Shot *shoot();
     //bool collidedWithShot(Shot *shot);
 };

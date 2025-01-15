@@ -1,4 +1,5 @@
 #include "Horde.h"
+#include "screens/Game.h"
 
 SDL_Rect Invader::get_rect() {
     switch (type) {

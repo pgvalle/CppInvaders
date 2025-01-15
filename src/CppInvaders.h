@@ -39,7 +39,6 @@ private:
 
     void load_scoreboard();
     void save_scoreboard();
-    void add_to_score(int value);
 
     void draw_scoreboard();
     void draw_credit_counter();
@@ -49,6 +48,8 @@ public:
 
     CppInvaders();
     ~CppInvaders();
+
+    void add_to_score(int value);
 
     void update_and_draw(float delta);
     void process_event(const SDL_Event& event);

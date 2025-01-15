@@ -6,6 +6,7 @@
 //#include "entts/Bunker.h"
 
 #include "CppInvaders.h"
+#include "entts/Entities.h"
 
 #define GAMESCOPE CppInvaders::Game
 #define GAMEVAR cppinv->game
@@ -20,12 +21,6 @@ private:
 
     State state;
     float time;
-
-    struct UFO;
-    struct Horde;
-    struct Bunker;
-    struct Spaceship;
-    struct Shot;
 
     UFO *ufo;
     Horde *horde;

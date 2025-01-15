@@ -1,6 +1,7 @@
 #pragma once
 
-#include "screens/Game.h"
+#include "Shot.h"
+#include <pico.h>
 
 struct Invader {
     enum State {
@@ -17,7 +18,7 @@ struct Invader {
     void draw();
 };
 
-struct GAMESCOPE::Horde {
+struct Horde {
     enum State {
         DEPLOYING, MARCHING, FROZEN
     };
