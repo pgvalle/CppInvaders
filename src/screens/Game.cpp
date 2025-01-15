@@ -197,8 +197,6 @@ void CppInvaders::Game::update(float delta) {
         // }
         break;
     case RESTARTING:
-        time += delta;
-
         ufo->update(delta);
         if (horde->state == Horde::FROZEN) {
             horde->update(delta);

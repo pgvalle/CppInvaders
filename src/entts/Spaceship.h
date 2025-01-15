@@ -16,5 +16,4 @@ struct Spaceship {
     
     void draw();
     void update(float delta);
-    //bool collidedWithShot(Shot *shot);
 };
