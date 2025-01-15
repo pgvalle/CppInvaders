@@ -152,18 +152,21 @@ void CppInvaders::Game::update(float delta) {
         break;
     case PLAYING:
         time += delta;
-        if (time >= 1 && spaceship->state == Spaceship::DEPLOYED) {
-            if (horde_shot->state == Shot::DEAD) {
-                Shot *shot = horde->shoot(spaceship->x);
-                delete horde_shot;
-                horde_shot = shot;
-            }
+        if (time >= 1 && spaceship->state == Spaceship::DEPLOYED &&
+            horde->state == Horde::MARCHING && horde_shot->state == Shot::DEAD)
+        {
+            Shot *shot = horde->shoot(spaceship->x);
+            delete horde_shot;
+            horde_shot = shot;
         }
 
-        horde->update(delta);
         ufo->update(delta);
-        spaceship->update(delta);
+        horde->update(delta);
+        if (horde->get_alive_invaders().size() == 0 && horde->state == Horde::MARCHING) {
+            // TODO: implement state transition here
+        }
 
+        spaceship->update(delta);
         if (spaceship->state == Spaceship::EXPLODING) {
             state = RESTARTING;
             time = 0;
@@ -227,6 +230,15 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
         case SDLK_ESCAPE:
             cppinv->screen = PAUSE;
             cppinv->pause = new Pause;
+            break;
+        case SDLK_SPACE:
+            if (state == PLAYING && spaceship_shot->state == Shot::DEAD &&
+                time >= 1 && spaceship->state == Spaceship::DEPLOYED)
+            {
+                Shot *shot = spaceship->shoot();
+                delete spaceship_shot;
+                spaceship_shot = shot;
+            }
             break;
         }
         break;

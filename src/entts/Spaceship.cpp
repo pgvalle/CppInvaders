@@ -17,18 +17,14 @@ void Spaceship::explode() {
 }
 
 Shot *Spaceship::shoot() {
-    // assert(state == ALIVE);
+    pico_assert(state == DEPLOYED);
 
-    // time1 = 0;
-    // time2 = 0;
-    // e_frame = 0;
-
-    // Shot *shot = new Shot;
-    // shot->x = x + 7;
-    // shot->y = Y;
-    // shot->vy = -240;
-    // return shot;
-    return nullptr;
+    Shot *shot = new Shot;
+    shot->state = Shot::ALIVE;
+    shot->x = x + 8;
+    shot->y = Y;
+    shot->vy = -200;
+    return shot;
 }
 
 void Spaceship::draw() {
@@ -63,22 +59,12 @@ void Spaceship::update(float delta) {
     case DEPLOYED:
         x -= VX * delta * (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT]);
         x += VX * delta * (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT]);
-
-        // if (keys[SDL_SCANCODE_SPACE] && shot->state == Shot::DEAD) {
-        //     delete shot;
-        //     shot = new Shot;
-        //     shot->state = Shot::ALIVE;
-        //     shot->x = x + 8;
-        //     shot->y = Y;
-        //     shot->vy = -200;
-        //     GAMEVAR->spaceship_shot = shot;
-        // }
         break;
     case EXPLODING:
         time += delta;
         if (time >= TIME_EXPLOSION_FRAME) {
             time = 0;
-            if (++explosion_frames >= 20) {
+            if (++explosion_frames >= 10) {
                 state = DEPLOYING;
                 time = 0;
                 lives--;

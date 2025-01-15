@@ -30,7 +30,7 @@ struct Horde {
     int dx, dy;
     float time;
 
-    std::vector<int> get_alive_invaders();
+    std::vector<Invader *> get_alive_invaders();
     void explode_invader(int index);
     Shot *shoot(float spaceship_x);
 

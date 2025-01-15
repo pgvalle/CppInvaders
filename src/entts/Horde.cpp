@@ -1,11 +1,11 @@
 #include "Horde.h"
 #include "screens/Game.h"
 
-std::vector<int> Horde::get_alive_invaders() {
-    std::vector<int> alive_invaders;
-    for (int i = 0; i < 55; i++) {
-        if (invaders[i].state != Invader::DEAD) {
-            alive_invaders.push_back(i);
+std::vector<Invader *> Horde::get_alive_invaders() {
+    std::vector<Invader *> alive_invaders;
+    for (Invader& inv : invaders) {
+        if (inv.state != Invader::DEAD) {
+            alive_invaders.push_back(&inv);
         }
     }
 
@@ -28,30 +28,25 @@ Shot *Horde::shoot(float spaceship_x) {
     pico_assert(state == MARCHING);
 
     // choose a random invader from alive invaders
-    std::vector<int> alive_invaders = get_alive_invaders();
+    std::vector<Invader *> alive_invaders = get_alive_invaders();
     int r = rand() % alive_invaders.size();
-    r = alive_invaders[r];
+    Invader *invader = alive_invaders[r];
 
-    SDL_Point rand_xy = { invaders[r].x, invaders[r].y },
-              best_xy = { -1000, -1000 };
+    SDL_Point rand_xy = { invader->x, invader->y }, best_xy = { -1000, -1000 };
 
-    for (Invader& inv : invaders) {
-        if (inv.state == Invader::DEAD) {
-            continue;
-        }
-
-        bool best_above_spaceship = (abs(spaceship_x - inv.x) <= 5);
-        bool best_lower_y = inv.y > best_xy.y;
+    for (Invader *inv : alive_invaders) {
+        bool best_above_spaceship = (abs(spaceship_x - inv->x) <= 5),
+             best_lower_y = inv->y > best_xy.y;
 
         if (best_above_spaceship && best_lower_y) {
-            best_xy = { inv.x, inv.y };
+            best_xy = { inv->x, inv->y };
         }
         
-        bool rand_same_x = abs(rand_xy.x - inv.x) <= 3;
-        bool rand_lower_y = inv.y >= rand_xy.y;
+        bool rand_same_x = abs(rand_xy.x - inv->x) <= 3,
+             rand_lower_y = inv->y >= rand_xy.y;
     
         if (rand_same_x && rand_lower_y) {
-            rand_xy = { inv.x, inv.y };
+            rand_xy = { inv->x, inv->y };
         }
     }
 
@@ -64,7 +59,7 @@ Shot *Horde::shoot(float spaceship_x) {
 
     Shot *shot = new Shot;
     shot->state = Shot::ALIVE;
-    shot->x = best_xy.x + 5;
+    shot->x = best_xy.x + 6;
     shot->y = best_xy.y + 8;
     shot->vy = 120;
     return shot;
