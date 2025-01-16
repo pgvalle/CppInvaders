@@ -7,8 +7,8 @@ EXECUTABLE = cppinv.out
 # Compiler and flags
 CXX = g++
 CC = gcc
-CXXFLAGS = -Wall -Wextra -g -std=c++17
-CFLAGS = -Wall -Wextra -g -std=c11
+CXXFLAGS = -Wall -Wextra -g -std=c++23
+CFLAGS = -Wall -Wextra -g -std=c2x
 PKG_CONFIG = pkg-config
 PKG_FLAGS = $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
 LDFLAGS = $(shell $(PKG_CONFIG) --libs sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
