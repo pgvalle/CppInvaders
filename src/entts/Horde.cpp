@@ -15,6 +15,7 @@ std::vector<Invader *> Horde::get_alive_invaders() {
 void Horde::explode_invader(int index) {
     pico_assert(state == MARCHING);
 
+    pico_output_sound(SFX_INVADER_KILLED);
     state = FROZEN;
     index_dying_invader = index;
     timer = 0;

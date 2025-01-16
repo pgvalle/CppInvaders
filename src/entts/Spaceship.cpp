@@ -11,6 +11,7 @@
 void Spaceship::explode() {
     pico_assert(state == DEPLOYED);
 
+    pico_output_sound(SFX_SPACESHIP_KILLED);
     state = EXPLODING;
     timer = 0;
     explosion_frames = 0;
@@ -19,6 +20,7 @@ void Spaceship::explode() {
 Shot *Spaceship::shoot() {
     pico_assert(state == DEPLOYED);
 
+    pico_output_sound(SFX_SPACESHIP_SHOOT);
     Shot *shot = new Shot;
     shot->state = Shot::ALIVE;
     shot->x = x + 8;
