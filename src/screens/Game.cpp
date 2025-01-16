@@ -2,17 +2,17 @@
 #include "entts/Entities.h"
 
 void CppInvaders::Game::process_collisions() {
-    SDL_FRect ufo_rect = { ufo->x + 4, 40, 16, 8 },
-              spaceship_rect = { spaceship->x, 216, 15, 8 },
-              horde_shot_rect = { horde_shot->x, horde_shot->y, 1, 4 },
-              spaceship_shot_rect = { spaceship_shot->x, spaceship_shot->y, 1, 4 };
+    SDL_Rect ufo_rect = { ROUND(ufo->x) + 4, 40, 16, 8 },
+             spaceship_rect = { ROUND(spaceship->x), 216, 15, 8 },
+             horde_shot_rect = { ROUND(horde_shot->x), ROUND(horde_shot->y), 1, 4 },
+             spaceship_shot_rect = { ROUND(spaceship_shot->x), ROUND(spaceship_shot->y), 1, 4 };
 
     // between shots
     horde_shot_rect.x -= 1;
     horde_shot_rect.w = 3;
     
     if (horde_shot->state == Shot::ALIVE && spaceship_shot->state == Shot::ALIVE &&
-        SDL_HasIntersectionF(&horde_shot_rect, &spaceship_shot_rect))
+        SDL_HasIntersection(&horde_shot_rect, &spaceship_shot_rect))
     {
         switch (rand() % 3) {
         case 0: // horde shot explodes
@@ -33,7 +33,7 @@ void CppInvaders::Game::process_collisions() {
 
     // horde shot and spaceship
     if (horde_shot->state == Shot::ALIVE && spaceship->state == Spaceship::DEPLOYED &&
-        SDL_HasIntersectionF(&horde_shot_rect, &spaceship_rect))
+        SDL_HasIntersection(&horde_shot_rect, &spaceship_rect))
     {
         horde_shot->explode_without_img(0.3);
         spaceship->explode();
@@ -41,7 +41,7 @@ void CppInvaders::Game::process_collisions() {
 
     // spaceship shot and ufo
     if (ufo->state == UFO::ALIVE && spaceship_shot->state == Shot::ALIVE &&
-        SDL_HasIntersectionF(&ufo_rect, &spaceship_shot_rect))
+        SDL_HasIntersection(&ufo_rect, &spaceship_shot_rect))
     {
         ufo->explode();
         spaceship_shot->explode_without_img(0.3);
@@ -54,12 +54,11 @@ void CppInvaders::Game::process_collisions() {
             continue;
         }
 
-        SDL_Rect r = inv.get_rect();
-        SDL_FRect inv_rect = { (float)r.x, (float)r.y, (float)r.w, (float)r.h };
+        SDL_Rect inv_rect = inv.get_rect();
 
         // invader and spaceship shot
         if (spaceship_shot->state == Shot::ALIVE &&
-            SDL_HasIntersectionF(&spaceship_shot_rect, &inv_rect))
+            SDL_HasIntersection(&spaceship_shot_rect, &inv_rect))
         {
             spaceship_shot->explode_without_img(0.3);
             horde->explode_invader(i);
@@ -146,12 +145,12 @@ void CppInvaders::Game::update(float delta) {
         spaceship->update(delta);
         if (spaceship->state == Spaceship::DEPLOYED) {
             state = PLAYING;
-            time = 0;
+            timer = 0;
         }
         break;
     case PLAYING:
-        time += delta;
-        if (time >= 1 && spaceship->state == Spaceship::DEPLOYED &&
+        timer += delta;
+        if (timer >= 1 && spaceship->state == Spaceship::DEPLOYED &&
             horde->state == Horde::MARCHING && horde_shot->state == Shot::DEAD)
         {
             Shot *shot = horde->shoot(spaceship->x);
@@ -163,7 +162,7 @@ void CppInvaders::Game::update(float delta) {
         horde->update(delta);
         if (horde->get_alive_invaders().size() == 0) {
             state = RESTARTING2;
-            time = 0;
+            timer = 0;
         }
 
         spaceship->update(delta);
@@ -188,7 +187,7 @@ void CppInvaders::Game::update(float delta) {
         }
         else if (spaceship->state == Spaceship::DEPLOYED) {
             state = PLAYING;
-            time = 0;
+            timer = 0;
         }
 
         horde_shot->update(delta);
@@ -204,8 +203,8 @@ void CppInvaders::Game::update(float delta) {
         horde_shot->update(delta);
         spaceship_shot->update(delta);
 
-        time += delta;
-        if (time >= 1) {
+        timer += delta;
+        if (timer >= 1) {
             int lives = spaceship->lives;
             delete ufo;
             delete spaceship;
@@ -239,7 +238,7 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
             break;
         case SDLK_SPACE:
             if (state == PLAYING && spaceship_shot->state == Shot::DEAD &&
-                time >= 1 && spaceship->state == Spaceship::DEPLOYED)
+                timer >= 1 && spaceship->state == Spaceship::DEPLOYED)
             {
                 Shot *shot = spaceship->shoot();
                 delete spaceship_shot;

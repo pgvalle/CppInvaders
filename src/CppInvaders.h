@@ -2,6 +2,8 @@
 
 #include <pico.h>
 
+#define ROUND(x) ((int)round(x))
+
 #define WHITE { 255, 255, 255, 255 }
 #define GREEN { 32, 255, 32, 255 }
 #define RED { 216, 32, 32, 255 }
