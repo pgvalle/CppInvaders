@@ -58,6 +58,7 @@ void Spaceship::update(float delta) {
     case DEPLOYED:
         x -= VX * delta * (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT]);
         x += VX * delta * (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT]);
+        x = SDL_max(16, SDL_min(190, x));
         break;
     case EXPLODING:
         timer += delta;
