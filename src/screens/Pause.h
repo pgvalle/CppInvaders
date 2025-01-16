@@ -9,7 +9,7 @@ private:
     };
 
     State state;
-    float time;
+    float timer;
     bool pause_symbol;
 
 public:

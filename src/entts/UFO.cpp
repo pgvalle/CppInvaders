@@ -13,7 +13,7 @@
 void UFO::explode() {
     if (state == ALIVE) {
         state = EXPLODING;
-        time = 0;
+        timer = 0;
     }
 }
 
@@ -43,8 +43,8 @@ void UFO::draw() {
 void UFO::update(float delta) {
     switch (state) {
     case AWAY:
-        time += delta;
-        if (time >= TIME_TO_RESPAWN) {
+        timer += delta;
+        if (timer >= TIME_TO_RESPAWN) {
             state = ALIVE;
             x = (rand() % 2 ? LEFT_LIMIT : RIGHT_LIMIT); // choose a corner
             vx = (x == LEFT_LIMIT ? VX : -VX);           // set correct velocity
@@ -54,23 +54,23 @@ void UFO::update(float delta) {
         x += delta * vx;
         if (LEFT_LIMIT > x || x > RIGHT_LIMIT) {
             state = AWAY;
-            time = 0;
+            timer = 0;
         }
         break;
     case EXPLODING:
-        time += delta;
-        if (time >= TIME_EXPLODING) {
+        timer += delta;
+        if (timer >= TIME_EXPLODING) {
             state = DEAD;
-            time = 0;
+            timer = 0;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
             cppinv->add_to_score(score);
         }
         break;
     case DEAD:
-        time += delta;
-        if (time > TIME_DEAD) {
+        timer += delta;
+        if (timer > TIME_DEAD) {
             state = AWAY;
-            time = 0;
+            timer = 0;
         }
         break;
     }
@@ -86,7 +86,7 @@ void UFO::update(float delta) {
 
 //     if (SDL_HasIntersection(&ufoRect, &shotRect)) {
 //         state = EXPLODING;
-//         time = 0;
+//         timer = 0;
 //         return true;
 //     }
 

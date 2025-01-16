@@ -28,7 +28,7 @@ struct Horde {
     Invader invaders[55];
     int i = 0, index_dying_invader;
     int dx, dy;
-    float time;
+    float timer;
 
     std::vector<Invader *> get_alive_invaders();
     void explode_invader(int index);

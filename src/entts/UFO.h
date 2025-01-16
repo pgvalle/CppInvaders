@@ -6,7 +6,7 @@ struct UFO {
     };
 
     State state = AWAY;
-    float x, vx, time = 0;
+    float x, vx, timer = 0;
     int score;
 
     void explode();

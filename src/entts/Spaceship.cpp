@@ -12,7 +12,7 @@ void Spaceship::explode() {
     pico_assert(state == DEPLOYED);
 
     state = EXPLODING;
-    time = 0;
+    timer = 0;
     explosion_frames = 0;
 }
 
@@ -49,8 +49,8 @@ void Spaceship::update(float delta) {
 
     switch (state) {
     case DEPLOYING:
-        time += delta;
-        if (time >= 2) {
+        timer += delta;
+        if (timer >= 2) {
             state = DEPLOYED;
             x = STARTING_X;
         }
@@ -60,12 +60,12 @@ void Spaceship::update(float delta) {
         x += VX * delta * (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT]);
         break;
     case EXPLODING:
-        time += delta;
-        if (time >= TIME_EXPLOSION_FRAME) {
-            time = 0;
+        timer += delta;
+        if (timer >= TIME_EXPLOSION_FRAME) {
+            timer = 0;
             if (++explosion_frames >= 10) {
                 state = DEPLOYING;
-                time = 0;
+                timer = 0;
                 lives--;
             }
         }

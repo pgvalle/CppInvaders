@@ -12,7 +12,7 @@ static std::string STRING = " GAME OVER";
 CppInvaders::Over::Over() {
     state = TYPEWRITING;
     i = 1;
-    time = 0;
+    timer = 0;
 
     SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
     SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), SDL_BLENDMODE_BLEND);
@@ -37,18 +37,18 @@ void CppInvaders::Over::draw() {
 void CppInvaders::Over::update(float delta) {
     switch (state) {
     case TYPEWRITING:
-        time += delta;
-        if (time >= TYPEWRITING_INTERVAL) {
-            time = 0;
+        timer += delta;
+        if (timer >= TYPEWRITING_INTERVAL) {
+            timer = 0;
             if (i++ == (int)STRING.length()) {
                 state = WAITING;
-                time = 0;
+                timer = 0;
             }
         }
         break;
     case WAITING:
-        time += delta;
-        if (time >= TIME_WAITING) {
+        timer += delta;
+        if (timer >= TIME_WAITING) {
             cppinv->screen = SPLASH;
             cppinv->splash = new Splash;
 
@@ -69,10 +69,10 @@ void CppInvaders::Over::process_event(const SDL_Event &event) {
             if (state == TYPEWRITING) {
                 state = WAITING;
                 i = STRING.length();
-                time = 0;
+                timer = 0;
             }
             else {
-                time = TIME_WAITING;
+                timer = TIME_WAITING;
             }
         }
         break;

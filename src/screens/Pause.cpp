@@ -8,7 +8,7 @@ static SDL_BlendMode blendBackup;
 
 CppInvaders::Pause::Pause() {
     state = PAUSED;
-    time = 0;
+    timer = 0;
     pause_symbol = true;
 
     SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
@@ -34,7 +34,7 @@ void CppInvaders::Pause::draw() {
     pico_set_color_draw(WHITE);
     switch (state) {
     case RESUMING:
-        sprintf(text, "%02d", 3 - (int)time);
+        sprintf(text, "%02d", 3 - (int)timer);
         pico_output_draw_text({ 104, 8 }, text);
         break;
     case PAUSED:
@@ -46,17 +46,17 @@ void CppInvaders::Pause::draw() {
 }
 
 void CppInvaders::Pause::update(float delta) {
-    time += delta;
-
     switch (state) {
     case PAUSED:
-        if (time >= PAUSE_SYMBOL_BLINK) {
-            time = 0;
+        timer += delta;
+        if (timer >= PAUSE_SYMBOL_BLINK) {
+            timer = 0;
             pause_symbol = !pause_symbol;
         }
         break;
     case RESUMING:
-        if (time >= TIME_TO_RESUME) {
+        timer += delta;
+        if (timer >= TIME_TO_RESUME) {
             cppinv->screen = GAME;
             delete cppinv->pause;
             cppinv->pause = nullptr;
@@ -78,7 +78,7 @@ void CppInvaders::Pause::process_event(const SDL_Event &event) {
             break;
         case SDLK_ESCAPE: // start resume countdown or cancel it
             state = (state == PAUSED ? RESUMING : PAUSED);
-            time = 0;
+            timer = 0;
             pause_symbol = true;
             break;
         }

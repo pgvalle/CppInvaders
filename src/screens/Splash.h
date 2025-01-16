@@ -14,7 +14,7 @@ private:
 
     State state;
     int l, c; // line iterator and character iterator for typewritting lines of text
-    float time;
+    float timer;
 
     bool typewrite_next_char();
 

@@ -5,7 +5,7 @@ void Shot::explode(float time) {
     assert(state == ALIVE);
 
     state = EXPLODING;
-    explosion_time = time;
+    explosion_timer = time;
     show_explosion_img = true;
 }
 
@@ -13,7 +13,7 @@ void Shot::explode_without_img(float time) {
     assert(state == ALIVE);
 
     state = EXPLODING;
-    explosion_time = time;
+    explosion_timer = time;
     show_explosion_img = false;
 }
 
@@ -47,8 +47,8 @@ void Shot::update(float delta) {
         }
         break;
     case EXPLODING:
-        explosion_time -= delta;
-        if (explosion_time <= 0) {
+        explosion_timer -= delta;
+        if (explosion_timer <= 0) {
             state = DEAD;
         }
         break;

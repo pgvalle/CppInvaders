@@ -22,18 +22,18 @@ CppInvaders::Splash::Splash() {
     state = WAITING1;
     l = 0;
     c = 1;
-    time = 0;
+    timer = 0;
 }
 
 CppInvaders::Splash::~Splash() {}
 
 bool CppInvaders::Splash::typewrite_next_char() {
-    if (time >= TYPEWRITE_STEP_DELTA) {
+    if (timer >= TYPEWRITE_STEP_DELTA) {
         if (c++ == (int)LINES[l].length()) {
             l++;
             c = 1;
         }
-        time = 0;
+        timer = 0;
         return true;
     }
     return false;
@@ -67,29 +67,31 @@ void CppInvaders::Splash::draw() {
 }
 
 void CppInvaders::Splash::update(float delta) {
-    time += delta;
-
     switch (state) {
     case WAITING1:
-        if (time >= TIME_WAITING) {
+        timer += delta;
+        if (timer >= TIME_WAITING) {
             state = TYPEWRITING1;
-            time = 0;
+            timer = 0;
         }
         break;
     case TYPEWRITING1:
+        timer += delta;
         if (typewrite_next_char() && l == 2) {
             state = WAITING2;
         }
         break;
     case WAITING2:
-        if (time >= TIME_WAITING) {
+        timer += delta;
+        if (timer >= TIME_WAITING) {
             state = TYPEWRITING2;
             l = 3;
             c = 1;
-            time = 0;
+            timer = 0;
         }
         break;
     case TYPEWRITING2:
+        timer += delta;
         if (typewrite_next_char() && l == 7) {
             state = WAITING_KEYPRESS;
         }

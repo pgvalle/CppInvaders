@@ -17,7 +17,7 @@ void Horde::explode_invader(int index) {
 
     state = FROZEN;
     index_dying_invader = index;
-    time = 0;
+    timer = 0;
 
     int value = 10 * (3 - invaders[index_dying_invader].type);
     cppinv->add_to_score(value);
@@ -87,7 +87,7 @@ void Horde::update(float delta) {
             i = 0;
             dx = 2;
             dy = 0;
-            time = 0;
+            timer = 0;
         }
         break;
     case MARCHING: { // TODO: Fix invaader wrong placement when changing direction
@@ -121,8 +121,8 @@ void Horde::update(float delta) {
         }
         break; }
     case FROZEN:
-        time += delta;
-        if (time >= 0.3) {
+        timer += delta;
+        if (timer >= 0.3) {
             if (get_alive_invaders().size() == 0) {
                 state = DEPLOYING;
                 i = 0;

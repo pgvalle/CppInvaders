@@ -10,7 +10,7 @@ private:
 
     State state;
     int i;
-    float time;
+    float timer;
 
 public:
     Over();

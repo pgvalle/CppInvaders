@@ -8,7 +8,7 @@ struct Spaceship {
     };
 
     State state = DEPLOYING;
-    float x, time = 0;
+    float x, timer = 0;
     int lives = 3, explosion_frames;
 
     void explode();

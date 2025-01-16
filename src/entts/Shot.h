@@ -7,7 +7,7 @@ struct Shot {
 
     State state = DEAD;
     float x, y, vy;
-    float explosion_time = 0;
+    float explosion_timer = 0;
     bool show_explosion_img;
 
     void explode(float time);
