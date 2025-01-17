@@ -91,21 +91,19 @@ void Horde::update(float delta) {
             timer = 0;
         }
         break;
-    case MARCHING: { // TODO: Fix invaader wrong placement when changing direction
-        bool cycle_complete = false;
+    case MARCHING: {
         int j = i;
-        while (invaders[j].state == Invader::DEAD) {
+        do  {
+            invaders[j].move(dx, dy);
             j = (j + 1) % 55;
-        }
+        } while (invaders[j].state == Invader::DEAD);
 
-        invaders[j].move(dx, dy);
-        j = (j + 1) % 55;
-        cycle_complete = j <= i;
+        bool cycle_complete = j <= i;
         i = j;
-    
+        
         if (!cycle_complete) { // Check for direction change when all invaders are updated
             break;
-        }
+        }       
 
         if (dy != 0) { // All invaders updated when they were changing directions
             dy = 0;
