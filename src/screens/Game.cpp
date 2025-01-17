@@ -73,11 +73,17 @@ void CppInvaders::Game::process_collisions() {
 
     // shield
     for (Shield &shield : shields) {
-        if (horde_shot->state == Shot::ALIVE && shield.damage(horde_shot)) {
+        SDL_Rect shield_rect = { shield.x, 192, 22, 16 };
+
+        if (SDL_HasIntersection(&horde_shot_rect, &shield_rect) &&
+            horde_shot->state == Shot::ALIVE && shield.damage(horde_shot))
+        {
             horde_shot->explode(0.3);
         }
 
-        if (spaceship_shot->state == Shot::ALIVE && shield.damage(spaceship_shot)) {
+        if (SDL_HasIntersection(&spaceship_shot_rect, &shield_rect) &&
+            spaceship_shot->state == Shot::ALIVE && shield.damage(spaceship_shot))
+        {
             spaceship_shot->explode(0.3);
         }
     }
@@ -117,6 +123,11 @@ void CppInvaders::Game::draw() {
     horde->draw();
     spaceship->draw();
     horde_shot->draw();
+
+    for (Shield &shield : shields) {
+        shield.draw();
+    }
+
     spaceship_shot->draw();
 
     pico_set_color_draw(GREEN);
@@ -132,10 +143,6 @@ void CppInvaders::Game::draw() {
     for (int i = 0; i < spaceship->lives - 1; i++) {
         pico_output_draw_image({ 24 + 16 * i, 240 }, IMG_SPACESHIP);
     }
-
-    for (Shield &shield : shields) {
-        shield.draw();
-    }
 }
 
 void CppInvaders::Game::update(float delta) {
@@ -149,6 +156,8 @@ void CppInvaders::Game::update(float delta) {
         }
         break;
     case PLAYING:
+        process_collisions();
+
         timer += delta;
         if (timer >= 1 && spaceship->state == Spaceship::DEPLOYED &&
             horde->state == Horde::MARCHING && horde_shot->state == Shot::DEAD)
@@ -172,9 +181,10 @@ void CppInvaders::Game::update(float delta) {
 
         horde_shot->update(delta);
         spaceship_shot->update(delta);
-        process_collisions();
         break;
     case RESTARTING:
+        process_collisions();
+
         ufo->update(delta);
         if (horde->state == Horde::FROZEN) {
             horde->update(delta);
@@ -192,8 +202,6 @@ void CppInvaders::Game::update(float delta) {
 
         horde_shot->update(delta);
         spaceship_shot->update(delta);
-
-        process_collisions();
         break;
     case RESTARTING2:
         if (horde->state == Horde::FROZEN) {

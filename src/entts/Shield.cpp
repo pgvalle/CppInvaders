@@ -12,9 +12,20 @@ static SDL_Point damage_pattern_1[] = {
            {-2,7},         {0,7},        {2,7},
 };
 
+static SDL_Point damage_pattern_2[] = {
+    {-3,0},                        {1,0},               {4,0},
+                    {-1,1},                      {3,1},
+            {-2,2}, {-1,2}, {0,2}, {1,2}, {2,2}, {3,2},
+    {-3,3}, {-2,3}, {-1,3}, {0,3}, {1,3}, {2,3}, {3,3}, {4,3},
+    {-3,4}, {-2,4}, {-1,4}, {0,4}, {1,4}, {2,4}, {3,4}, {4,4},
+            {-2,5}, {-1,5}, {0,5}, {1,5}, {2,5}, {3,5},
+                    {-1,6},               {2,6},
+    {-3,7},                 {0,7},                      {4,7},
+};
+
 void Shield::deploy(int x_) {
-    memset(bits, true, 352);
     x = x_;
+    memset(bits, true, 352);
 
     for (int i = 0; i < 4; i++) { // line
         for (int j = 0; j < 4 - i; j++) { // top edges by column
@@ -29,8 +40,41 @@ void Shield::deploy(int x_) {
 }
 
 bool Shield::damage(Shot *shot) {
-    // TODO: implement shield damage
-    return false;
+    int shotx = ROUND(shot->x), shoty = ROUND(shot->y);
+    int point_count = 0;
+
+    for (int y = 2; y < 5; y++) {
+        int relx = shotx - x, rely = shoty - 192 + y;
+        bool in_bounds = (0 <= relx && relx < 22 && 0 <= rely && rely < 16);
+        if (in_bounds) {
+            point_count += (bits[22 * rely + relx] ? 1 : 0);
+        }
+    }
+
+    if (point_count < 1) {
+        return false;
+    }
+
+    if (shot->vy >= 0) {
+        for (SDL_Point off : damage_pattern_1) {
+            int relx = shotx - x + off.x, rely = shoty - 192 + off.y;
+            bool in_bounds = (0 <= relx && relx < 22 && 0 <= rely && rely < 16);
+            if (in_bounds) {
+                bits[22 * rely + relx] = false;
+            }
+        }
+    }
+    else {
+        for (SDL_Point off : damage_pattern_2) {
+            int relx = shotx - x + off.x, rely = shoty - 192 + off.y;
+            bool in_bounds = (0 <= relx && relx < 22 && 0 <= rely && rely < 16);
+            if (in_bounds) {
+                bits[22 * rely + relx] = false;
+            }
+        }
+    }
+
+    return true;
 }
 
 void Shield::draw() {
