@@ -255,5 +255,11 @@ void CppInvaders::Game::process_event(const SDL_Event &event) {
             break;
         }
         break;
+    case SDL_WINDOWEVENT:
+        if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+            cppinv->screen = PAUSE;
+            cppinv->pause = new Pause;
+        }
+        break;
     }
 }
