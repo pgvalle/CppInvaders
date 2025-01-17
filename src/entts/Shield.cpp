@@ -42,7 +42,7 @@ void Shield::draw() {
     }
 
     pico_set_color_draw(GREEN);
-    pico_output_draw_pixels(points.data(), 352);
+    pico_output_draw_pixels(points.data(), points.size());
 }
 
 // void Shield::collideWithHorde(const Horde &horde)
