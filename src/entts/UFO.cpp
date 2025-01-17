@@ -6,8 +6,8 @@
 #define LEFT_LIMIT 8
 #define RIGHT_LIMIT 192
 
-#define TIME_DEAD 1.5f
-#define TIME_EXPLODING 1.5f
+#define TIME_DEAD 1
+#define TIME_EXPLODING 1
 #define TIME_TO_RESPAWN 10.0f
 
 void UFO::explode() {
