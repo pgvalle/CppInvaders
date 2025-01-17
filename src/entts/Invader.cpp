@@ -23,11 +23,13 @@ void Invader::deploy(int i) {
 }
 
 void Invader::move(int dx, int dy) {
-    pico_assert(state != DEAD);
+    // pico_assert(state != DEAD);
  
-    state = (state == UP ? DOWN : UP);
-    x += dx;
-    y += dy;
+    if (state != DEAD) {
+        state = (state == UP ? DOWN : UP);
+        x += dx;
+        y += dy;
+    }
 }
 
 void Invader::draw() {
