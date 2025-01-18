@@ -41,8 +41,8 @@ void Shot::update(float delta) {
     switch (state) {
     case ALIVE:
         y += delta * vy;
-        if (y < 36 || y >= 232) {
-            y = (y < 36 ? 32 : 232);
+        if (y < 33 || y >= 232) {
+            y = (y < 33 ? 33 : 232);
             explode(0.3);
         }
         break;

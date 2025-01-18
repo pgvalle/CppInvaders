@@ -62,7 +62,7 @@ Shot *Horde::shoot(float spaceship_x) {
     Shot *shot = new Shot;
     shot->state = Shot::ALIVE;
     shot->x = best_xy.x + 6;
-    shot->y = best_xy.y + 8;
+    shot->y = best_xy.y + 14;
     shot->vy = 120;
     return shot;
 }

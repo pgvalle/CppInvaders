@@ -10,18 +10,21 @@
 
 #define SCOREBOARD_FILE "./scoreboard"
 
-#define IMG_SPACESHIP "./res/img/spaceship.png"
-#define IMG_UFO "./res/img/ufo.png"
-#define IMG_INV1 "./res/img/inv1.png"
-#define IMG_INV2 "./res/img/inv2.png"
-#define IMG_INV3 "./res/img/inv3.png"
-#define IMG_EXP1 "./res/img/exp1.png"
-#define IMG_EXP2 "./res/img/exp2.png"
-#define IMG_EXP3 "./res/img/exp3.png"
+#define IMGS "./res/img/"
+#define SFXS "./res/sfx/"
 
-#define SFX_SPACESHIP_SHOOT "./res/sfx/spaceship-shoot.wav"
-#define SFX_SPACESHIP_KILLED "./res/sfx/spaceship-killed.wav"
-#define SFX_INVADER_KILLED "./res/sfx/invader-killed.wav"
+#define IMG_SPACESHIP IMGS "spaceship.png"
+#define IMG_UFO IMGS "ufo.png"
+#define IMG_INV1 IMGS "inv1.png"
+#define IMG_INV2 IMGS "inv2.png"
+#define IMG_INV3 IMGS "inv3.png"
+#define IMG_EXP1 IMGS "exp1.png"
+#define IMG_EXP2 IMGS "exp2.png"
+#define IMG_EXP3 IMGS "exp3.png"
+
+#define SFX_SPACESHIP_SHOOT SFXS "spaceship-shoot.wav"
+#define SFX_SPACESHIP_KILLED SFXS "spaceship-killed.wav"
+#define SFX_INVADER_KILLED SFXS "invader-killed.wav"
 
 #define FONT "./res/font.ttf"
 
