@@ -55,6 +55,11 @@ void CppInvaders::Game::process_collisions() {
         }
 
         SDL_Rect inv_rect = inv.get_rect();
+        
+        // invader and shields
+        for (Shield &shield : shields) {
+            shield.damage(inv_rect);
+        }
 
         // invader and spaceship shot
         if (spaceship_shot->state == Shot::ALIVE &&

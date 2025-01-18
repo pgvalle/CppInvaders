@@ -77,6 +77,18 @@ bool Shield::damage(Shot *shot) {
     return true;
 }
 
+void Shield::damage(SDL_Rect rect) {
+    SDL_Rect shield_rect = { x, 192, 22, 16 }, result;
+    if (SDL_IntersectRect(&rect, &shield_rect, &result)) {
+        printf("%d %d %d %d\n", result.x, result.y, result.w, result.h);
+        for (int y = 0; y < result.h; y++) {
+            for (int ax = 0; ax < result.w; ax++) {
+                bits[22 * (result.y - 192 + y) + (result.x - x + ax)] = false;
+            }
+        }
+    }
+}
+
 void Shield::draw() {
     std::vector<SDL_Point> points;
     for (int i = 0; i < 352; i++) {
