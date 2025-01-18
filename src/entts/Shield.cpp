@@ -79,12 +79,13 @@ bool Shield::damage(Shot *shot) {
 
 void Shield::damage(SDL_Rect rect) {
     SDL_Rect shield_rect = { x, 192, 22, 16 }, result;
-    if (SDL_IntersectRect(&rect, &shield_rect, &result)) {
-        printf("%d %d %d %d\n", result.x, result.y, result.w, result.h);
-        for (int y = 0; y < result.h; y++) {
-            for (int ax = 0; ax < result.w; ax++) {
-                bits[22 * (result.y - 192 + y) + (result.x - x + ax)] = false;
-            }
+    if (!SDL_IntersectRect(&rect, &shield_rect, &result)) {
+        return;
+    }
+
+    for (int yi = 0; yi < result.h; yi++) {
+        for (int xi = 0; xi < result.w; xi++) {
+            bits[22 * (yi + result.y - 192) + xi + result.x - x] = false;
         }
     }
 }
