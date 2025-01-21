@@ -15,8 +15,8 @@ static std::string LINES[] = {
     " "
 };
 
-static int LINES_XOFF[] = { 9, 4, 0, 7, 7, 7, 7, 0 };
-static int LINES_YOFF[] = { 0, 3, 7, 9, 11, 13, 15, 0 };
+static int X_OFFS[] = { 72, 32, 0, 56, 56, 56, 56, 0 };
+static int Y_OFFS[] = { 0, 24, 56, 72, 88, 104, 120, 0 };
 
 CppInvaders::Splash::Splash() {
     state = WAITING1;
@@ -49,9 +49,8 @@ void CppInvaders::Splash::draw() {
     pico_set_color_draw(WHITE);
     for (int k = 0; k <= l; k++) {
         std::string str = (k < l ? LINES[k] : LINES[l].substr(0, c));
-        int xoff = 16 + 8 * LINES_XOFF[k];
-        int yoff = 64 + 8 * LINES_YOFF[k];
-        pico_output_draw_text({ xoff, yoff }, (char *)str.c_str());
+        SDL_Point pos = { 16 + X_OFFS[k], 64 + Y_OFFS[k] };
+        pico_output_draw_text(pos, (char *)str.c_str());
     }
 
     if (l > 2) {
