@@ -10,13 +10,10 @@ CppInvaders::Pause::Pause() {
     state = PAUSED;
     timer = 0;
     pause_symbol = true;
-
-    SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), SDL_BLENDMODE_BLEND);
 }
 
 CppInvaders::Pause::~Pause() {
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), blendBackup);
+    
 }
 
 void CppInvaders::Pause::draw() {
@@ -25,21 +22,21 @@ void CppInvaders::Pause::draw() {
     cppinv->game->draw();
 
     // make the pause menu effect
-    pico_set_style(PICO_FILL);
-    pico_set_color_draw({ 0, 0, 0, 204 });
-    pico_output_draw_rect({ 0, 0, 224, 256 });
+    SDL_SetRenderDrawColor(ren, 0, 0, 0, 204);
+    SDL_Rect r = {0, 0, 224, 256};
+    SDL_RenderFillRect(ren, &r);
 
     cppinv->draw_credit_counter();
 
-    pico_set_color_draw(WHITE);
+    SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
     switch (state) {
     case RESUMING:
         sprintf(text, "%02d", 3 - (int)timer);
-        pico_output_draw_text({ 104, 8 }, text);
+        fcd_draw_text(104, 8, text);
         break;
     case PAUSED:
         if (pause_symbol) {
-            pico_output_draw_text({ 104, 8 }, "||");
+            fcd_draw_text(104, 8, "||");
         }
         break;
     }

@@ -17,10 +17,12 @@ int main() {
 void init() {
     srand(time(nullptr));
 
-    SDL_assert(SDL_Init(SDL_INIT_VIDEO));
+    SDL_assert(SDL_Init(SDL_INIT_VIDEO) == 0);
     TTF_Init();
     IMG_Init(IMG_INIT_PNG);
     Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096);
+
+    fcd_init();
 
     cppinv = new CppInvaders;
 }

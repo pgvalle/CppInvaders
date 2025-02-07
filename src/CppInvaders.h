@@ -1,17 +1,9 @@
 #pragma once
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <SDL2_gfxPrimitives.h>
-
-#include <string>
-#include <unordered_map>
+#include "facade.h"
 
 #define ROUND(x) ((int)round(x))
 
-#define WHITE { 255, 255, 255, 255 }
 #define GREEN { 32, 255, 32, 255 }
 #define RED { 216, 32, 32, 255 }
 
@@ -33,16 +25,8 @@
 #define SFX_SPACESHIP_KILLED SFXS "spaceship-killed.wav"
 #define SFX_INVADER_KILLED SFXS "invader-killed.wav"
 
-#define FONT "./res/font.ttf"
-
 struct CppInvaders {
 private:
-    SDL_Window *win;
-    SDL_Renderer *ren;
-    TTF_Font *fnt;
-
-    std::unordered_map<std::string, void *> assets;
-
     class Splash;
     class Game;
     class Pause;
@@ -76,10 +60,6 @@ public:
 
     void update_and_draw(float delta);
     void process_event(const SDL_Event& event);
-
-    void draw_text(int x, int y, const char *text);
-    void draw_image(int x, int y, const char *image, const SDL_Rect &crop);
-    void play_sound(const char *sound);
 };
 
 extern CppInvaders *cppinv;

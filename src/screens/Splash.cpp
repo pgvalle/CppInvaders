@@ -40,28 +40,24 @@ bool CppInvaders::Splash::typewrite_next_char() {
 }
 
 void CppInvaders::Splash::draw() {
-    pico_set_color_clear({ 0x0, 0x0, 0x0, 0x0 });
-    pico_output_clear();
+    SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+    SDL_RenderClear(ren);
 
     cppinv->draw_scoreboard();
     cppinv->draw_credit_counter();
 
-    pico_set_color_draw(WHITE);
+    SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
     for (int k = 0; k <= l; k++) {
         std::string str = (k < l ? LINES[k] : LINES[l].substr(0, c));
         SDL_Point pos = { 16 + X_OFFS[k], 64 + Y_OFFS[k] };
-        pico_output_draw_text(pos, (char *)str.c_str());
+        fcd_draw_text(pos.x, pos.y, (char *)str.c_str());
     }
 
     if (l > 2) {
-        pico_set_image_crop({ 0, 0, 24, 8 });
-        pico_output_draw_image({ 59, 136 }, IMG_UFO);
-        pico_set_image_crop({ 0, 0, 8, 8 });
-        pico_output_draw_image({ 67, 152 }, IMG_INV1);
-        pico_set_image_crop({0, 0, 11, 8});
-        pico_output_draw_image({ 66, 168 }, IMG_INV2);
-        pico_set_image_crop({0, 0, 12, 8});
-        pico_output_draw_image({ 65, 184 }, IMG_INV3);
+        fcd_draw_image(59, 136, IMG_UFO, { 0, 0, 24, 8 });
+        fcd_draw_image(67, 152, IMG_INV1, { 0, 0, 8, 8 });
+        fcd_draw_image(66, 168, IMG_INV2, {0, 0, 11, 8});
+        fcd_draw_image(65, 184, IMG_INV3, {0, 0, 12, 8});
     }
 }
 

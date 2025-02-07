@@ -13,25 +13,23 @@ CppInvaders::Over::Over() {
     state = TYPEWRITING;
     i = 1;
     timer = 0;
-
-    SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), SDL_BLENDMODE_BLEND);
 }
 
 CppInvaders::Over::~Over() {
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), blendBackup);
+
 }
 
 void CppInvaders::Over::draw() {
     cppinv->game->draw();
 
     // make the pause menu effect
-    pico_set_color_draw({ 0, 0, 0, 204 });
-    pico_output_draw_rect({ 0, 0, 224, 256 });
+    SDL_SetRenderDrawColor(ren, 0, 0, 0, 204);
+    SDL_Rect r = { 0, 0, 224, 256};
+    SDL_RenderFillRect(ren, &r);
 
     std::string str = STRING.substr(0, i);
-    pico_set_color_draw(RED);
-    pico_output_draw_text({ 72, 64 }, (char *)str.c_str());
+    SDL_SetRenderDrawColor(ren, 216, 32, 32, 255);
+    fcd_draw_text(72, 64, (char *)str.c_str());
 }
 
 void CppInvaders::Over::update(float delta) {

@@ -6,7 +6,7 @@
 //#include "entts/Bunker.h"
 
 #include "CppInvaders.h"
-#include "entts/Entities.h"
+//#include "entts/Entities.h"
 
 #define GAMESCOPE CppInvaders::Game
 #define GAMEVAR cppinv->game
@@ -21,14 +21,14 @@ private:
     };
 
     State state;
-    float timer;
-    bool horde_reached_spaceship;
+    // float timer;
+    // bool horde_reached_spaceship;
 
-    UFO *ufo;
-    Horde *horde;
-    Shield shields[4];
-    Spaceship *spaceship;
-    Shot *horde_shot, *spaceship_shot;
+    // UFO *ufo;
+    // Horde *horde;
+    // Shield shields[4];
+    // Spaceship *spaceship;
+    // Shot *horde_shot, *spaceship_shot;
 
     void process_collisions();
 
