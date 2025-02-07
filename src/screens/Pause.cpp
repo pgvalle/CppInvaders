@@ -3,9 +3,6 @@
 #define PAUSE_SYMBOL_BLINK 0.3
 #define TIME_TO_RESUME 3
 
-extern SDL_Window *WIN;
-static SDL_BlendMode blendBackup;
-
 CppInvaders::Pause::Pause() {
     state = PAUSED;
     timer = 0;

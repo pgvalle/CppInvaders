@@ -4,9 +4,6 @@
 #define TYPEWRITING_INTERVAL 0.2f
 #define TIME_WAITING 2.5f
 
-extern SDL_Window *WIN;
-static SDL_BlendMode blendBackup;
-
 static std::string STRING = " GAME OVER";
 
 CppInvaders::Over::Over() {
