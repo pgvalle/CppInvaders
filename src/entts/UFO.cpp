@@ -11,10 +11,9 @@
 #define TIME_TO_RESPAWN 10.0f
 
 void UFO::explode() {
-    if (state == ALIVE) {
-        state = EXPLODING;
-        timer = 0;
-    }
+    pico_assert(state == ALIVE);
+    state = EXPLODING;
+    timer = 0;
 }
 
 void UFO::draw() {
@@ -75,20 +74,3 @@ void UFO::update(float delta) {
         break;
     }
 }
-
-// bool UFO::collidedWithShot(const Shot *shot) {
-//     if (state != ALIVE) {
-//         return false;
-//     }
-
-//     SDL_Rect ufoRect = {(int)round(x + 4), Y, 16, 8},
-//              shotRect = shot->getRect();
-
-//     if (SDL_HasIntersection(&ufoRect, &shotRect)) {
-//         state = EXPLODING;
-//         timer = 0;
-//         return true;
-//     }
-
-//     return false;
-// }

@@ -10,10 +10,7 @@ void Shot::explode(float time) {
 }
 
 void Shot::explode_without_img(float time) {
-    assert(state == ALIVE);
-
-    state = EXPLODING;
-    explosion_timer = time;
+    explode(time);
     show_explosion_img = false;
 }
 
