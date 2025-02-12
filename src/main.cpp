@@ -7,7 +7,7 @@ void init();
 void quit();
 void loop();
 
-int main(int argc, char **argv) {
+int main() {
     init();
     loop();
     quit();
