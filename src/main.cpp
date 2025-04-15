@@ -21,8 +21,7 @@ void init() {
     pico_init(true);
     
     pico_set_title("CppInvaders");
-    pico_set_size_internal({ 224, 256 });
-    pico_set_size_external({ 448, 512 });
+    pico_set_size((Pico_Dim){ 448, 512 }, (Pico_Dim){ 224, 256 });
 
     pico_set_grid(false);
     pico_set_anchor(PICO_LEFT, PICO_TOP);
@@ -46,7 +45,7 @@ void loop() {
             int before = pico_get_ticks();
 
             SDL_Event event;
-            pico_input_event_timeout(&event, SDL_ANY, timeout);
+            pico_input_event_timeout(&event, PICO_ANY, timeout);
             cppinv->process_event(event);
 
             int delta = pico_get_ticks() - before;
