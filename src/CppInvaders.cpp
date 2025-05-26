@@ -83,6 +83,7 @@ CppInvaders::~CppInvaders() {
 }
 
 void CppInvaders::update_and_draw(float delta) {
+    pico_output_clear();
     switch (screen) {
     case SPLASH:
         pico_assert(splash);
@@ -105,10 +106,6 @@ void CppInvaders::update_and_draw(float delta) {
         over->update(delta);
         break;
     }
-
-    // pico_set_style(PICO_STROKE);
-    // pico_set_color_draw(WHITE);
-    // pico_output_draw_rect({ 3, 3, 217/*216*/, 249 });
 }
 
 void CppInvaders::process_event(const SDL_Event& event) {
