@@ -19,13 +19,11 @@ void init() {
     srand(time(nullptr));
 
     pico_init(true);
-    
+    pico_set_expert(true);
     pico_set_title("CppInvaders");
     pico_set_size((Pico_Dim){ 448, 512 }, (Pico_Dim){ 224, 256 });
-
     pico_set_grid(false);
     pico_set_anchor(PICO_LEFT, PICO_TOP);
-    
     pico_set_font(FONT, 8);
 
     cppinv = new CppInvaders;
