@@ -4,22 +4,15 @@
 #define TYPEWRITING_INTERVAL 0.2f
 #define TIME_WAITING 2.5f
 
-extern SDL_Window *WIN;
-static SDL_BlendMode blendBackup;
-
 static std::string STRING = " GAME OVER";
 
 CppInvaders::Over::Over() {
     state = TYPEWRITING;
     i = 1;
     timer = 0;
-
-    SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), SDL_BLENDMODE_BLEND);
 }
 
 CppInvaders::Over::~Over() {
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), blendBackup);
 }
 
 void CppInvaders::Over::draw() {

@@ -3,20 +3,13 @@
 #define PAUSE_SYMBOL_BLINK 0.3
 #define TIME_TO_RESUME 3
 
-extern SDL_Window *WIN;
-static SDL_BlendMode blendBackup;
-
 CppInvaders::Pause::Pause() {
     state = PAUSED;
     timer = 0;
     pause_symbol = true;
-
-    SDL_GetRenderDrawBlendMode(SDL_GetRenderer(WIN),  &blendBackup);
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), SDL_BLENDMODE_BLEND);
 }
 
 CppInvaders::Pause::~Pause() {
-    SDL_SetRenderDrawBlendMode(SDL_GetRenderer(WIN), blendBackup);
 }
 
 void CppInvaders::Pause::draw() {
