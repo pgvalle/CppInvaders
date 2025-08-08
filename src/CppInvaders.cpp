@@ -7,10 +7,18 @@ CppInvaders::CppInvaders() {
   credits = 0;
   score = 0;
   hi_score = 0; // load hi-score
+
+  FILE *file = fopen(SCOREBOARD_FILE, "a+");
+  assert(file && "could not read scoreboard");
+  fscanf(file, "%d", &hi_score);
+  fclose(file);
 }
 
 CppInvaders::~CppInvaders() {
-  // save hi-score
+  FILE *file = fopen(SCOREBOARD_FILE, "w+");
+  assert(file && "could not save scoreboard");
+  fprintf(file, "%d", hi_score);
+  fclose(file);
 }
 
 void CppInvaders::draw_indicators() const {
