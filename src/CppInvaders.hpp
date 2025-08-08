@@ -3,6 +3,7 @@
 #include "Entity.hpp"
 
 #define ROUND(x) ((int)round(x))
+#define FRAMERATE 60
 
 #define WHITE {255, 255, 255, 255}
 #define GREEN {32, 255, 32, 255}
@@ -40,7 +41,9 @@ private:
 public:
   bool should_quit;
   Entity *scene;
+  int credits, score, hi_score;
 
   static CppInvaders &get_ref();
   static void main();
+  void draw_indicators() const;
 };

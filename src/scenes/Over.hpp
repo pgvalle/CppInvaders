@@ -2,16 +2,16 @@
 
 #include "../Entity.hpp"
 
-class PauseScene : public Entity {
+class OverScene : public Entity {
 private:
   Scene *gameplay;
-  bool resuming;
+  bool waiting;
   float timer;
-  bool pause_symbol;
+  int i;
 
 public:
-  PauseScene(Scene *gameplay);
-  virtual ~PauseScene();
+  OverScene(Scene *gameplay);
+  virtual ~OverScene();
 
   void process_event(const Pico_Event &event) override;
   void update(float delta) override;

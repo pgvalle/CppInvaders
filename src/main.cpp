@@ -20,7 +20,8 @@ int main() {
   pico_init(1);
   pico_set_expert(1);
   pico_set_font("res/font.ttf", 8);
-  pico_set_size({448,512}, {224,256});
+  pico_set_size({2*224, 2*256}, {224, 256});
+  pico_set_grid(0);
   CppInvaders::main();
   pico_init(0);
   return 0;

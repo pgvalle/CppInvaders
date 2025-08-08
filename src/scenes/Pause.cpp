@@ -4,7 +4,7 @@
 #define PAUSE_SYMBOL_BLINK 0.5
 #define TIME_TO_RESUME 3
 
-PauseScene::PauseScene(Entity *gameplay$) {
+PauseScene::PauseScene(Scene *gameplay$) {
   gameplay = gameplay$;
   resuming = false;
   timer = 0;
@@ -18,7 +18,7 @@ void PauseScene::process_event(const SDL_Event &event) {
   case SDL_KEYDOWN:
     switch (event.key.keysym.sym) {
     case SDLK_ESCAPE: // start resume countdown or cancel it
-      resuming = (resuming ? !resuming : resuming);
+      resuming = !resuming;
       timer = 0;
       pause_symbol = true;
       break;
@@ -44,21 +44,29 @@ void PauseScene::update(float delta) {
 }
 
 void PauseScene::draw() const {
-  //gameplay->draw();
-  // make the pause menu effect
+  if (gameplay) {
+    gameplay->draw();
+  }
+
+  // pause menu dim effect
   pico_set_color_draw({0, 0, 0, 204});
+  pico_set_anchor({PICO_LEFT, PICO_TOP});
   pico_output_draw_rect({0, 0, 224, 256});
 
+  Pico_Pos pos = pico_pos(50, 0);
+  pos.y = 8;
   pico_set_color_draw(WHITE);
+  pico_set_anchor({PICO_CENTER, PICO_TOP});
+
   if (resuming) {
-    static char text[16];
-    sprintf(text, "%02d", 3 - (int)timer);
-    pico_output_draw_text({104, 8}, text);
+    static char fmt[16];
+    sprintf(fmt, "%02d", 3 - (int)timer);
+    pico_output_draw_text(pos, fmt);
     return;
   }
-  
+
   if (pause_symbol) {
-    pico_output_draw_text({104, 8}, "||");
+    pico_output_draw_text(pos, "||");
     return;
   }
 }
