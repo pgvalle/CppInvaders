@@ -1,58 +1,27 @@
-#include "CppInvaders.h"
-#include <ctime>
+#include "CppInvaders.hpp"
+#include "pico.h"
 
-CppInvaders *cppinv = nullptr;
+static CppInvaders *ref = nullptr;
 
-void init();
-void quit();
-void loop();
+CppInvaders &CppInvaders::get_ref() {
+  return *ref;
+}
+
+void CppInvaders::main() {
+  if (!ref) {
+    ref = new CppInvaders;
+    ref->run();
+    delete ref;
+    ref = nullptr;
+  }
+}
 
 int main() {
-    init();
-    loop();
-    quit();
-
-    return 0;
-}
-
-void init() {
-    srand(time(nullptr));
-
-    pico_init(true);
-    pico_set_expert(true);
-    pico_set_title("CppInvaders");
-    pico_set_size((Pico_Dim){ 448, 512 }, (Pico_Dim){ 224, 256 });
-    pico_set_grid(false);
-    pico_set_anchor(PICO_LEFT, PICO_TOP);
-    pico_set_font(FONT, 8);
-
-    cppinv = new CppInvaders;
-}
-
-void quit() {
-    delete cppinv;
-    pico_init(false);
-}
-
-void loop() {
-    pico_assert(cppinv);
-
-    while (!cppinv->should_quit) {
-        int timeout = 16, accum = 0;
-        while (timeout > 0) {
-            int before = pico_get_ticks();
-
-            SDL_Event event;
-            pico_input_event_timeout(&event, PICO_ANY, timeout);
-            cppinv->process_event(event);
-
-            int delta = pico_get_ticks() - before;
-            timeout -= delta;
-            accum += delta;
-        }
-
-        float delta = 0.001f * accum;
-        cppinv->update_and_draw(delta);
-        pico_output_present();
-    }
+  pico_init(1);
+  pico_set_expert(1);
+  pico_set_font("res/font.ttf", 8);
+  pico_set_size({448,512}, {224,256});
+  CppInvaders::main();
+  pico_init(0);
+  return 0;
 }

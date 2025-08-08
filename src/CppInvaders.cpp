@@ -1,135 +1,47 @@
-#include "CppInvaders.h"
-#include "screens/Screens.h"
-
-void CppInvaders::load_scoreboard() {
-    score = 0;
-    hi_score = 0;
-
-    FILE *file = fopen(SCOREBOARD_FILE, "r");
-    if (!file) {
-        file = fopen(SCOREBOARD_FILE, "w");
-        fclose(file);
-        return;
-    }
-
-    if (!file) {
-        printf("Couldn't open scoreboard file\n");
-        return;
-    }
-
-    fscanf(file, "%6d", &hi_score);
-    fclose(file);
-}
-
-void CppInvaders::save_scoreboard() {
-    // open file to write (will exist bc load was called b4)
-    // write hi_score to file
-    // closefile
-    FILE *file = fopen(SCOREBOARD_FILE, "w");
-    if (!file) {
-        printf("Couldn't open scoreboard file\n");
-        return;
-    }
-
-    fprintf(file, "%6d", hi_score);
-    fclose(file);
-}
-
-void CppInvaders::add_to_score(int value) {
-    score += value;
-    if (hi_score < score) {
-        hi_score = score;
-        save_scoreboard();
-    }
-}
-
-void CppInvaders::draw_scoreboard() {
-    static char text[32];
-    sprintf(text, "%06d          %06d", score, hi_score);
-    
-    pico_set_color_draw(WHITE);
-    pico_output_draw_text({ 8, 8 }, "YOUR SCORE      HIGH-SCORE");
-    pico_output_draw_text({ 24, 24 }, text);
-}
-
-void CppInvaders::draw_credit_counter() {
-    static char text[16];
-    sprintf(text, "CREDIT %02d", credits);
-
-    pico_set_color_draw(WHITE);
-    pico_output_draw_text({ 144, 240 }, text);
-}
+#include "CppInvaders.hpp"
+#include "scenes/Pause.hpp"
 
 CppInvaders::CppInvaders() {
-    splash = new Splash;
-    game = nullptr;
-    pause = nullptr;
-    over = nullptr;
-
-    screen = SPLASH;
-    credits = 99;
-    load_scoreboard();
-
-    should_quit = false;
+  should_quit = false;
+  scene = new PauseScene(nullptr);
 }
 
 CppInvaders::~CppInvaders() {
-    save_scoreboard();
-
-    delete splash;
-    delete game;
-    delete pause;
-    delete over;
+  // save score
 }
 
-void CppInvaders::update_and_draw(float delta) {
-    pico_output_clear();
-    switch (screen) {
-    case SPLASH:
-        pico_assert(splash);
-        splash->draw();
-        splash->update(delta);
-        break;
-    case GAME:
-        pico_assert(game);
-        game->draw();
-        game->update(delta);
-        break;
-    case PAUSE:
-        pico_assert(pause);
-        pause->draw();
-        pause->update(delta);
-        break;
-    case OVER:
-        pico_assert(over);
-        over->draw();
-        over->update(delta);
-        break;
+void CppInvaders::run() {
+  int delta = 0;
+  while (!should_quit) {
+    int before = pico_get_ticks(), passed = 0;
+    while (passed < 16) {
+      Pico_Event event;
+      pico_input_event_timeout(&event, PICO_ANY, 16 - passed);
+      process_event(event);
+      passed = pico_get_ticks() - before;
     }
+    update(0.001f * delta);
+    printf("%d %f\n", delta, 0.001f*delta);
+    draw();
+    pico_output_present();
+    delta = pico_get_ticks() - before;
+  }
 }
 
-void CppInvaders::process_event(const SDL_Event& event) {
-    if (event.type == SDL_QUIT) {
-        should_quit = true;
-        return;
-    }
+void CppInvaders::process_event(const Pico_Event &event) {
+  if (event.type == PICO_QUIT) {
+    should_quit = true;
+  } else {
+    scene->process_event(event);
+  }
+}
 
-    switch (screen) {
-    case SPLASH:
-        pico_assert(splash);
-        splash->process_event(event);
-        break;
-    case GAME:
-        pico_assert(game);
-        game->process_event(event);
-        break;
-    case PAUSE:
-        pico_assert(pause);
-        pause->process_event(event);
-        break;
-    case OVER:
-        pico_assert(over);
-        over->process_event(event);
-        break;
-    }
+void CppInvaders::update(float delta) {
+  scene->update(delta);
+}
+
+void CppInvaders::draw() const {
+  pico_output_clear();
+  scene->draw();
+  pico_output_present();
 }
