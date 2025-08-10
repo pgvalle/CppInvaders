@@ -1,8 +1,9 @@
 # Directories
-SRC_DIR = src
-PICO_DIR = deps/pico-sdl/src
-OUT_DIR = out
-EXECUTABLE = cppinv.out
+SRC = src
+OUT = out
+PICO_SRC = pico/src
+PICO_OUT = out/pico
+EXEC = cppinv.out
 
 # Compiler and flags
 CXX = g++
@@ -14,31 +15,31 @@ PKG_FLAGS = $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL
 LDFLAGS = $(shell $(PKG_CONFIG) --libs sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
 
 # Find all source files
-CPP_SRC_FILES = $(shell find $(SRC_DIR) -type f -name '*.cpp')
-PICO_SRC_FILES = $(shell find $(PICO_DIR) -type f -name '*.c')
-CPP_OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp, $(OUT_DIR)/%.o, $(CPP_SRC_FILES))
-PICO_OBJ_FILES = $(patsubst $(PICO_DIR)/%.c, $(OUT_DIR)/deps/%.o, $(PICO_SRC_FILES))
+CPP_SRC_FILES = $(shell find $(SRC) -type f -name '*.cpp')
+PICO_SRC_FILES = $(shell find $(PICO_SRC) -type f -name '*.c')
+CPP_OBJ_FILES = $(patsubst $(SRC)/%.cpp, $(OUT)/%.o, $(CPP_SRC_FILES))
+PICO_OBJ_FILES = $(patsubst $(PICO_SRC)/%.c, $(PICO_OUT)/%.o, $(PICO_SRC_FILES))
 OBJ_FILES = $(CPP_OBJ_FILES) $(PICO_OBJ_FILES)
 
 # Target to build the executable
-$(EXECUTABLE): $(OBJ_FILES)
+$(EXEC): $(OBJ_FILES)
 	$(CXX) $(OBJ_FILES) -o $@ $(LDFLAGS)
 
 # Rule to compile C++ source files
-$(OUT_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OUT)/%.o: $(SRC)/%.cpp
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -I$(PICO_DIR) $(PKG_FLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -I$(SRC) -I$(PICO_SRC) $(PKG_FLAGS) -c $< -o $@
 
 # Rule to compile C source files (pico-sdl)
-$(OUT_DIR)/deps/%.o: $(PICO_DIR)/%.c
+$(PICO_OUT)/%.o: $(PICO_SRC)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(PKG_FLAGS) -c $< -o $@
 
 # Clean up
 .PHONY: clean
 clean:
-	rm -rf $(OUT_DIR) $(EXECUTABLE)
+	rm -rf $(OUT) $(EXEC)
 
 # Rebuild
 .PHONY: all
-all: clean $(EXECUTABLE)
+all: clean $(EXEC)

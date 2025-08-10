@@ -1,4 +1,4 @@
-deps/
+pico/
 out/
 .vscode/
 *.out

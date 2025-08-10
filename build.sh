@@ -10,7 +10,7 @@ command_exists() {
 command_exists git
 
 if [ ! -d "deps/pico-sdl/.git" ]; then
-    git clone https://github.com/fsantanna/pico-sdl deps/pico-sdl
+    git clone https://github.com/fsantanna/pico-sdl pico
 fi
 
 command_exists gcc
