@@ -1,5 +1,6 @@
 #include "Pause.hpp"
 #include "../CppInvaders.hpp"
+#include "Over.hpp"
 
 #define PAUSE_SYMBOL_BLINK 0.5
 #define TIME_TO_RESUME 3
@@ -31,8 +32,8 @@ void PauseScene::update(float delta) {
   timer += delta;
 
   if (resuming && timer >= TIME_TO_RESUME) {
-    CppInvaders::get_ref().scene = gameplay;
-    delete this;
+    CppInvaders::get_ref().scene = new OverScene(this);
+    //delete this;
     return;
   }
 
@@ -49,18 +50,18 @@ void PauseScene::draw() const {
   }
 
   // pause menu dim effect
+  Pico_Dim dim = pico_dim(100, 100);
   pico_set_color_draw({0, 0, 0, 204});
   pico_set_anchor({PICO_LEFT, PICO_TOP});
-  pico_output_draw_rect({0, 0, 224, 256});
+  pico_output_draw_rect({0, 0, dim.x, dim.y});
 
-  Pico_Pos pos = pico_pos(50, 0);
-  pos.y = 8;
+  Pico_Pos pos = {pico_pos(50, 0).x, 8};
   pico_set_color_draw(WHITE);
   pico_set_anchor({PICO_CENTER, PICO_TOP});
 
   if (resuming) {
     static char fmt[16];
-    sprintf(fmt, "%02d", 3 - (int)timer);
+    sprintf(fmt, "%1d", 3 - (int)timer);
     pico_output_draw_text(pos, fmt);
     return;
   }

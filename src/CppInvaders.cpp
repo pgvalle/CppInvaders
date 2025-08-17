@@ -1,12 +1,12 @@
 #include "CppInvaders.hpp"
-#include "scenes/Pause.hpp"
+#include "scenes/Splash.hpp"
 
 CppInvaders::CppInvaders() {
   should_quit = false;
-  scene = new PauseScene(nullptr);
+  scene = new SplashScene;
   credits = 0;
   score = 0;
-  hi_score = 0; // load hi-score
+  hi_score = 0;
 
   FILE *file = fopen(SCOREBOARD_FILE, "a+");
   assert(file && "could not read scoreboard");
@@ -15,6 +15,10 @@ CppInvaders::CppInvaders() {
 }
 
 CppInvaders::~CppInvaders() {
+  save_hi_score();
+}
+
+void CppInvaders::save_hi_score() const {
   FILE *file = fopen(SCOREBOARD_FILE, "w+");
   assert(file && "could not save scoreboard");
   fprintf(file, "%d", hi_score);
@@ -24,23 +28,34 @@ CppInvaders::~CppInvaders() {
 void CppInvaders::draw_indicators() const {
   static char fmt[16];
   Pico_Pos pos;
+  Pico_Dim dim = pico_get_text_size("##########");
   
   pico_set_color_draw(WHITE);
 
   // credit counter
-  pos = pico_pos(100, 100);
   sprintf(fmt, "CREDIT %02d", credits);
+  pos = pico_pos(100, 100);
+  pos = {pos.x - 8, pos.y - 8};
   pico_set_anchor({PICO_RIGHT, PICO_BOTTOM});
-  pico_output_draw_text({pos.x - 8, pos.y - 8}, fmt);
+  pico_output_draw_text(pos, fmt);
 
   // score
+  pos = {8, 8};
   pico_set_anchor({PICO_LEFT, PICO_TOP});
-  pico_output_draw_text({8, 8}, "YOUR SCORE");
+  pico_output_draw_text(pos, "YOUR SCORE");
+  sprintf(fmt, "%06d", score);
+  pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, 50, 200);
+  pico_set_anchor({PICO_CENTER, PICO_TOP});
+  pico_output_draw_text(pos, fmt);
 
   // hi-score
-  pos = pico_pos(100, 0);
+  pos = {pico_pos(100, 0).x - 8, 8};
   pico_set_anchor({PICO_RIGHT, PICO_TOP});
-  pico_output_draw_text({pos.x - 8, 8}, "HIGH-SCORE");
+  pico_output_draw_text(pos, "HIGH-SCORE");
+  sprintf(fmt, "%06d", hi_score);
+  pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, 50, 200);
+  pico_set_anchor({PICO_CENTER, PICO_TOP});
+  pico_output_draw_text(pos, fmt);
 }
 
 #define FRAMETIME (1000 / FRAMERATE)
@@ -78,7 +93,7 @@ void CppInvaders::update(float delta) {
 
 void CppInvaders::draw() const {
   pico_output_clear();
-  scene->draw();
   draw_indicators();
+  scene->draw();
   pico_output_present();
 }

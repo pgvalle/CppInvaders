@@ -7,7 +7,7 @@ private:
   Scene *gameplay;
   bool waiting;
   float timer;
-  int i;
+  int ci; // character index
 
 public:
   OverScene(Scene *gameplay);

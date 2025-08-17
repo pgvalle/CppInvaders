@@ -1,21 +1,24 @@
 #include "Over.hpp"
 #include "../CppInvaders.hpp"
 #include "Pause.hpp"
+#include "pico.h"
 #include <string>
 
 #define TYPEWRITING_INTERVAL 0.2f
 #define TIME_WAITING 2.5f
 
-static std::string STRING = " GAME OVER";
+static std::string STRING = "GAME OVER";
 
 OverScene::OverScene(Scene *gameplay$) {
   gameplay = gameplay$;
   waiting = false;
   timer = 0;
-  i = 0;
+  ci = 0;
 }
 
-OverScene::~OverScene() {}
+OverScene::~OverScene() {
+  delete gameplay;
+}
 
 void OverScene::process_event(const SDL_Event &event) {
   switch (event.type) {
@@ -24,7 +27,7 @@ void OverScene::process_event(const SDL_Event &event) {
       if (!waiting) {
         waiting = true;
         timer = 0;
-        i = STRING.length();
+        ci = STRING.length();
       } else {
         timer = TIME_WAITING;
       }
@@ -38,14 +41,13 @@ void OverScene::update(float delta) {
   timer += delta;
 
   if (!waiting && timer >= TYPEWRITING_INTERVAL) {
-    waiting = i++ == STRING.length();
+    waiting = ci++ == STRING.length();
     timer = 0;
     return;
   }
 
   if (waiting && timer >= TIME_WAITING) {
-    CppInvaders::get_ref().scene = nullptr; // TODO: new SplashScene here
-    delete gameplay;
+    CppInvaders::get_ref().scene = new PauseScene(nullptr); // TODO: new SplashScene here
     delete this;
     return;
   }
@@ -57,13 +59,13 @@ void OverScene::draw() const {
   }
 
   // pause menu dim effect
+  Pico_Dim dim = pico_dim(100, 100);
   pico_set_color_draw({0, 0, 0, 204});
   pico_set_anchor({PICO_LEFT, PICO_TOP});
-  pico_output_draw_rect({0, 0, 224, 256});
+  pico_output_draw_rect({0, 0, dim.x, dim.y});
 
-  std::string str = (i == 0 ? " " : STRING.substr(0, i)); // len 0 str invalid
-  Pico_Pos pos = pico_pos(50, 0);
-  pos.y = 64;
+  std::string str = STRING.substr(0, ci);
+  Pico_Pos pos = {pico_pos(50, 0).x, 64};
   pico_set_color_draw(RED);
   pico_set_anchor({PICO_CENTER, PICO_TOP});
   pico_output_draw_text(pos, str.c_str());
