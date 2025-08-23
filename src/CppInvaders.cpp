@@ -28,7 +28,7 @@ void CppInvaders::save_hi_score() const {
 void CppInvaders::draw_indicators() const {
   static char fmt[16];
   Pico_Pos pos;
-  Pico_Dim dim = pico_get_text_size("##########");
+  Pico_Dim dim = pico_get_size_text("##########");
   
   pico_set_color_draw(WHITE);
 
@@ -36,25 +36,25 @@ void CppInvaders::draw_indicators() const {
   sprintf(fmt, "CREDIT %02d", credits);
   pos = pico_pos(100, 100);
   pos = {pos.x - 8, pos.y - 8};
-  pico_set_anchor({PICO_RIGHT, PICO_BOTTOM});
+  pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
   pico_output_draw_text(pos, fmt);
 
   // score
   pos = {8, 8};
-  pico_set_anchor({PICO_LEFT, PICO_TOP});
+  pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
   pico_output_draw_text(pos, "YOUR SCORE");
   sprintf(fmt, "%06d", score);
   pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, 50, 200);
-  pico_set_anchor({PICO_CENTER, PICO_TOP});
+  pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
   pico_output_draw_text(pos, fmt);
 
   // hi-score
   pos = {pico_pos(100, 0).x - 8, 8};
-  pico_set_anchor({PICO_RIGHT, PICO_TOP});
+  pico_set_anchor_draw({PICO_RIGHT, PICO_TOP});
   pico_output_draw_text(pos, "HIGH-SCORE");
   sprintf(fmt, "%06d", hi_score);
   pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, 50, 200);
-  pico_set_anchor({PICO_CENTER, PICO_TOP});
+  pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
   pico_output_draw_text(pos, fmt);
 }
 

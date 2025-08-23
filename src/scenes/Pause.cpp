@@ -52,12 +52,12 @@ void PauseScene::draw() const {
   // pause menu dim effect
   Pico_Dim dim = pico_dim(100, 100);
   pico_set_color_draw({0, 0, 0, 204});
-  pico_set_anchor({PICO_LEFT, PICO_TOP});
+  pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
   pico_output_draw_rect({0, 0, dim.x, dim.y});
 
   Pico_Pos pos = {pico_pos(50, 0).x, 8};
   pico_set_color_draw(WHITE);
-  pico_set_anchor({PICO_CENTER, PICO_TOP});
+  pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
 
   if (resuming) {
     static char fmt[16];

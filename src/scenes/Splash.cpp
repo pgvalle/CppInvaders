@@ -80,7 +80,7 @@ void SplashScene::update(float delta) {
 
 void SplashScene::draw() const {
   pico_set_color_draw(WHITE);
-  pico_set_anchor({PICO_LEFT, PICO_TOP});
+  pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
   for (int lj = 0; lj <= li; lj++) {
     Pico_Pos pos = {24 + OFFS[lj].x, 64 + OFFS[lj].y};
     std::string str = LINES[lj];
@@ -91,14 +91,15 @@ void SplashScene::draw() const {
   }
 
   if (state == TYPEWRITING2 || state == WAITING_KEYPRESS) {
-    pico_set_anchor({PICO_CENTER, PICO_MIDDLE});
-    pico_set_image_crop({0, 0, 24, 8});
+    pico_set_anchor_draw({PICO_CENTER, PICO_MIDDLE});
+    pico_set_crop({0, 0, 24, 8});
     pico_output_draw_image({71, 140}, IMG_UFO);
-    pico_set_image_crop({0, 0, 8, 8});
+    pico_set_crop({0, 0, 8, 8});
     pico_output_draw_image({71, 156}, IMG_INV1);
-    pico_set_image_crop({0, 0, 11, 8});
+    pico_set_crop({0, 0, 11, 8});
     pico_output_draw_image({71, 172}, IMG_INV2);
-    pico_set_image_crop({0, 0, 12, 8});
+    pico_set_crop({0, 0, 12, 8});
     pico_output_draw_image({71, 188}, IMG_INV3);
+    pico_set_crop({0, 0, 0, 0});
   }
 }
