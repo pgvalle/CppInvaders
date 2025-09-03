@@ -7,7 +7,7 @@ EXEC = cppinv.out
 
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -g -std=c++23
+CXXFLAGS = -Wall -Wextra -g -std=c++23 -Isrc
 PKG_CONFIG = pkg-config
 PKG_FLAGS = $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
 LDFLAGS = $(shell $(PKG_CONFIG) --libs sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
