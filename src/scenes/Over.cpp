@@ -1,6 +1,6 @@
 #include "Over.hpp"
 #include "../CppInvaders.hpp"
-#include "Pause.hpp"
+#include "Splash.hpp"
 #include "pico.h"
 #include <string>
 
@@ -10,63 +10,63 @@
 static std::string STRING = "GAME OVER";
 
 OverScene::OverScene(Scene *gameplay$) {
-  gameplay = gameplay$;
-  waiting = false;
-  timer = 0;
-  ci = 0;
+    gameplay = gameplay$;
+    waiting = false;
+    timer = 0;
+    ci = 0;
 }
 
 OverScene::~OverScene() {
-  delete gameplay;
+    delete gameplay;
 }
 
 void OverScene::process_event(const SDL_Event &event) {
-  switch (event.type) {
-  case SDL_KEYDOWN:
-    if (event.key.keysym.sym == SDLK_RETURN) {
-      if (!waiting) {
-        waiting = true;
-        timer = 0;
-        ci = STRING.length();
-      } else {
-        timer = TIME_WAITING;
-      }
+    switch (event.type) {
+    case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_RETURN) {
+            if (!waiting) {
+                waiting = true;
+                timer = 0;
+                ci = STRING.length();
+            } else {
+                timer = TIME_WAITING;
+            }
+        }
+        break;
     }
-    break;
-  }
 }
 
 
 void OverScene::update(float delta) {
-  timer += delta;
+    timer += delta;
 
-  if (!waiting && timer >= TYPEWRITING_INTERVAL) {
-    waiting = ci++ == STRING.length();
-    timer = 0;
-    return;
-  }
+    if (!waiting && timer >= TYPEWRITING_INTERVAL) {
+        waiting = ci++ == STRING.length();
+        timer = 0;
+        return;
+    }
 
-  if (waiting && timer >= TIME_WAITING) {
-    CppInvaders::get_ref().scene = new PauseScene(nullptr); // TODO: new SplashScene here
-    delete this;
-    return;
-  }
+    if (waiting && timer >= TIME_WAITING) {
+        CppInvaders::get_ref().scene = new SplashScene;
+        delete this;
+        return;
+    }
 }
 
 void OverScene::draw() const {
-  if (gameplay) {
-    gameplay->draw();
-  }
+    if (gameplay) {
+        gameplay->draw();
+    }
 
-  // pause menu dim effect
-  Pico_Dim dim = pico_dim(100, 100);
-  pico_set_color_draw({0, 0, 0, 204});
-  pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-  pico_output_draw_rect({0, 0, dim.x, dim.y});
+    // pause menu dim effect
+    Pico_Dim dim = pico_dim({100, 100});
+    pico_set_color_draw({0, 0, 0, 204});
+    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
+    pico_output_draw_rect({0, 0, dim.x, dim.y});
 
-  std::string str = STRING.substr(0, ci);
-  Pico_Pos pos = {pico_pos(50, 0).x, 64};
-  pico_set_color_draw(RED);
-  pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-  pico_output_draw_text(pos, str.c_str());
+    std::string str = STRING.substr(0, ci);
+    Pico_Pos pos = {pico_pos({50, 0}).x, 64};
+    pico_set_color_draw(RED);
+    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_output_draw_text(pos, str.c_str());
 }

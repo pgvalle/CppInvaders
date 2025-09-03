@@ -4,16 +4,16 @@
 
 class OverScene : public Entity {
 private:
-  Scene *gameplay;
-  bool waiting;
-  float timer;
-  int ci; // character index
+    Scene *gameplay;
+    bool waiting;
+    float timer;
+    int ci; // character index
 
 public:
-  OverScene(Scene *gameplay);
-  virtual ~OverScene();
+    OverScene(Scene *gameplay);
+    virtual ~OverScene();
 
-  void process_event(const Pico_Event &event) override;
-  void update(float delta) override;
-  void draw() const override;
+    void process_event(const Pico_Event &event) override;
+    void update(float delta) override;
+    void draw() const override;
 };
