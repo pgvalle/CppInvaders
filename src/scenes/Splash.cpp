@@ -1,6 +1,6 @@
 #include "Splash.hpp"
-#include "../CppInvaders.hpp"
-#include "Pause.hpp"
+#include "Play.hpp"
+#include "CppInvaders.hpp"
 #include "pico.h"
 #include <string>
 
@@ -50,7 +50,7 @@ void SplashScene::process_event(const Pico_Event &event) {
 
     if (state == WAITING_KEYPRESS) {
         CppInvaders &game = CppInvaders::get();
-        game.scene = new PauseScene(nullptr); // TODO: GameScene here
+        game.scene = new PlayScene;
         game.score = 0;
         delete this;
     } else {

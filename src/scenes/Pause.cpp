@@ -1,6 +1,5 @@
 #include "Pause.hpp"
-#include "../CppInvaders.hpp"
-#include "Over.hpp"
+#include "CppInvaders.hpp"
 
 #define PAUSE_SYMBOL_BLINK 0.5
 #define TIME_TO_RESUME 3
@@ -32,8 +31,8 @@ void PauseScene::update(float delta) {
     timer += delta;
 
     if (resuming && timer >= TIME_TO_RESUME) {
-        CppInvaders::get().scene = new OverScene(this); // PLAY SCENE HERE!!!
-        //delete this;
+        CppInvaders::get().scene = gameplay;
+        delete this;
         return;
     }
 
