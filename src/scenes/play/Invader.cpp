@@ -1,0 +1,62 @@
+#include "Invader.hpp"
+#include "CppInvaders.hpp"
+
+int Invader::counter = 0;
+
+Invader::Invader() {
+    int row = 4 - counter / 11, col = counter % 11;
+
+    state = DEAD;
+    type = row / 2;
+    x = 26 + 16 * col;
+    y = 64 + 16 * row;
+    counter++;
+}
+
+Pico_Rect Invader::get_rect() const {
+    switch (type) {
+    case 0:
+        return {x + 2, y, 8, 8};
+    case 1:
+        return {x + 1, y, 11, 8};
+    case 2:
+    default:
+        return {x, y, 12, 8};
+    }
+}
+
+void Invader::move(int dx, int dy) {
+    if (state == DEAD) {
+        return;
+    }
+
+    state = (state == UP ? DOWN : UP);
+    x += dx;
+    y += dy;
+}
+
+void Invader::draw() const {
+    if (state == DEAD) {
+        return;
+    }
+
+    Pico_Rect rect = get_rect();
+    Pico_Pos pos = {rect.x, rect.y};
+
+    pico_set_crop({
+        (state == DOWN ? 0 : rect.w), 0,
+        rect.w, rect.h
+    });
+    
+    switch (type) {
+        case 0:
+        pico_output_draw_image(pos, IMG_INV1);
+        break;
+        case 1:
+        pico_output_draw_image(pos, IMG_INV2);
+        break;
+        case 2:
+        pico_output_draw_image(pos, IMG_INV3);
+        break;
+    }
+}
