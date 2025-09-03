@@ -4,7 +4,8 @@
 int Invader::counter = 0;
 
 Invader::Invader() {
-    int row = 4 - counter / 11, col = counter % 11;
+    int row = 4 - counter / 11;
+    int col = counter % 11;
 
     state = DEAD;
     type = row / 2;
@@ -19,7 +20,6 @@ Pico_Rect Invader::get_rect() const {
         return {x + 2, y, 8, 8};
     case 1:
         return {x + 1, y, 11, 8};
-    case 2:
     default:
         return {x, y, 12, 8};
     }
@@ -49,13 +49,13 @@ void Invader::draw() const {
     });
     
     switch (type) {
-        case 0:
+    case 0:
         pico_output_draw_image(pos, IMG_INV1);
         break;
-        case 1:
+    case 1:
         pico_output_draw_image(pos, IMG_INV2);
         break;
-        case 2:
+    default:
         pico_output_draw_image(pos, IMG_INV3);
         break;
     }
