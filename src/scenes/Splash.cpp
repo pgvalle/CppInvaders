@@ -18,8 +18,8 @@ static std::string LINES[] = {
     ""};
 
 static Pico_Pos OFFS[] = {
-    {72, 0},  {32, 24},  {0, 56},   {56, 72},
-    {56, 88}, {56, 104}, {56, 120}, {0, 0}};
+    {96, 64}, {56,  88}, {24, 120},  {80, 136},
+    {80, 152}, {80, 168}, {80, 184}, { 0,  0}};
 
 SplashScene::SplashScene() {
     state = WAITING1;
@@ -35,7 +35,7 @@ bool SplashScene::typewrite_next_char() {
         return false;
     }
 
-    if (ci++ == (int)LINES[li].length()) {
+    if ((size_t)ci++ == LINES[li].length()) {
         li++;
         ci = 0;
     }
@@ -84,12 +84,11 @@ void SplashScene::draw() const {
     pico_set_color_draw(WHITE);
     pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
     for (int lj = 0; lj <= li; lj++) {
-        Pico_Pos pos = {24 + OFFS[lj].x, 64 + OFFS[lj].y};
         std::string str = LINES[lj];
         if (lj == li) {
             str = str.substr(0, ci);
         }
-        pico_output_draw_text(pos, str.c_str());
+        pico_output_draw_text(OFFS[lj], str.c_str());
     }
 
     if (state == TYPEWRITING2 || state == WAITING_KEYPRESS) {

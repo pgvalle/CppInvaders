@@ -32,7 +32,7 @@ void PauseScene::update(float delta) {
     timer += delta;
 
     if (resuming && timer >= TIME_TO_RESUME) {
-        CppInvaders::get().scene = new OverScene(this);
+        CppInvaders::get().scene = new OverScene(this); // PLAY SCENE HERE!!!
         //delete this;
         return;
     }
@@ -63,11 +63,7 @@ void PauseScene::draw() const {
         static char fmt[16];
         sprintf(fmt, "%1d", 3 - (int)timer);
         pico_output_draw_text(pos, fmt);
-        return;
-    }
-
-    if (pause_symbol) {
+    } else if (pause_symbol) {
         pico_output_draw_text(pos, "||");
-        return;
     }
 }

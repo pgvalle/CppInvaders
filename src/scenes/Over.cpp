@@ -41,13 +41,13 @@ void OverScene::update(float delta) {
     timer += delta;
 
     if (!waiting && timer >= TYPEWRITING_INTERVAL) {
-        waiting = ci++ == STRING.length();
+        waiting = (size_t)ci++ == STRING.length();
         timer = 0;
         return;
     }
 
     if (waiting && timer >= TIME_WAITING) {
-        CppInvaders::get_ref().scene = new SplashScene;
+        CppInvaders::get().scene = new SplashScene;
         delete this;
         return;
     }
@@ -65,8 +65,7 @@ void OverScene::draw() const {
     pico_output_draw_rect({0, 0, dim.x, dim.y});
 
     std::string str = STRING.substr(0, ci);
-    Pico_Pos pos = {pico_pos({50, 0}).x, 64};
     pico_set_color_draw(RED);
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_output_draw_text(pos, str.c_str());
+    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
+    pico_output_draw_text({80, 64}, str.c_str());
 }
