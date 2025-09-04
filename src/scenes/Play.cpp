@@ -18,11 +18,11 @@ void PlayScene::process_event(const Pico_Event &event) {
 }
 
 void PlayScene::update(float delta) {
-
+    s.update(delta);
 }
 
 void PlayScene::draw() const {
-
+    s.draw();
 }
 
 /*

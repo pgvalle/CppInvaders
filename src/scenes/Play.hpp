@@ -1,9 +1,12 @@
 #pragma once
 
-#include "../Entity.hpp"
+#include "Entity.hpp"
+#include "scenes/play/Spaceship.hpp"
 
 class PlayScene : public Entity {
 private:
+    Spaceship s;
+
 public:
     PlayScene();
     virtual ~PlayScene();

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Shot.h"
-
 struct Spaceship {
     enum State {
         DEPLOYING, DEPLOYED, EXPLODING
@@ -11,9 +9,9 @@ struct Spaceship {
     int lives;
     int explosion_frames;
 
+    Spaceship();
     void explode();
-    Shot *shoot();
-    
+    // Shot *shoot();
     void update(float delta);
     void draw() const;
 };

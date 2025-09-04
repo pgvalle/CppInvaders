@@ -101,6 +101,5 @@ void SplashScene::draw() const {
         pico_output_draw_image({71, 172}, IMG_INV2);
         pico_set_crop({0, 0, 12, 8});
         pico_output_draw_image({71, 188}, IMG_INV3);
-        pico_set_crop({0, 0, 0, 0});
     }
 }

@@ -92,6 +92,7 @@ void CppInvaders::update(float delta) {
 }
 
 void CppInvaders::draw() const {
+    pico_set_crop({0, 0, 0, 0});
     pico_output_clear();
     draw_indicators();
     scene->draw();
