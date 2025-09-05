@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Entity.hpp"
+#include "scenes/play/UFO.hpp"
 #include "scenes/play/Spaceship.hpp"
 
 class PlayScene : public Entity {
 private:
     Spaceship s;
+    UFO ufo;
 
 public:
     PlayScene();

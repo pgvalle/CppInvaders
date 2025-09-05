@@ -19,10 +19,12 @@ void PlayScene::process_event(const Pico_Event &event) {
 
 void PlayScene::update(float delta) {
     s.update(delta);
+    ufo.update(delta);
 }
 
 void PlayScene::draw() const {
     s.draw();
+    ufo.draw();
 }
 
 /*
