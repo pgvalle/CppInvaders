@@ -56,7 +56,7 @@ void Spaceship::update(float delta) {
             if (++explosion_frames >= 10) {
                 state = DEPLOYING;
                 timer = 0;
-                lives--;
+                CppInvaders::get().lives--;
             }
         }
         break;
