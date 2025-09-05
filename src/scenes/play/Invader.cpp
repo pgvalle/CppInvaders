@@ -9,7 +9,7 @@ Invader::Invader() {
 
     state = DEAD;
     type = row / 2;
-    x = 26 + 16 * col;
+    x = 32 + 16 * col;
     y = 64 + 16 * row;
     counter++;
 }
@@ -17,9 +17,9 @@ Invader::Invader() {
 Pico_Rect Invader::get_rect() const {
     switch (type) {
     case 0:
-        return {x + 2, y, 8, 8};
+        return {x, y, 8, 8};
     case 1:
-        return {x + 1, y, 11, 8};
+        return {x, y, 11, 8};
     default:
         return {x, y, 12, 8};
     }
@@ -43,10 +43,8 @@ void Invader::draw() const {
     Pico_Rect rect = get_rect();
     Pico_Pos pos = {rect.x, rect.y};
 
-    pico_set_crop({
-        (state == DOWN ? 0 : rect.w), 0,
-        rect.w, rect.h
-    });
+    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_set_crop({(state == UP ? rect.w : 0), 0, rect.w, rect.h});
     
     switch (type) {
     case 0:
