@@ -4,9 +4,10 @@
 CppInvaders::CppInvaders() {
     should_quit = false;
     scene = new SplashScene;
-    credits = 0;
     score = 0;
     hi_score = 0;
+    credits = 0;
+    lives = 3;
 
     FILE *file = fopen(SCOREBOARD_FILE, "a+");
     assert(file && "could not read scoreboard");
@@ -32,13 +33,6 @@ void CppInvaders::draw_indicators() const {
 
     pico_set_color_draw(WHITE);
 
-    // credit counter
-    sprintf(fmt, "CREDIT %02d", credits);
-    pos = pico_pos({100, 100});
-    pos = {pos.x - 8, pos.y - 8};
-    pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
-    pico_output_draw_text(pos, fmt);
-
     // score
     pos = {8, 8};
     pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
@@ -55,6 +49,13 @@ void CppInvaders::draw_indicators() const {
     sprintf(fmt, "%06d", hi_score);
     pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_output_draw_text(pos, fmt);
+
+    // credit counter
+    sprintf(fmt, "CREDIT %02d", credits);
+    pos = pico_pos({100, 100});
+    pos = {pos.x - 8, pos.y - 8};
+    pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
     pico_output_draw_text(pos, fmt);
 }
 

@@ -25,7 +25,7 @@ private:
 public:
     bool should_quit;
     Entity *scene;
-    int credits, score, hi_score;
+    int score, hi_score, lives, credits;
 
     void save_hi_score() const;
     void draw_indicators() const;
