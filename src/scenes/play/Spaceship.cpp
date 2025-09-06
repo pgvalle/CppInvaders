@@ -1,5 +1,5 @@
 #include "Spaceship.hpp"
-#include "CppInvaders.hpp"
+#include <CppInvaders.hpp>
 
 #define STARTING_X 16
 #define X_BORDER 24

@@ -1,5 +1,5 @@
 #include "Invader.hpp"
-#include "CppInvaders.hpp"
+#include <CppInvaders.hpp>
 
 int Invader::counter = 0;
 
