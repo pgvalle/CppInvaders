@@ -18,13 +18,15 @@ void PlayScene::process_event(const Pico_Event &event) {
 }
 
 void PlayScene::update(float delta) {
-    s.update(delta);
     ufo.update(delta);
+    horde.update(delta);
+    ship.update(delta);
 }
 
 void PlayScene::draw() const {
-    s.draw();
     ufo.draw();
+    horde.draw();
+    ship.draw();
 }
 
 /*
