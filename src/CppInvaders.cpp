@@ -1,9 +1,12 @@
 #include "CppInvaders.hpp"
 #include "scenes/Splash.hpp"
 
+#define FRAMETIME (1000 / FPS)
+static const int FPS = 60;
+
 CppInvaders::CppInvaders() {
-    should_quit = false;
     scene = new SplashScene;
+    should_quit = false;
     score = 0;
     hi_score = 0;
     credits = 0;
@@ -59,8 +62,6 @@ void CppInvaders::draw_indicators() const {
     pico_output_draw_text(pos, fmt);
 }
 
-#define FRAMETIME (1000 / FRAMERATE)
-
 void CppInvaders::loop() {
     int delta = 0;
     while (!should_quit) {
@@ -110,7 +111,9 @@ CppInvaders &CppInvaders::get() {
 }
 
 void CppInvaders::main() {
-    if (ref) return;
+    if (ref) {
+        return;
+    }
 
     pico_init(1);
     pico_set_grid(0);
