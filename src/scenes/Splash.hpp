@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Entity.hpp"
+#include "Entity.hpp"
 
 class SplashScene : public Scene {
 private:
@@ -12,7 +12,7 @@ private:
         WAITING_KEYPRESS
     } state;
     float timer;
-    int li, ci;
+    size_t li, ci;
 
     bool typewrite_next_char();
 

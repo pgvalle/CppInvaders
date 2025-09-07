@@ -1,17 +1,18 @@
 #include "Spaceship.hpp"
 #include <CppInvaders.hpp>
 
-#define STARTING_X 16
+#define X_START 16
 #define X_BORDER 24
 #define Y 216
 #define VX 80
 
+#define TIME_DEPLOYING 2.0f
 #define TIME_DEAD 1.5f
 #define TIME_EXPLOSION_FRAME 0.1f
 
 Spaceship::Spaceship() {
     state = DEPLOYING;
-    x = STARTING_X;
+    x = X_START;
     timer = 0;
 }
 
@@ -35,27 +36,27 @@ void Spaceship::explode() {
 void Spaceship::update(float delta) {
     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
     Pico_Dim size = pico_get_size().log;
+    timer += delta;
 
     switch (state) {
     case DEPLOYING:
-        timer += delta;
-        if (timer >= 2) {
+        if (timer >= TIME_DEPLOYING) {
             state = DEPLOYED;
             x = X_BORDER;
+            timer -= TIME_DEPLOYING;
         }
         break;
     case DEPLOYED:
         x -= VX * delta * (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT]);
         x += VX * delta * (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT]);
         x = SDL_max(X_BORDER, SDL_min(size.x - X_BORDER, x));
+        timer -= delta;
         break;
     case EXPLODING:
-        timer += delta;
         if (timer >= TIME_EXPLOSION_FRAME) {
-            timer = 0;
+            timer -= TIME_EXPLOSION_FRAME;
             if (++explosion_frames >= 10) {
                 state = DEPLOYING;
-                timer = 0;
                 CppInvaders::get().lives--;
             }
         }

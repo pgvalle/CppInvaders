@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../Entity.hpp"
+#include "Entity.hpp"
 
 class OverScene : public Entity {
 private:
     Scene *gameplay;
     bool waiting;
     float timer;
-    int ci; // character index
+    size_t ci; // character index
 
 public:
     OverScene(Scene *gameplay);

@@ -4,7 +4,7 @@
 #include "pico.h"
 #include <string>
 
-#define TYPEWRITING_INTERVAL 0.2f
+#define TIME_TYPEWRITE 0.2f
 #define TIME_WAITING 2.5f
 
 static std::string STRING = "GAME OVER";
@@ -40,9 +40,9 @@ void OverScene::process_event(const SDL_Event &event) {
 void OverScene::update(float delta) {
     timer += delta;
 
-    if (!waiting && timer >= TYPEWRITING_INTERVAL) {
-        waiting = (size_t)ci++ == STRING.length();
-        timer = 0;
+    if (!waiting && timer >= TIME_TYPEWRITE) {
+        waiting = ci++ == STRING.length();
+        timer -= TIME_TYPEWRITE;
         return;
     }
 

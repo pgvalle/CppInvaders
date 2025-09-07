@@ -4,7 +4,7 @@
 #include "pico.h"
 #include <string>
 
-#define TYPEWRITE_STEP_DELTA 0.05f
+#define TIME_TYPEWRITE 0.05f
 #define TIME_WAITING 1.5f
 
 static std::string LINES[] = {
@@ -31,15 +31,15 @@ SplashScene::SplashScene() {
 SplashScene::~SplashScene() {}
 
 bool SplashScene::typewrite_next_char() {
-    if (timer < TYPEWRITE_STEP_DELTA) {
+    if (timer < TIME_TYPEWRITE) {
         return false;
     }
 
-    if ((size_t)ci++ == LINES[li].length()) {
+    if (ci++ == LINES[li].length()) {
         li++;
         ci = 0;
     }
-    timer = 0;
+    timer -= TIME_TYPEWRITE;
     return true;
 }
 
@@ -63,31 +63,39 @@ void SplashScene::process_event(const Pico_Event &event) {
 void SplashScene::update(float delta) {
     timer += delta;
 
-    if ((state == WAITING1 || state == WAITING2) && timer >= TIME_WAITING) {
-        state = (state == WAITING1 ? TYPEWRITING1 : TYPEWRITING2);
-        timer = 0;
-        return;
-    }
-
-    if (state == TYPEWRITING1 && typewrite_next_char() && li == 2) {
-        state = WAITING2;
-        return;
-    }
-
-    if (state == TYPEWRITING2 && typewrite_next_char() && li == 7) {
-        state = WAITING_KEYPRESS;
-        return;
+    switch (state) {
+    case WAITING1:
+        if (timer >= TIME_WAITING) {
+            state = TYPEWRITING1;
+            timer -= TIME_WAITING;
+        }
+        break;
+    case TYPEWRITING1:
+        if (typewrite_next_char() && li == 2) {
+            state = WAITING2;
+        }
+        break;
+    case WAITING2:
+        if (timer >= TIME_WAITING) {
+            state = TYPEWRITING2;
+            timer -= TIME_WAITING;
+        }
+        break;
+    case TYPEWRITING2:
+        if (typewrite_next_char() && li == 7) {
+            state = WAITING_KEYPRESS;
+        }
+        break;
+    case WAITING_KEYPRESS:
+        break;
     }
 }
 
 void SplashScene::draw() const {
     pico_set_color_draw(WHITE);
     pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    for (int lj = 0; lj <= li; lj++) {
-        std::string str = LINES[lj];
-        if (lj == li) {
-            str = str.substr(0, ci);
-        }
+    for (size_t lj = 0; lj <= li; lj++) {
+        std::string str = lj == li ? LINES[li].substr(0, ci) : LINES[lj];
         pico_output_draw_text(OFFS[lj], str.c_str());
     }
 

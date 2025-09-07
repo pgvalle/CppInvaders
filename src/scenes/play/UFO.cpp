@@ -26,34 +26,32 @@ void UFO::update(float delta) {
     switch (state) {
     case AWAY:
         if (timer >= TIME_TO_RESPAWN) {
+            bool left = rand() % 2;
             state = ALIVE;
-            x = BORDER;
-            vx = VX;
-            if (rand() % 2) {
-                x = size.x - BORDER;
-                vx = -VX;
-            }
+            x = left ? BORDER : (size.x - BORDER);
+            vx = left ? VX : -VX;
+            timer -= TIME_TO_RESPAWN;
         }
         break;
     case ALIVE:
         x += delta * vx;
+        timer -= delta;
         if (BORDER > x || x > size.x - BORDER) {
             state = AWAY;
-            timer = 0;
         }
         break;
     case EXPLODING:
         if (timer >= TIME_EXPLODING) {
             state = DEAD;
-            timer = 0;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
+            timer -= TIME_EXPLODING;
             //cppinv->add_to_score(score);
         }
         break;
     case DEAD:
         if (timer > TIME_DEAD) {
             state = AWAY;
-            timer = 0;
+            timer -= TIME_DEAD;
         }
         break;
     }

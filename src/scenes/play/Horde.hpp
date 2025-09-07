@@ -12,7 +12,6 @@ struct Horde {
     float timer;
 
     Horde();
-    void move_next_invader();
     // std::vector<Invader *> get_alive_invaders();
     void explode_invader(int index);
     // Shot *shoot(float spaceship_x);
