@@ -1,5 +1,5 @@
 #include "Play.hpp"
-#include "Over.hpp"
+#include "Pause.hpp"
 #include "CppInvaders.hpp"
 
 PlayScene::PlayScene() {
@@ -10,23 +10,58 @@ PlayScene::~PlayScene() {
 
 }
 
-
 void PlayScene::process_event(const Pico_Event &event) {
-    if (event.type == PICO_KEYDOWN && event.key.keysym.sym == PICOK_UP) {
-        CppInvaders::get().scene = new OverScene(this);
+    switch (event.type) {
+    case PICO_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case PICOK_SPACE:
+            bullets.push_back(ship.shoot());
+            break;
+        case PICOK_ESCAPE:
+            CppInvaders::get().scene = new PauseScene(this);
+            break;
+        }
+        break;
+    default:
+        break;
     }
 }
 
 void PlayScene::update(float delta) {
     ufo.update(delta);
     horde.update(delta);
+    for (size_t i = 0; i < bullets.size(); i++) {
+        bullets[i]->update(delta);
+        if (bullets[i]->state == Bullet::DEAD) {
+            bullets.erase(bullets.begin() + i--);
+        }
+    }
     ship.update(delta);
 }
 
 void PlayScene::draw() const {
     ufo.draw();
     horde.draw();
+    for (const Bullet* b : bullets) {
+        b->draw();
+    }
     ship.draw();
+
+
+    static char fmt[16];
+    sprintf(fmt, "%1d", CppInvaders::get().lives);
+
+    Pico_Pos pos = pico_pos({0, 100});
+    pos = {pos.x + 8, pos.y - 8};
+    pico_set_anchor_draw({PICO_LEFT, PICO_BOTTOM});
+    pico_set_crop({0, 0, 0, 0});
+    pico_output_draw_text(pos, fmt);
+
+    pico_set_crop({0, 0, 16, 8});
+    for (int i = 1; i < CppInvaders::get().lives; i++) {
+        pos.x += 16;
+        pico_output_draw_image(pos, IMG_SPACESHIP);
+    }
 }
 
 /*

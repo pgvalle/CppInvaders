@@ -1,23 +1,17 @@
 #include "Horde.hpp"
+#include "Bullet.hpp"
 #include <CppInvaders.hpp>
 
-#define HORDE_STEP 0.032f
+#define TIME_STEP 0.016f
+
+static const char* sfx[] = {
+    SFX_INVADER_STEP0, SFX_INVADER_STEP1,
+    SFX_INVADER_STEP2, SFX_INVADER_STEP3};
 
 Horde::Horde() {
     state = PREDEPLOY;
     timer = 0;
 }
-
-// std::vector<Invader *> Horde::get_alive_invaders() {
-//     std::vector<Invader *> alive_invaders;
-//     for (Invader& inv : invaders) {
-//         if (inv.state != Invader::DEAD) {
-//             alive_invaders.push_back(&inv);
-//         }
-//     }
-
-//     return alive_invaders;
-// }
 
 void Horde::explode_invader(int index) {
     pico_output_sound(SFX_INVADER_KILLED);
@@ -31,53 +25,39 @@ void Horde::explode_invader(int index) {
     invaders[index_dying_invader].state = Invader::DEAD;
 }
 
-// Shot *Horde::shoot(float spaceship_x) {
-//     pico_assert(state == MARCHING);
+Bullet* Horde::shoot(float ship_x) {
+    const Invader &inv = invaders[rand() % 55];
+    Pico_Pos pos = {0, 0};
+    Pico_Pos rnd_pos = {inv.x, inv.y};
 
-//     // choose a random invader from alive invaders
-//     std::vector<Invader *> alive_invaders = get_alive_invaders();
-//     int r = rand() % alive_invaders.size();
-//     Invader *invader = alive_invaders[r];
+    for (const Invader& inv : invaders) {
+        if (inv.state == Invader::DEAD) {
+            continue;
+        }
 
-//     SDL_Point rand_xy = { invader->x, invader->y }, best_xy = { -1000, -1000 };
-
-//     for (Invader *inv : alive_invaders) {
-//         bool best_above_spaceship = (abs(spaceship_x - inv->x) <= 5),
-//              best_lower_y = inv->y > best_xy.y;
-
-//         if (best_above_spaceship && best_lower_y) {
-//             best_xy = { inv->x, inv->y };
-//         }
+        bool inv_above_spaceship = abs(ship_x - inv.x) <= 8;
+        if (inv.y > pos.y && inv_above_spaceship) {
+            pos = {inv.x, inv.y};
+        }
         
-//         bool rand_same_x = abs(rand_xy.x - inv->x) <= 3,
-//              rand_lower_y = inv->y >= rand_xy.y;
-    
-//         if (rand_same_x && rand_lower_y) {
-//             rand_xy = { inv->x, inv->y };
-//         }
-//     }
+        bool good_rnd_x = abs(rnd_pos.x - inv.x) <= 8;
+        if (inv.y > rnd_pos.y && good_rnd_x) {
+            rnd_pos = {inv.x, inv.y};
+        }
+    }
 
-//     bool invalid_best_xy = (best_xy.x < 0 && best_xy.y < 0),
-//          random_shot = (rand() % 3 == 0);
+    if (rand() % 3 == 0 || pos.y == 0) {
+        pos = rnd_pos;
+    }
 
-//     if (invalid_best_xy || random_shot) {
-//         best_xy = rand_xy;
-//     }
-
-//     Shot *shot = new Shot;
-//     shot->state = Shot::ALIVE;
-//     shot->x = best_xy.x + 6;
-//     shot->y = best_xy.y + 14;
-//     shot->vy = 120;
-//     return shot;
-// }
-
+    return new Bullet(pos.x, pos.y + 8, 120);
+}
 
 void Horde::update(float delta) {
     Pico_Dim size = pico_get_size().log;
     timer += delta;
 
-    while (timer >= HORDE_STEP) {
+    while (timer >= TIME_STEP) {
         switch (state) {
         case PREDEPLOY:
             state = DEPLOYING;
@@ -89,6 +69,8 @@ void Horde::update(float delta) {
                 i = 0;
                 dx = 2;
                 dy = 0;
+                sfx_i = 0;
+                sfx_timer = 0;
             }
             break;
         case MARCHING:
@@ -111,15 +93,24 @@ void Horde::update(float delta) {
             if (i < 55) {
                 invaders[i++].move(dx, dy);
             }
+
             break;
         case FROZEN:
             state = MARCHING;
             break;
         }
 
-        timer -= HORDE_STEP;
+        timer -= TIME_STEP;
     }
 
+    if (state == MARCHING) {
+        sfx_timer += delta;
+        if (sfx_timer >= 1) {
+            pico_output_sound(sfx[sfx_i]);
+            sfx_i = (sfx_i + 1) % 4;
+            sfx_timer = 0;
+        }
+    }
 }
 
 void Horde::draw() const {

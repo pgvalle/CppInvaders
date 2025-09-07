@@ -11,6 +11,7 @@ struct Bullet {
     Bullet(float x, float y, float vy);
     void die(float time);
     void explode(float time);
+
     void update(float delta);
     void draw() const;
 };

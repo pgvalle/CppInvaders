@@ -1,4 +1,5 @@
 #include "Spaceship.hpp"
+#include "Bullet.hpp"
 #include <CppInvaders.hpp>
 
 #define X_START 16
@@ -23,15 +24,10 @@ void Spaceship::explode() {
     explosion_frames = 0;
 }
 
-// Shot *Spaceship::shoot() {
-//     pico_output_sound(SFX_SPACESHIP_SHOOT);
-//     Shot *shot = new Shot;
-//     shot->state = Shot::ALIVE;
-//     shot->x = x + 8;
-//     shot->y = Y;
-//     shot->vy = -200;
-//     return shot;
-// }
+Bullet *Spaceship::shoot() {
+    pico_output_sound(SFX_SPACESHIP_SHOOT);
+    return new Bullet(x, Y, -200);
+}
 
 void Spaceship::update(float delta) {
     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
