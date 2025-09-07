@@ -116,6 +116,7 @@ void CppInvaders::main() {
     }
 
     pico_init(1);
+    pico_set_title("CppInvaders");
     pico_set_grid(0);
     pico_set_expert(1);
     pico_set_font(FONT, 8);
