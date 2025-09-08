@@ -50,7 +50,7 @@ void Invader::move(int dx, int dy) {
 void Invader::draw() const {
     const char* img = get_image();
     Pico_Rect rect = get_rect();
-    Pico_Pos pos = {rect.x, rect.y};
+    Pico_Pos pos = {x, y};
 
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
     switch (state) {
