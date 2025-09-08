@@ -25,36 +25,47 @@ Pico_Rect Invader::get_rect() const {
     }
 }
 
+const char* Invader::get_image() const {
+    switch (type) {
+    case 0:
+        return IMG_INV1;
+    case 1:
+        return IMG_INV2;
+    default:
+        return IMG_INV3;
+    }
+}
+
 void Invader::move(int dx, int dy) {
-    if (state == DEAD) {
-        return;
+    if (state == DOWN) {
+        state = UP;
+    } else if (state == UP) {
+        state = DOWN;
     }
 
-    state = (state == UP ? DOWN : UP);
     x += dx;
     y += dy;
 }
 
 void Invader::draw() const {
-    if (state == DEAD) {
-        return;
-    }
-
+    const char* img = get_image();
     Pico_Rect rect = get_rect();
     Pico_Pos pos = {rect.x, rect.y};
 
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_set_crop({(state == UP ? rect.w : 0), 0, rect.w, rect.h});
-    
-    switch (type) {
-    case 0:
-        pico_output_draw_image(pos, IMG_INV1);
+    switch (state) {
+    case UP:
+        pico_set_crop({rect.w, 0, rect.w, rect.h});
+        pico_output_draw_image(pos, img);
         break;
-    case 1:
-        pico_output_draw_image(pos, IMG_INV2);
+    case DOWN:
+        pico_set_crop({0, 0, rect.w, rect.h});
+        pico_output_draw_image(pos, img);
         break;
-    default:
-        pico_output_draw_image(pos, IMG_INV3);
+    case DYING:
+        pico_set_crop({0, 0, 0, 0});
+        pico_output_draw_image(pos, IMG_EXP1);
+    case DEAD:
         break;
     }
 }
