@@ -9,15 +9,16 @@ struct Horde {
         PREDEPLOY, DEPLOYING, MARCHING, FROZEN
     } state;
     Invader invaders[55];
-    int i, index_dying_invader;
+    int i, dying_inv_i;
+    int sfx_i;
     int dx, dy;
     float timer;
-    int sfx_i;
     float sfx_timer;
 
     Horde();
     // std::vector<Invader *> get_alive_invaders();
-    void explode_invader(int index);
+    int collide_bullet(const Bullet* b) const;
+    void kill_invader(int i);
     Bullet *shoot(float ship_x);
     void update(float delta);
     void draw() const;
