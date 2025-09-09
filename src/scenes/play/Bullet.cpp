@@ -1,8 +1,8 @@
 #include "Bullet.hpp"
 #include <CppInvaders.hpp>
 
-#define UP_DEAD_END 38
-#define DOWN_DEAD_END 232
+#define Y_MIN 38
+#define Y_MAX 232
 
 Bullet::Bullet(float x, float y, float vy) {
     state = ALIVE;
@@ -27,8 +27,8 @@ void Bullet::update(float delta) {
     switch (state) {
     case ALIVE:
         y += delta * vy;
-        if (y < UP_DEAD_END || y >= DOWN_DEAD_END) {
-            y = y < UP_DEAD_END ? UP_DEAD_END : DOWN_DEAD_END;
+        if (y <= Y_MIN || y >= Y_MAX) {
+            y = Y_MIN ? Y_MIN : Y_MAX;
             explode(0.3);
         }
         break;
