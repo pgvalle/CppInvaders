@@ -36,6 +36,10 @@ const char* Invader::get_image() const {
     }
 }
 
+bool Invader::is_alive() const {
+    return state == UP || state == DOWN;
+}
+
 void Invader::move(int dx, int dy) {
     if (state == DOWN) {
         state = UP;
@@ -65,6 +69,7 @@ void Invader::draw() const {
     case DYING:
         pico_set_crop({0, 0, 0, 0});
         pico_output_draw_image(pos, IMG_EXP1);
+        break;
     case DEAD:
         break;
     }

@@ -14,6 +14,7 @@ struct Invader {
     Invader();
     Pico_Rect get_rect() const;
     const char* get_image() const;
+    bool is_alive() const;
     void move(int dx, int dy);
     void draw() const;
 };
