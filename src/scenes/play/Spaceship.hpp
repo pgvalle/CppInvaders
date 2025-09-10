@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pico.h>
+
 struct Bullet;
 
 struct Spaceship {
@@ -11,6 +13,7 @@ struct Spaceship {
     int explosion_frames;
 
     Spaceship();
+    bool collide_rect(Pico_Rect rct, Pico_Anchor anc) const;
     void explode();
     Bullet* shoot();
     void update(float delta);

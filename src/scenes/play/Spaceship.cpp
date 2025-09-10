@@ -17,6 +17,12 @@ Spaceship::Spaceship() {
     timer = 0;
 }
 
+bool Spaceship::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
+    Pico_Rect ship_rct = {(int)round(x), Y, 15, 8};
+    Pico_Anchor ship_anc = {PICO_CENTER, PICO_TOP};
+    return pico_rect_vs_rect_ext(rct, anc, ship_rct, ship_anc);
+}
+
 void Spaceship::explode() {
     pico_output_sound(SFX_SPACESHIP_KILLED);
     state = EXPLODING;
@@ -24,7 +30,7 @@ void Spaceship::explode() {
     explosion_frames = 0;
 }
 
-Bullet *Spaceship::shoot() {
+Bullet* Spaceship::shoot() {
     pico_output_sound(SFX_SPACESHIP_SHOOT);
     return new Bullet(x, Y, -200);
 }

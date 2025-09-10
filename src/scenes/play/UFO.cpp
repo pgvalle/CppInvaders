@@ -14,16 +14,16 @@ UFO::UFO() {
     timer = 0;
 }
 
-void UFO::explode() {
-    // pico_output_sound("")
-    state = EXPLODING;
-    timer = 0;
-}
-
 bool UFO::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     Pico_Rect ufo_rct = {(int)round(x), (int)round(Y), 16, 8};
     Pico_Anchor ufo_anc = {PICO_CENTER, PICO_TOP};
     return state == ALIVE && pico_rect_vs_rect_ext(rct, anc, ufo_rct, ufo_anc);
+}
+
+void UFO::explode() {
+    // pico_output_sound("")
+    state = EXPLODING;
+    timer = 0;
 }
 
 void UFO::update(float delta) {
@@ -52,7 +52,7 @@ void UFO::update(float delta) {
             state = DEAD;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
             timer -= TIME_EXPLODING;
-            //cppinv->add_to_score(score);
+            CppInvaders::get().score += score;
         }
         break;
     case DEAD:

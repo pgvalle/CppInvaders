@@ -11,8 +11,9 @@ class PlayScene : public Entity {
 private:
     UFO ufo;
     Horde horde;
-    std::vector<Bullet*> bullets;
+    Bullet* horde_b;
     Spaceship ship;
+    Bullet* ship_b; 
 
     void process_collisions();
 

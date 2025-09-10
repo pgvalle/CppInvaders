@@ -11,8 +11,8 @@ struct UFO {
     int score;
 
     UFO();
-    void explode();
     bool collide_rect(Pico_Rect rct, Pico_Anchor anc) const;
+    void explode();
     void update(float delta);
     void draw() const;
 };
