@@ -58,6 +58,7 @@ void OverScene::draw() const {
         gameplay->draw();
     }
 
+    pico_set_crop({0, 0, 0, 0});
     // pause menu dim effect
     Pico_Dim dim = pico_dim({100, 100});
     pico_set_color_draw({0, 0, 0, 204});

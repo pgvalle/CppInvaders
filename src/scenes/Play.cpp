@@ -1,14 +1,18 @@
 #include "Play.hpp"
 #include "Pause.hpp"
+#include "Over.hpp"
 #include "CppInvaders.hpp"
 
 PlayScene::PlayScene() {
+    CppInvaders::get().lives = 3;
+    Invader::counter = 0;
     horde_b = nullptr;
     ship_b = nullptr;
 }
 
 PlayScene::~PlayScene() {
-
+    delete horde_b;
+    delete ship_b;
 }
 
 void PlayScene::process_event(const Pico_Event &event) {
@@ -62,6 +66,8 @@ void PlayScene::update(float delta) {
             delete horde_b;
             horde_b = nullptr;
         }
+    } else if (ship.state == Spaceship::DEPLOYED) {
+        horde_b = horde.shoot(ship.x);
     }
 
     if (ship_b) {
@@ -77,6 +83,10 @@ void PlayScene::update(float delta) {
     ufo.update(delta);
     horde.update(delta);
     ship.update(delta);
+
+    if (CppInvaders::get().lives == 0) {
+        CppInvaders::get().scene = new OverScene(this);
+    }
 }
 
 void PlayScene::draw() const {

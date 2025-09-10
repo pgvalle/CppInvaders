@@ -32,7 +32,7 @@ void Bullet::update(float delta) {
     case ALIVE:
         y += delta * vy;
         if (y <= Y_MIN || y >= Y_MAX) {
-            y = Y_MIN ? Y_MIN : Y_MAX;
+            y = y <= Y_MIN ? Y_MIN : Y_MAX;
             explode(0.3);
         }
         break;
