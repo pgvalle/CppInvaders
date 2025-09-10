@@ -13,7 +13,7 @@ Bullet::Bullet(float x, float y, float vy) {
 }
 
 Pico_Rect Bullet::get_rect() const {
-    return {x, y, 1, 7};
+    return {(int)round(x), (int)round(y), 1, 7};
 }
 
 void Bullet::die(float time) {

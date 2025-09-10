@@ -15,12 +15,13 @@ UFO::UFO() {
 }
 
 void UFO::explode() {
+    // pico_output_sound("")
     state = EXPLODING;
     timer = 0;
 }
 
 bool UFO::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
-    Pico_Rect ufo_rct = {x, Y, 16, 8};
+    Pico_Rect ufo_rct = {(int)round(x), (int)round(Y), 16, 8};
     Pico_Anchor ufo_anc = {PICO_CENTER, PICO_TOP};
     return state == ALIVE && pico_rect_vs_rect_ext(rct, anc, ufo_rct, ufo_anc);
 }
@@ -64,7 +65,6 @@ void UFO::update(float delta) {
 }
 
 void UFO::draw() const {
-    static char text[16];
     Pico_Pos pos = {(int)round(x), Y};
 
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
@@ -80,10 +80,9 @@ void UFO::draw() const {
         pico_output_draw_image(pos, IMG_UFO);
         break;
     case DEAD:
-        pico_set_crop({0, 0, 0, 0});
-        sprintf(text, "%d", score);
         pico_set_color_draw(RED);
-        pico_output_draw_text(pos, text);
+        pico_set_crop({0, 0, 0, 0});
+        pico_output_draw_fmt(pos, "%d", score);
         break;
     }
 }

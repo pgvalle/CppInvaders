@@ -67,15 +67,11 @@ void PlayScene::draw() const {
     }
     ship.draw();
 
-
-    static char fmt[16];
-    sprintf(fmt, "%1d", CppInvaders::get().lives);
-
     Pico_Pos pos = pico_pos({0, 100});
     pos = {pos.x + 8, pos.y - 8};
     pico_set_anchor_draw({PICO_LEFT, PICO_BOTTOM});
     pico_set_crop({0, 0, 0, 0});
-    pico_output_draw_text(pos, fmt);
+    pico_output_draw_fmt(pos, "%1d", CppInvaders::get().lives);
 
     pico_set_crop({0, 0, 16, 8});
     for (int i = 1; i < CppInvaders::get().lives; i++) {
