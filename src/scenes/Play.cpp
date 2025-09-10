@@ -3,7 +3,6 @@
 #include "CppInvaders.hpp"
 
 PlayScene::PlayScene() {
-
 }
 
 PlayScene::~PlayScene() {
@@ -15,7 +14,9 @@ void PlayScene::process_event(const Pico_Event &event) {
     case PICO_KEYDOWN:
         switch (event.key.keysym.sym) {
         case PICOK_SPACE:
-            bullets.push_back(ship.shoot());
+            if (horde.state == Horde::MARCHING && ship.state == Spaceship::DEPLOYED && bullets.empty()) {
+                bullets.push_back(ship.shoot());
+            }
             break;
         case PICOK_ESCAPE:
             CppInvaders::get().scene = new PauseScene(this);
@@ -27,15 +28,34 @@ void PlayScene::process_event(const Pico_Event &event) {
     }
 }
 
+void PlayScene::process_collisions() {
+    for (Bullet* b : bullets) {
+        if (b->state != Bullet::ALIVE) {
+            continue;
+        }
+
+        Pico_Rect b_rct = b->get_rect();
+        Pico_Anchor b_anc = {PICO_CENTER, PICO_MIDDLE};
+
+        if (ufo.collide_rect(b_rct, b_anc)) {
+            ufo.explode();
+            b->die(0.0);
+        }
+    }
+}
+
 void PlayScene::update(float delta) {
-    ufo.update(delta);
-    horde.update(delta);
     for (size_t i = 0; i < bullets.size(); i++) {
         bullets[i]->update(delta);
         if (bullets[i]->state == Bullet::DEAD) {
-            bullets.erase(bullets.begin() + i--);
+            bullets.erase(bullets.begin() + i); i--;
         }
     }
+
+    process_collisions();
+
+    ufo.update(delta);
+    horde.update(delta);
     ship.update(delta);
 }
 

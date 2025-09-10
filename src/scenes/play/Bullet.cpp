@@ -12,6 +12,10 @@ Bullet::Bullet(float x, float y, float vy) {
     show_explosion = true;
 }
 
+Pico_Rect Bullet::get_rect() const {
+    return {x, y, 1, 7};
+}
+
 void Bullet::die(float time) {
     state = EXPLODING;
     timer = time;

@@ -4,7 +4,7 @@
 #include "pico.h"
 #include <string>
 
-#define TIME_TYPEWRITE 0.05f
+#define TIME_TYPEWRITE 0.1f
 #define TIME_WAITING 1.5f
 
 static std::string LINES[] = {

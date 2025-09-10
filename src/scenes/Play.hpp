@@ -14,6 +14,8 @@ private:
     std::vector<Bullet*> bullets;
     Spaceship ship;
 
+    void process_collisions();
+
 public:
     PlayScene();
     virtual ~PlayScene();

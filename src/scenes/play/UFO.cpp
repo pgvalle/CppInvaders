@@ -5,8 +5,8 @@
 #define VX 25
 #define BORDER 28
 
-#define TIME_DEAD 1
-#define TIME_EXPLODING 1
+#define TIME_DEAD 1.0f
+#define TIME_EXPLODING 1.0f
 #define TIME_TO_RESPAWN 10.0f
 
 UFO::UFO() {
@@ -17,6 +17,12 @@ UFO::UFO() {
 void UFO::explode() {
     state = EXPLODING;
     timer = 0;
+}
+
+bool UFO::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
+    Pico_Rect ufo_rct = {x, Y, 16, 8};
+    Pico_Anchor ufo_anc = {PICO_CENTER, PICO_TOP};
+    return state == ALIVE && pico_rect_vs_rect_ext(rct, anc, ufo_rct, ufo_anc);
 }
 
 void UFO::update(float delta) {
@@ -35,9 +41,9 @@ void UFO::update(float delta) {
         break;
     case ALIVE:
         x += delta * vx;
-        timer -= delta;
         if (BORDER > x || x > size.x - BORDER) {
             state = AWAY;
+            timer = 0;
         }
         break;
     case EXPLODING:
@@ -49,7 +55,7 @@ void UFO::update(float delta) {
         }
         break;
     case DEAD:
-        if (timer > TIME_DEAD) {
+        if (timer >= TIME_DEAD) {
             state = AWAY;
             timer -= TIME_DEAD;
         }
@@ -74,6 +80,7 @@ void UFO::draw() const {
         pico_output_draw_image(pos, IMG_UFO);
         break;
     case DEAD:
+        pico_set_crop({0, 0, 0, 0});
         sprintf(text, "%d", score);
         pico_set_color_draw(RED);
         pico_output_draw_text(pos, text);

@@ -14,18 +14,15 @@ Horde::Horde() {
     timer = 0;
 }
 
-int Horde::collide_bullet(const Bullet* b) const {
-    Pico_Rect b_rct = {b->x, b->y, 1, 7};
+int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
+    Pico_Anchor inv_anc = {PICO_CENTER, PICO_TOP};
     for (int i = 0; i < 55; i++) {
         if (!invaders[i].is_alive()) {
             continue;
         }
 
         Pico_Rect inv_rct = invaders[i].get_rect();
-        bool collided = pico_rect_vs_rect_ext(
-                b_rct, {PICO_CENTER, PICO_MIDDLE},
-                inv_rct, {PICO_CENTER, PICO_TOP});
-        if (collided) {
+        if (pico_rect_vs_rect_ext(rct, anc, inv_rct, inv_anc)) {
             return i;
         }
     }
@@ -33,16 +30,16 @@ int Horde::collide_bullet(const Bullet* b) const {
     return -1;
 }
 
-void Horde::kill_invader(int i$) {
+void Horde::kill_invader(int j) {
     pico_output_sound(SFX_INVADER_KILLED);
     state = FROZEN;
-    dying_inv_i = i$;
+    dying_inv_i = j;
     timer = 0;
 
     // int value = 10 * (3 - invaders[dying_inv_i].type);
     // cppinv->add_to_score(value);
 
-    invaders[i$].state = Invader::DYING;
+    invaders[j].state = Invader::DYING;
 }
 
 Bullet* Horde::shoot(float ship_x) {
