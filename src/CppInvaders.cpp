@@ -71,8 +71,8 @@ void CppInvaders::loop() {
             }
             passed = pico_get_ticks() - start;
         }
-        update(0.001f * delta);
         draw();
+        update(0.001f * delta);
         delta = pico_get_ticks() - start;
     }
 }
