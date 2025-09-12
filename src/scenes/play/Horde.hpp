@@ -11,6 +11,7 @@ struct Horde {
         DEPLOYING, MARCHING
     } state;
     Invader invaders[55];
+    int invaders_alive;
     int i;
     int sfx_i;
     float timer;

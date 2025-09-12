@@ -3,7 +3,6 @@
 #include <pico.h>
 
 struct Invader {
-    static int count;
     static int dx, dy;
 
     enum State {
@@ -13,7 +12,8 @@ struct Invader {
     int x, y;
     float timer;
 
-    Invader();
+    Invader() { state = DEAD; }
+    Invader(int i);
     Pico_Rect get_rect() const;
     const char* get_image() const;
     bool is_alive() const;

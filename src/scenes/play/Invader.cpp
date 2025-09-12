@@ -3,18 +3,16 @@
 
 #define TIME_DYING 0.5f
 
-int Invader::count = 0;
 int Invader::dx = 2, Invader::dy = 0;
 
-Invader::Invader() {
-    int row = 4 - count / 11;
-    int col = count % 11;
+Invader::Invader(int i) {
+    int row = 4 - i / 11;
+    int col = i % 11;
 
-    state = DEAD;
+    state = DOWN;
     type = row / 2;
     x = 32 + 16 * col;
     y = 64 + 16 * row;
-    count++;
 }
 
 Pico_Rect Invader::get_rect() const {
@@ -64,7 +62,6 @@ void Invader::update(float delta) {
         timer += delta;
         if (timer >= TIME_DYING) {
             state = DEAD;
-            count--;
         }
         break;
     case DEAD:

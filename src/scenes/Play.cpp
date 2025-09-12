@@ -40,13 +40,13 @@ void PlayScene::process_collisions() {
 
         if (ufo.collide_rect(ship_b_rct, b_anc)) {
             ufo.explode();
-            ship_b->die(0.0);
+            ship_b->die(0.3);
         }
 
         int i = horde.collide_rect(ship_b_rct, b_anc);
         if (i >= 0) {
             horde.kill_invader(i);
-            ship_b->die(0.0);
+            ship_b->die(0.3);
         }
 
         // TODO: bunker collision with ship bullet
@@ -56,7 +56,7 @@ void PlayScene::process_collisions() {
         Pico_Rect horde_b_rct = horde_b->get_rect();
         if (ship.collide_rect(horde_b_rct, b_anc)) {
             ship.explode();
-            horde_b->die(0.0);
+            horde_b->die(0.3);
         }
         
         // TODO: bunker collision with horde bullet

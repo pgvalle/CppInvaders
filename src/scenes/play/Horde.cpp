@@ -12,6 +12,7 @@ static const char* sfx[] = {
 
 Horde::Horde() {
     state = DEPLOYING;
+    invaders_alive = 0;
     timer = 0;
     i = 0;
 }
@@ -19,12 +20,9 @@ Horde::Horde() {
 int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     Pico_Anchor inv_anc = {PICO_CENTER, PICO_TOP};
     for (int i = 0; i < 55; i++) {
-        if (!invaders[i].is_alive()) {
-            continue;
-        }
-
         Pico_Rect inv_rct = invaders[i].get_rect();
-        if (pico_rect_vs_rect_ext(rct, anc, inv_rct, inv_anc)) {
+        bool collided = pico_rect_vs_rect_ext(rct, anc, inv_rct, inv_anc);
+        if (collided && invaders[i].is_alive()) {
             return i;
         }
     }
@@ -38,6 +36,7 @@ void Horde::kill_invader(int i) {
     // cppinv->add_to_score(value);
 
     invaders[i].kill();
+    invaders_alive--;
 }
 
 Bullet* Horde::shoot(float ship_x) {
@@ -80,7 +79,8 @@ void Horde::update(float delta) {
     switch (state) {
     case DEPLOYING:
         while (timer >= TIME_STEP) {
-            invaders[i].state = Invader::DOWN; i++;
+            invaders[i] = Invader(i); i++;
+            invaders_alive++;
             timer -= TIME_STEP;
             if (i == 55) {
                 state = MARCHING;
@@ -101,10 +101,10 @@ void Horde::update(float delta) {
         }
 
         while (timer >= TIME_STEP) {
-            for (; i < 55 && invaders[i].state == Invader::DEAD; i++);
+            for (; i < 55 && !invaders[i].is_alive(); i++);
 
             if (i == 55) {
-                for (i = 0; i < 55 && invaders[i].state == Invader::DEAD; i++);
+                for (i = 0; i < 55 && !invaders[i].is_alive(); i++);
 
                 Invader::dy = 0;
                 for (const Invader& inv : invaders) {
@@ -125,7 +125,7 @@ void Horde::update(float delta) {
         }
 
         sfx_timer += delta;
-        if (sfx_timer >= Invader::count * TIME_STEP + 0.1f) {
+        if (sfx_timer >= invaders_alive * TIME_STEP + 0.1f) {
             pico_output_sound(sfx[sfx_i]);
             sfx_i = (sfx_i + 1) % 4;
             sfx_timer = 0;
