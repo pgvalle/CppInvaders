@@ -5,7 +5,6 @@
 
 PlayScene::PlayScene() {
     CppInvaders::get().lives = 3;
-    Invader::counter = 0;
     horde_b = nullptr;
     ship_b = nullptr;
 }
@@ -38,12 +37,18 @@ void PlayScene::process_collisions() {
     Pico_Anchor b_anc = {PICO_CENTER, PICO_MIDDLE};
     if (ship_b && ship_b->state == Bullet::ALIVE) {
         Pico_Rect ship_b_rct = ship_b->get_rect();
+
         if (ufo.collide_rect(ship_b_rct, b_anc)) {
             ufo.explode();
             ship_b->die(0.0);
         }
 
-        // TODO: horde collision with ship bullet
+        int i = horde.collide_rect(ship_b_rct, b_anc);
+        if (i >= 0) {
+            horde.kill_invader(i);
+            ship_b->die(0.0);
+        }
+
         // TODO: bunker collision with ship bullet
     }
 

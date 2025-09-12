@@ -1,18 +1,18 @@
 #pragma once
 
 #include <pico.h>
+#include <vector>
 #include "Invader.hpp"
 
 struct Bullet;
 
 struct Horde {
     enum State {
-        PREDEPLOY, DEPLOYING, MARCHING, FROZEN
+        DEPLOYING, MARCHING
     } state;
     Invader invaders[55];
-    int i, dying_inv_i;
+    int i;
     int sfx_i;
-    int dx, dy;
     float timer;
     float sfx_timer;
 

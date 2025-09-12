@@ -1,5 +1,6 @@
 #include "Horde.hpp"
 #include "Bullet.hpp"
+#include <ranges>
 #include <CppInvaders.hpp>
 
 #define TIME_STEP 0.016f
@@ -10,8 +11,9 @@ static const char* sfx[] = {
     SFX_INVADER_STEP2, SFX_INVADER_STEP3};
 
 Horde::Horde() {
-    state = PREDEPLOY;
+    state = DEPLOYING;
     timer = 0;
+    i = 0;
 }
 
 int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
@@ -30,44 +32,45 @@ int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     return -1;
 }
 
-void Horde::kill_invader(int j) {
+void Horde::kill_invader(int i) {
     pico_output_sound(SFX_INVADER_KILLED);
-    state = FROZEN;
-    dying_inv_i = j;
-    timer = 0;
-
     // int value = 10 * (3 - invaders[dying_inv_i].type);
     // cppinv->add_to_score(value);
 
-    invaders[j].state = Invader::DYING;
+    invaders[i].kill();
 }
 
 Bullet* Horde::shoot(float ship_x) {
-    const Invader &inv = invaders[rand() % 55];
     Pico_Pos pos = {0, 0};
-    Pico_Pos rnd_pos = {inv.x, inv.y};
 
     for (const Invader& inv : invaders) {
-        if (!inv.is_alive()) {
-            continue;
-        }
-
-        bool inv_above_spaceship = abs(ship_x - inv.x) <= 8;
-        if (inv.y > pos.y && inv_above_spaceship) {
+        bool above_ship = abs(ship_x - inv.x) <= 8;
+        if (inv.y > pos.y && above_ship && inv.is_alive()) {
             pos = {inv.x, inv.y};
         }
-        
-        bool good_rnd_x = abs(rnd_pos.x - inv.x) <= 8;
-        if (inv.y > rnd_pos.y && good_rnd_x) {
-            rnd_pos = {inv.x, inv.y};
+    }
+
+    if (rand() % 3 && pos.y > 0) {
+        return new Bullet(pos.x, pos.y + 12, 120);
+    }
+
+    std::vector<int> a;
+    for (int i = 54; i >= 44; i--) {
+        if (invaders[i].is_alive()) {
+            a.push_back(i);
+        }
+    }
+    int ri = rand() % a.size();
+    pos = {invaders[a[ri]].x, 0};
+
+    for (const Invader& inv : invaders | std::views::reverse) {
+        bool same_column = abs(inv.x - pos.x) <= 8;
+        if (inv.y > pos.y && same_column && inv.is_alive()) {
+            pos = {inv.x, inv.y};
         }
     }
 
-    if (rand() % 3 == 0 || pos.y == 0) {
-        pos = rnd_pos;
-    }
-
-    return new Bullet(pos.x, pos.y + 8, 120);
+    return new Bullet(pos.x, pos.y + 12, 120);
 }
 
 void Horde::update(float delta) {
@@ -75,73 +78,57 @@ void Horde::update(float delta) {
     timer += delta;
 
     switch (state) {
-    case PREDEPLOY:
-        if (timer >= TIME_STEP) {
-            state = DEPLOYING;
-            i = 0;
-            timer -= TIME_STEP;
-        }
-        break;
     case DEPLOYING:
         while (timer >= TIME_STEP) {
-            invaders[i].state = Invader::DOWN;
+            invaders[i].state = Invader::DOWN; i++;
             timer -= TIME_STEP;
-            i++;
             if (i == 55) {
                 state = MARCHING;
                 i = 0;
-                dx = 2;
-                dy = 0;
                 sfx_i = 0;
                 sfx_timer = 0;
+                Invader::dx = 2;
+                Invader::dy = 0;
                 break;
             }
         }
         break;
     case MARCHING:
-        while (timer >= TIME_STEP) {
-            for (; i < 55 && !invaders[i].is_alive(); i++) {
-                if (invaders[i].state == Invader::DYING) {
-                    invaders[i].state = Invader::DEAD;
-                }
+        for (Invader& inv : invaders) {
+            if (inv.state == Invader::DYING) {
+                inv.update(delta);
             }
+        }
+
+        while (timer >= TIME_STEP) {
+            for (; i < 55 && invaders[i].state == Invader::DEAD; i++);
 
             if (i == 55) {
-                for (i = 0; i < 55 && !invaders[i].is_alive(); i++) {
-                    if (invaders[i].state == Invader::DYING) {
-                        invaders[i].state = Invader::DEAD;
-                    }
-                }
+                for (i = 0; i < 55 && invaders[i].state == Invader::DEAD; i++);
 
-                dy = 0;
+                Invader::dy = 0;
                 for (const Invader& inv : invaders) {
                     bool out = inv.x < 16 || inv.x >= size.x - 16;
-                    if (out && inv.is_alive()) {
-                        dx = -dx;
-                        dy = 8;
+                    if (inv.is_alive() && out) {
+                        Invader::dx = -Invader::dx;
+                        Invader::dy = 8;
                         break;
                     }
                 }
             }
 
             if (i < 55) {
-                invaders[i].move(dx, dy);
-                i++;
+                invaders[i].update(delta); i++;
             }
-            timer -= delta;
+
+            timer -= TIME_STEP;
         }
 
         sfx_timer += delta;
-        if (sfx_timer >= 1) {
+        if (sfx_timer >= Invader::count * TIME_STEP + 0.1f) {
             pico_output_sound(sfx[sfx_i]);
             sfx_i = (sfx_i + 1) % 4;
             sfx_timer = 0;
-        }
-        break;
-    case FROZEN:
-        if (timer >= TIME_FROZEN) {
-            state = MARCHING;
-            timer -= TIME_FROZEN;
         }
         break;
     }
@@ -151,10 +138,4 @@ void Horde::draw() const {
     for (const Invader& inv : invaders) {
         inv.draw();
     }
-
-    // pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    // if (state == FROZEN) {
-    //     Invader &inv = invaders[dying_inv_i];
-    //     pico_output_draw_image({ inv.x, inv.y }, IMG_EXP1);
-    // }
 }

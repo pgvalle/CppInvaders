@@ -1,17 +1,20 @@
 #include "Invader.hpp"
 #include <CppInvaders.hpp>
 
-int Invader::counter = 0;
+#define TIME_DYING 0.5f
+
+int Invader::count = 0;
+int Invader::dx = 2, Invader::dy = 0;
 
 Invader::Invader() {
-    int row = 4 - counter / 11;
-    int col = counter % 11;
+    int row = 4 - count / 11;
+    int col = count % 11;
 
     state = DEAD;
     type = row / 2;
     x = 32 + 16 * col;
     y = 64 + 16 * row;
-    counter++;
+    count++;
 }
 
 Pico_Rect Invader::get_rect() const {
@@ -40,15 +43,34 @@ bool Invader::is_alive() const {
     return state == UP || state == DOWN;
 }
 
-void Invader::move(int dx, int dy) {
-    if (state == DOWN) {
+void Invader::kill() {
+    state = DYING;
+    timer = 0;
+}
+
+void Invader::update(float delta) {
+    switch (state) {
+    case DOWN:
         state = UP;
-    } else if (state == UP) {
+        x += dx;
+        y += dy;
+        break;
+    case UP:
         state = DOWN;
+        x += dx;
+        y += dy;
+        break;
+    case DYING:
+        timer += delta;
+        if (timer >= TIME_DYING) {
+            state = DEAD;
+            count--;
+        }
+        break;
+    case DEAD:
+        break;
     }
 
-    x += dx;
-    y += dy;
 }
 
 void Invader::draw() const {
