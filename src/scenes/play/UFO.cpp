@@ -52,7 +52,7 @@ void UFO::update(float delta) {
             state = DEAD;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
             timer -= TIME_EXPLODING;
-            CppInvaders::get().score += score;
+            CppInvaders::get().add_to_score(score);
         }
         break;
     case DEAD:

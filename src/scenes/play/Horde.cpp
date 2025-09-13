@@ -32,11 +32,11 @@ int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
 
 void Horde::kill_invader(int i) {
     pico_output_sound(SFX_INVADER_KILLED);
-    // int value = 10 * (3 - invaders[dying_inv_i].type);
-    // cppinv->add_to_score(value);
-
     invaders[i].kill();
     invaders_alive--;
+
+    int value = 10 * (3 - invaders[i].type);
+    CppInvaders::get().add_to_score(value);
 }
 
 Bullet* Horde::shoot(float ship_x) {
@@ -54,12 +54,12 @@ Bullet* Horde::shoot(float ship_x) {
     }
 
     std::vector<int> a;
-    for (int i = 54; i >= 44; i--) {
+    for (int i = 54; i >= 33; i--) {
         if (invaders[i].is_alive()) {
             a.push_back(i);
         }
     }
-    int ri = rand() % a.size();
+    int ri = rand() % a.size(); // FIXME: crashes when horde is empty
     pos = {invaders[a[ri]].x, 0};
 
     for (const Invader& inv : invaders | std::views::reverse) {
@@ -125,7 +125,7 @@ void Horde::update(float delta) {
         }
 
         sfx_timer += delta;
-        if (sfx_timer >= invaders_alive * TIME_STEP + 0.1f) {
+        if (sfx_timer >= invaders_alive * TIME_STEP + 0.05f) {
             pico_output_sound(sfx[sfx_i]);
             sfx_i = (sfx_i + 1) % 4;
             sfx_timer = 0;

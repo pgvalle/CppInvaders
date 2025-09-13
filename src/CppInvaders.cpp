@@ -22,42 +22,6 @@ CppInvaders::~CppInvaders() {
     save_hi_score();
 }
 
-void CppInvaders::save_hi_score() const {
-    FILE *file = fopen(SCOREBOARD_FILE, "w+");
-    assert(file && "could not save scoreboard");
-    fprintf(file, "%d", hi_score);
-    fclose(file);
-}
-
-void CppInvaders::draw_indicators() const {
-    Pico_Pos pos;
-    Pico_Dim dim = pico_get_size_text("##########");
-
-    pico_set_color_draw(WHITE);
-
-    // score
-    pos = {8, 8};
-    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    pico_output_draw_text(pos, "YOUR SCORE");
-    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_output_draw_fmt(pos, "%06d", score);
-
-    // hi-score
-    pos = {pico_pos({100, 0}).x - 8, 8};
-    pico_set_anchor_draw({PICO_RIGHT, PICO_TOP});
-    pico_output_draw_text(pos, "HIGH-SCORE");
-    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_output_draw_fmt(pos, "%06d", hi_score);
-
-    // credit counter
-    pos = pico_pos({100, 100});
-    pos = {pos.x - 8, pos.y - 8};
-    pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
-    pico_output_draw_fmt(pos, "CREDIT %02d", credits);
-}
-
 void CppInvaders::loop() {
     int delta = 0;
     while (!should_quit) {
@@ -95,6 +59,47 @@ void CppInvaders::draw() const {
     draw_indicators();
     scene->draw();
     pico_output_present();
+}
+
+void CppInvaders::add_to_score(int value) {
+    score += value;
+    hi_score = SDL_max(score, hi_score);
+}
+
+void CppInvaders::save_hi_score() const {
+    FILE *file = fopen(SCOREBOARD_FILE, "w+");
+    assert(file && "could not save scoreboard");
+    fprintf(file, "%d", hi_score);
+    fclose(file);
+}
+
+void CppInvaders::draw_indicators() const {
+    Pico_Pos pos;
+    Pico_Dim dim = pico_get_size_text("##########");
+
+    pico_set_color_draw(WHITE);
+
+    // score
+    pos = {8, 8};
+    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
+    pico_output_draw_text(pos, "YOUR SCORE");
+    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
+    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_output_draw_fmt(pos, "%06d", score);
+
+    // hi-score
+    pos = {pico_pos({100, 0}).x - 8, 8};
+    pico_set_anchor_draw({PICO_RIGHT, PICO_TOP});
+    pico_output_draw_text(pos, "HIGH-SCORE");
+    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
+    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_output_draw_fmt(pos, "%06d", hi_score);
+
+    // credit counter
+    pos = pico_pos({100, 100});
+    pos = {pos.x - 8, pos.y - 8};
+    pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
+    pico_output_draw_fmt(pos, "CREDIT %02d", credits);
 }
 
 // RUN HOOK

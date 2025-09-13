@@ -11,6 +11,7 @@
 
 class CppInvaders : private Entity {
 private:
+
     CppInvaders();
     virtual ~CppInvaders();
 
@@ -22,8 +23,10 @@ private:
 public:
     Entity *scene;
     bool should_quit;
-    int score, hi_score, lives, credits;
+    int score, hi_score, credits;
+    int lives;
 
+    void add_to_score(int value);
     void save_hi_score() const;
     void draw_indicators() const;
     static CppInvaders &get();
