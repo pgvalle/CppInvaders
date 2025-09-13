@@ -10,7 +10,6 @@ CppInvaders::CppInvaders() {
     score = 0;
     hi_score = 0;
     credits = 0;
-    lives = 3;
 
     FILE *file = fopen(SCOREBOARD_FILE, "a+");
     assert(file && "could not read scoreboard");

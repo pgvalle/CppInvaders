@@ -15,7 +15,7 @@ UFO::UFO() {
 }
 
 bool UFO::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
-    Pico_Rect ufo_rct = {(int)round(x), (int)round(Y), 16, 8};
+    Pico_Rect ufo_rct = {(int)SDL_roundf(x), Y, 16, 8};
     Pico_Anchor ufo_anc = {PICO_CENTER, PICO_TOP};
     return state == ALIVE && pico_rect_vs_rect_ext(rct, anc, ufo_rct, ufo_anc);
 }
@@ -52,7 +52,6 @@ void UFO::update(float delta) {
             state = DEAD;
             score = (rand() % 3 + 1) * 100; // 100, 200 or 300
             timer -= TIME_EXPLODING;
-            CppInvaders::get().add_to_score(score);
         }
         break;
     case DEAD:
@@ -65,7 +64,7 @@ void UFO::update(float delta) {
 }
 
 void UFO::draw() const {
-    Pico_Pos pos = {(int)round(x), Y};
+    Pico_Pos pos = {(int)SDL_roundf(x), Y};
 
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
     switch (state) {

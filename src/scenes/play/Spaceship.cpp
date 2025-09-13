@@ -15,10 +15,11 @@ Spaceship::Spaceship() {
     state = DEPLOYING;
     x = X_START;
     timer = 0;
+    lives = 3;
 }
 
 bool Spaceship::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
-    Pico_Rect ship_rct = {(int)round(x), Y, 15, 8};
+    Pico_Rect ship_rct = {(int)SDL_roundf(x), Y, 15, 8};
     Pico_Anchor ship_anc = {PICO_CENTER, PICO_TOP};
     return state == DEPLOYED && pico_rect_vs_rect_ext(rct, anc, ship_rct, ship_anc);
 }
@@ -59,7 +60,7 @@ void Spaceship::update(float delta) {
             timer -= TIME_EXPLOSION_FRAME;
             if (++explosion_frames >= 10) {
                 state = DEPLOYING;
-                CppInvaders::get().lives--;
+                lives--;
             }
         }
         break;
@@ -67,7 +68,7 @@ void Spaceship::update(float delta) {
 }
 
 void Spaceship::draw() const {
-    Pico_Pos pos = {(int)round(x), Y};
+    Pico_Pos pos = {(int)SDL_roundf(x), Y};
 
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
     switch (state) {

@@ -4,7 +4,7 @@
 #include "CppInvaders.hpp"
 
 PlayScene::PlayScene() {
-    CppInvaders::get().lives = 3;
+    state = STARTING;
     horde_b = nullptr;
     ship_b = nullptr;
 }
@@ -19,7 +19,7 @@ void PlayScene::process_event(const Pico_Event &event) {
     case PICO_KEYDOWN:
         switch (event.key.keysym.sym) {
         case PICOK_SPACE:
-            if (horde.state == Horde::MARCHING && ship.state == Spaceship::DEPLOYED && !ship_b) {
+            if (!ship_b && state == PLAYING && ship.state == Spaceship::DEPLOYED) {
                 ship_b = ship.shoot();
             }
             break;
@@ -45,8 +45,9 @@ void PlayScene::process_collisions() {
 
         int i = horde.collide_rect(ship_b_rct, b_anc);
         if (i >= 0) {
-            horde.kill_invader(i);
+            int score = horde.kill_invader(i);
             ship_b->die(0.3);
+            CppInvaders::get().add_to_score(score);
         }
 
         // TODO: bunker collision with ship bullet
@@ -61,37 +62,65 @@ void PlayScene::process_collisions() {
         
         // TODO: bunker collision with horde bullet
     }
-
 }
 
 void PlayScene::update(float delta) {
-    if (horde_b) {
-        horde_b->update(delta);
-        if (horde_b->state == Bullet::DEAD) {
+    switch (state) {
+    case STARTING:
+        horde.update(delta);
+        ship.update(delta);
+        if (horde.state == Horde::MARCHING) {
+            state = PLAYING;
+        }
+        break;
+    case PLAYING:
+        if (horde_b) {
+            horde_b->update(delta);
+            if (horde_b->state == Bullet::DEAD) {
+                delete horde_b;
+                horde_b = nullptr;
+            }
+        } else if (horde.invaders_alive > 0 && ship.state == Spaceship::DEPLOYED) {
+            horde_b = horde.shoot(ship.x);
+        }
+
+        if (ship_b) {
+            ship_b->update(delta);
+            if (ship_b->state == Bullet::DEAD) {
+                delete ship_b;
+                ship_b = nullptr;
+            }
+        }
+
+        process_collisions();
+
+        ufo.update(delta);
+        horde.update(delta);
+        ship.update(delta);
+
+        if (horde.invaders_alive == 0 || ship.lives == 0) {
+            state = FIN;
+            timer = 0;
+            ufo = UFO();
+            horde = Horde();
             delete horde_b;
             horde_b = nullptr;
-        }
-    } else if (ship.state == Spaceship::DEPLOYED) {
-        horde_b = horde.shoot(ship.x);
-    }
-
-    if (ship_b) {
-        ship_b->update(delta);
-        if (ship_b->state == Bullet::DEAD) {
             delete ship_b;
             ship_b = nullptr;
         }
+        break;
+    case FIN:
+        timer += delta;
+        if (timer >= 2 && ship.lives == 0) {
+            CppInvaders::get().scene = new OverScene(this);
+        } else if (timer >= 2) {
+            state = STARTING;
+            ship = Spaceship();
+        }
+        break;
     }
 
-    process_collisions();
 
-    ufo.update(delta);
-    horde.update(delta);
-    ship.update(delta);
-
-    if (CppInvaders::get().lives == 0) {
-        CppInvaders::get().scene = new OverScene(this);
-    }
 }
 
 void PlayScene::draw() const {
@@ -106,14 +135,14 @@ void PlayScene::draw() const {
     ship.draw();
 
     Pico_Pos pos = pico_pos({0, 100});
-    pos = {pos.x + 8, pos.y - 8};
+    pos = {8, pos.y - 8};
     pico_set_anchor_draw({PICO_LEFT, PICO_BOTTOM});
     pico_set_crop({0, 0, 0, 0});
     pico_set_color_draw(WHITE);
-    pico_output_draw_fmt(pos, "%1d", CppInvaders::get().lives);
+    pico_output_draw_fmt(pos, "%1d", ship.lives);
 
     pico_set_crop({0, 0, 16, 8});
-    for (int i = 1; i < CppInvaders::get().lives; i++) {
+    for (int i = 1; i < ship.lives; i++) {
         pos.x += 16;
         pico_output_draw_image(pos, IMG_SPACESHIP);
     }

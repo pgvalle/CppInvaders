@@ -30,13 +30,13 @@ int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     return -1;
 }
 
-void Horde::kill_invader(int i) {
+int Horde::kill_invader(int i) {
     pico_output_sound(SFX_INVADER_KILLED);
     invaders[i].kill();
     invaders_alive--;
 
-    int value = 10 * (3 - invaders[i].type);
-    CppInvaders::get().add_to_score(value);
+    int score = 10 * (3 - invaders[i].type);
+    return score;
 }
 
 Bullet* Horde::shoot(float ship_x) {
@@ -125,7 +125,7 @@ void Horde::update(float delta) {
         }
 
         sfx_timer += delta;
-        if (sfx_timer >= invaders_alive * TIME_STEP + 0.05f) {
+        if (sfx_timer >= TIME_STEP * invaders_alive + 0.1f) {
             pico_output_sound(sfx[sfx_i]);
             sfx_i = (sfx_i + 1) % 4;
             sfx_timer = 0;

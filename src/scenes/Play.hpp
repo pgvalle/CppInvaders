@@ -9,11 +9,15 @@
 
 class PlayScene : public Entity {
 private:
+    enum {
+        STARTING, PLAYING, FIN
+    } state;
     UFO ufo;
     Horde horde;
     Bullet* horde_b;
     Spaceship ship;
-    Bullet* ship_b; 
+    Bullet* ship_b;
+    float timer;
 
     void process_collisions();
 

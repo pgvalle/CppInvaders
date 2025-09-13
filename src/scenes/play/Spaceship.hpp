@@ -10,6 +10,7 @@ struct Spaceship {
     } state;
     float x;
     float timer;
+    int lives;
     int explosion_frames;
 
     Spaceship();
