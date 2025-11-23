@@ -21,7 +21,7 @@ int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     Pico_Anchor inv_anc = {PICO_CENTER, PICO_TOP};
     for (int i = 0; i < 55; i++) {
         Pico_Rect inv_rct = invaders[i].get_rect();
-        bool collided = pico_rect_vs_rect_ext(rct, anc, inv_rct, inv_anc);
+        bool collided = pico_rect_vs_rect_ext(rct, inv_rct, anc, inv_anc);
         if (collided && invaders[i].is_alive()) {
             return i;
         }

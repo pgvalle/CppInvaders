@@ -21,7 +21,7 @@ Spaceship::Spaceship() {
 bool Spaceship::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     Pico_Rect ship_rct = {(int)SDL_roundf(x), Y, 15, 8};
     Pico_Anchor ship_anc = {PICO_CENTER, PICO_TOP};
-    return state == DEPLOYED && pico_rect_vs_rect_ext(rct, anc, ship_rct, ship_anc);
+    return state == DEPLOYED && pico_rect_vs_rect_ext(rct, ship_rct, anc, ship_anc);
 }
 
 void Spaceship::explode() {

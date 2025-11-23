@@ -82,7 +82,7 @@ void CppInvaders::draw_indicators() const {
     pos = {8, 8};
     pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
     pico_output_draw_text(pos, "YOUR SCORE");
-    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
+    pos = pico_pos_ext({50, 200}, {pos.x, pos.y, dim.x, dim.y}, pico_get_anchor_draw());
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
     pico_output_draw_fmt(pos, "%06d", score);
 
@@ -90,7 +90,7 @@ void CppInvaders::draw_indicators() const {
     pos = {pico_pos({100, 0}).x - 8, 8};
     pico_set_anchor_draw({PICO_RIGHT, PICO_TOP});
     pico_output_draw_text(pos, "HIGH-SCORE");
-    pos = pico_pos_ext({pos.x, pos.y, dim.x, dim.y}, {50, 200});
+    pos = pico_pos_ext({50, 200}, {pos.x, pos.y, dim.x, dim.y}, pico_get_anchor_draw());
     pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
     pico_output_draw_fmt(pos, "%06d", hi_score);
 

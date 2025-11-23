@@ -17,7 +17,7 @@ UFO::UFO() {
 bool UFO::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
     Pico_Rect ufo_rct = {(int)SDL_roundf(x), Y, 16, 8};
     Pico_Anchor ufo_anc = {PICO_CENTER, PICO_TOP};
-    return state == ALIVE && pico_rect_vs_rect_ext(rct, anc, ufo_rct, ufo_anc);
+    return state == ALIVE && pico_rect_vs_rect_ext(rct, ufo_rct, anc, ufo_anc);
 }
 
 void UFO::explode() {
