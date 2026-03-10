@@ -29,7 +29,7 @@ void CppInvaders::loop() {
         while (passed < FRAMETIME) {
             Pico_Event event;
             int timeout = FRAMETIME - passed;
-            if (pico_input_event_timeout(&event, PICO_ANY, timeout)) {
+            if (pico_input_event_timeout(&event, PICO_EVENT_ANY, timeout)) {
                 process_event(event);
             }
             passed = pico_get_ticks() - start;
@@ -41,7 +41,7 @@ void CppInvaders::loop() {
 }
 
 void CppInvaders::process_event(const Pico_Event &event) {
-    if (event.type == PICO_QUIT) {
+    if (event.type == PICO_EVENT_QUIT) {
         should_quit = true;
     } else {
         scene->process_event(event);
@@ -49,11 +49,11 @@ void CppInvaders::process_event(const Pico_Event &event) {
 }
 
 void CppInvaders::update(float delta) {
+    if (delta > 0.1f) delta = 0.1f;
     scene->update(delta);
 }
 
 void CppInvaders::draw() const {
-    pico_set_crop({0, 0, 0, 0});
     pico_output_clear();
     draw_indicators();
     scene->draw();
@@ -73,32 +73,34 @@ void CppInvaders::save_hi_score() const {
 }
 
 void CppInvaders::draw_indicators() const {
-    Pico_Pos pos;
-    Pico_Dim dim = pico_get_size_text("##########");
-
-    pico_set_color_draw(WHITE);
+    pico_set_color_draw(PICO_COLOR_WHITE);
 
     // score
-    pos = {8, 8};
-    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    pico_output_draw_text(pos, "YOUR SCORE");
-    pos = pico_pos_ext({50, 200}, {pos.x, pos.y, dim.x, dim.y}, pico_get_anchor_draw());
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_output_draw_fmt(pos, "%06d", score);
+    Pico_Rel_Rect tl_corner = { '%', {0.0f, 0.0f, 0.0f, 0.0f}, PICO_ANCHOR_NW, NULL };
+    Pico_Rel_Rect score_lbl_r = { '#', {2.0f, 2.0f, 0.0f, 1.0f}, PICO_ANCHOR_NW, &tl_corner };
+    pico_output_draw_text("YOUR SCORE", &score_lbl_r);
+
+    char score_buf[16];
+    snprintf(score_buf, sizeof(score_buf), "%06d", score);
+    Pico_Rel_Rect score_val_r = { '#', {4.0f, 4.0f, 0.0f, 1.0f}, PICO_ANCHOR_NW, &score_lbl_r };
+    pico_output_draw_text(score_buf, &score_val_r);
 
     // hi-score
-    pos = {pico_pos({100, 0}).x - 8, 8};
-    pico_set_anchor_draw({PICO_RIGHT, PICO_TOP});
-    pico_output_draw_text(pos, "HIGH-SCORE");
-    pos = pico_pos_ext({50, 200}, {pos.x, pos.y, dim.x, dim.y}, pico_get_anchor_draw());
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    pico_output_draw_fmt(pos, "%06d", hi_score);
+    Pico_Rel_Rect tr_corner = { '%', {1.0f, 0.0f, 0.0f, 0.0f}, PICO_ANCHOR_NE, NULL };
+    Pico_Rel_Rect hi_lbl_r = { '#', {-1.0f, 2.0f, 0.0f, 1.0f}, PICO_ANCHOR_NE, &tr_corner };
+    pico_output_draw_text("HIGH-SCORE", &hi_lbl_r);
+
+    char hi_buf[16];
+    snprintf(hi_buf, sizeof(hi_buf), "%06d", hi_score);
+    Pico_Rel_Rect hi_val_r = { '#', {-3.0f, 4.0f, 0.0f, 1.0f}, PICO_ANCHOR_NE, &hi_lbl_r };
+    pico_output_draw_text(hi_buf, &hi_val_r);
 
     // credit counter
-    pos = pico_pos({100, 100});
-    pos = {pos.x - 8, pos.y - 8};
-    pico_set_anchor_draw({PICO_RIGHT, PICO_BOTTOM});
-    pico_output_draw_fmt(pos, "CREDIT %02d", credits);
+    Pico_Rel_Rect br_corner = { '%', {1.0f, 1.0f, 0.0f, 0.0f}, PICO_ANCHOR_SE, NULL };
+    char credit_buf[16];
+    snprintf(credit_buf, sizeof(credit_buf), "CREDIT %02d", credits);
+    Pico_Rel_Rect credit_r = { '#', {-1.0f, -1.0f, 0.0f, 1.0f}, PICO_ANCHOR_SE, &br_corner };
+    pico_output_draw_text(credit_buf, &credit_r);
 }
 
 // RUN HOOK
@@ -116,11 +118,21 @@ void CppInvaders::main() {
     }
 
     pico_init(1);
-    pico_set_title("CppInvaders");
-    pico_set_grid(0);
+    
+    // Window: 448x512 physical
+    pico_set_window("CppInvaders", -1, NULL);
+
+    Pico_Rel_Dim win_dim = { '!', {448, 512}, NULL };
+    pico_set_window(NULL, -1, &win_dim);
+
+    // View: 224x256 logical
+    Pico_Rel_Dim log_dim = { '!', {224, 256}, NULL };
+    Pico_Abs_Dim tile_dim = { 8, 8 };
+    pico_set_view(0, &log_dim, &tile_dim, NULL, NULL, NULL, NULL, NULL);
+
     pico_set_expert(1);
-    pico_set_font(FONT, 8);
-    pico_set_size({2*224, 2*256}, {224, 256});
+    pico_set_font(FONT);
+
     ref = new CppInvaders;
     ref->loop();
     delete ref;

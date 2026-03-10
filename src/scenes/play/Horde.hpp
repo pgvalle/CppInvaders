@@ -18,7 +18,7 @@ struct Horde {
     float sfx_timer;
 
     Horde();
-    int collide_rect(Pico_Rect rct, Pico_Anchor anc) const;
+    int collide_rect(Pico_Abs_Rect rct, Pico_Anchor anc) const;
     int kill_invader(int i);
     Bullet *shoot(float ship_x);
     void update(float delta);

@@ -13,11 +13,11 @@ PauseScene::PauseScene(Scene *gameplay$) {
 
 PauseScene::~PauseScene() {}
 
-void PauseScene::process_event(const SDL_Event &event) {
+void PauseScene::process_event(const Pico_Event &event) {
     switch (event.type) {
-    case SDL_KEYDOWN:
+    case PICO_EVENT_KEY_DOWN:
         switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE: // start resume countdown or cancel it
+            case PICOK_ESCAPE: // start resume countdown or cancel it
                 resuming = !resuming;
                 timer = 0;
                 pause_symbol = true;
@@ -48,23 +48,22 @@ void PauseScene::draw() const {
         gameplay->draw();
     }
 
-    pico_set_crop({0, 0, 0, 0});
-
+    pico_push();
     // pause menu dim effect
-    Pico_Dim dim = pico_dim({100, 100});
-    pico_set_color_draw({0, 0, 0, 204});
-    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    pico_output_draw_rect({0, 0, dim.x, dim.y});
+    pico_set_color_draw((Pico_Color){0, 0, 0});
+    pico_set_alpha(204);
+    Pico_Rel_Rect dim_r = { '%', {0.0f, 0.0f, 1.0f, 1.0f}, PICO_ANCHOR_NW, NULL };
+    pico_output_draw_rect(&dim_r);
+    pico_pop();
 
-    Pico_Pos pos = {pico_pos({50, 0}).x, 8};
-    pico_set_color_draw(WHITE);
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    pico_set_color_draw(PICO_COLOR_WHITE);
+    Pico_Rel_Rect txt_r = { '#', {14.0f, 4.0f, 0.0f, 1.0f}, PICO_ANCHOR_N, NULL };
 
     if (resuming) {
-        static char fmt[16];
-        sprintf(fmt, "%1d", 3 - (int)timer);
-        pico_output_draw_text(pos, fmt);
+        char fmt[16];
+        snprintf(fmt, sizeof(fmt), "%1d", 3 - (int)timer);
+        pico_output_draw_text(fmt, &txt_r);
     } else if (pause_symbol) {
-        pico_output_draw_text(pos, "||");
+        pico_output_draw_text("||", &txt_r);
     }
 }

@@ -20,10 +20,10 @@ OverScene::~OverScene() {
     delete gameplay;
 }
 
-void OverScene::process_event(const SDL_Event &event) {
+void OverScene::process_event(const Pico_Event &event) {
     switch (event.type) {
-    case SDL_KEYDOWN:
-        if (event.key.keysym.sym == SDLK_RETURN) {
+    case PICO_EVENT_KEY_DOWN:
+        if (event.key.keysym.sym == PICOK_RETURN) {
             if (!waiting) {
                 waiting = true;
                 timer = 0;
@@ -58,15 +58,19 @@ void OverScene::draw() const {
         gameplay->draw();
     }
 
-    pico_set_crop({0, 0, 0, 0});
+    pico_push();
     // pause menu dim effect
-    Pico_Dim dim = pico_dim({100, 100});
-    pico_set_color_draw({0, 0, 0, 204});
-    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    pico_output_draw_rect({0, 0, dim.x, dim.y});
+    pico_set_color_draw((Pico_Color){0, 0, 0});
+    pico_set_alpha(204);
+    Pico_Rel_Rect dim_r = { '%', {0.0f, 0.0f, 1.0f, 1.0f}, PICO_ANCHOR_NW, NULL };
+    pico_output_draw_rect(&dim_r);
+    pico_pop();
 
     std::string str = STRING.substr(0, ci);
-    pico_set_color_draw(RED);
-    pico_set_anchor_draw({PICO_LEFT, PICO_TOP});
-    pico_output_draw_text({80, 64}, str.c_str());
+    Pico_Rel_Rect cnt_r = { '%', {0.5f, 0.5f, 0, 0}, PICO_ANCHOR_C, NULL }; 
+    if (!str.empty()) {
+        pico_set_color_draw(PICO_COLOR_RED);
+        Pico_Rel_Rect txt_r = { '#', {0.0f, 0.0f, 0.0f, 1.0f}, PICO_ANCHOR_C, &cnt_r };
+        pico_output_draw_text(str.c_str(), &txt_r);
+    }
 }

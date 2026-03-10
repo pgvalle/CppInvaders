@@ -15,7 +15,7 @@ Invader::Invader(int i) {
     y = 64 + 16 * row;
 }
 
-Pico_Rect Invader::get_rect() const {
+Pico_Abs_Rect Invader::get_rect() const {
     switch (type) {
     case 0:
         return {x, y, 8, 8};
@@ -71,25 +71,44 @@ void Invader::update(float delta) {
 }
 
 void Invader::draw() const {
-    const char* img = get_image();
-    Pico_Rect rect = get_rect();
-    Pico_Pos pos = {x, y};
+    if (state == DEAD) return;
 
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
+    const char* img = get_image();
+    Pico_Abs_Rect r = get_rect();
+    float draw_x = (float)x;
+    float draw_y = (float)y;
+    float w = (float)r.w;
+    float h = (float)r.h;
+
+    char key[256];
+    Pico_Rel_Rect crop = { '!', {0, 0, w, h}, PICO_ANCHOR_NW, NULL };
+
     switch (state) {
     case UP:
-        pico_set_crop({rect.w, 0, rect.w, rect.h});
-        pico_output_draw_image(pos, img);
+        snprintf(key, sizeof(key), "/crop/invader/%d/up", type);
+        crop.x = w;
+        pico_layer_image_mode('=', img, img);
+        pico_layer_sub_mode('=', key, img, &crop);
         break;
     case DOWN:
-        pico_set_crop({0, 0, rect.w, rect.h});
-        pico_output_draw_image(pos, img);
+        snprintf(key, sizeof(key), "/crop/invader/%d/down", type);
+        crop.x = 0;
+        pico_layer_image_mode('=', img, img);
+        pico_layer_sub_mode('=', key, img, &crop);
         break;
     case DYING:
-        pico_set_crop({0, 0, 0, 0});
-        pico_output_draw_image(pos, IMG_EXP1);
+        snprintf(key, sizeof(key), "/crop/invader/dying");
+        img = IMG_EXP1;
+        // Explosion frame 0
+        w = 16.0f; h = 8.0f; // Assumed explosion size
+        crop.w = w; crop.h = h;
+        pico_layer_image_mode('=', img, img);
+        pico_layer_sub_mode('=', key, img, &crop);
         break;
-    case DEAD:
-        break;
+    default:
+        return;
     }
+
+    Pico_Rel_Rect dst = { '!', {draw_x, draw_y, w, h}, PICO_ANCHOR_N, NULL };
+    pico_output_draw_layer(key, &dst);
 }

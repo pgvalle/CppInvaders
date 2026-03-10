@@ -6,6 +6,7 @@
 #include "scenes/play/Horde.hpp"
 #include "scenes/play/Bullet.hpp"
 #include "scenes/play/Spaceship.hpp"
+#include "scenes/play/Shield.hpp"
 
 class PlayScene : public Entity {
 private:
@@ -17,6 +18,7 @@ private:
     Bullet* horde_b;
     Spaceship ship;
     Bullet* ship_b;
+    std::vector<Shield> shields;
     float timer;
 
     void process_collisions();

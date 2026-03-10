@@ -14,7 +14,7 @@ struct Invader {
 
     Invader() { state = DEAD; }
     Invader(int i);
-    Pico_Rect get_rect() const;
+    Pico_Abs_Rect get_rect() const;
     const char* get_image() const;
     bool is_alive() const;
     void kill();

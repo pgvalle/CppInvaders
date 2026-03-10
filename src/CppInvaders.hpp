@@ -3,10 +3,6 @@
 #include "Entity.hpp"
 #include "assets.hpp"
 
-#define WHITE {255, 255, 255, 255}
-#define GREEN {32, 255, 32, 255}
-#define RED {216, 32, 32, 255}
-
 #define SCOREBOARD_FILE "./scoreboard"
 
 class CppInvaders : private Entity {

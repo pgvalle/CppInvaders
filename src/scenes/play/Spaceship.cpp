@@ -18,10 +18,10 @@ Spaceship::Spaceship() {
     lives = 3;
 }
 
-bool Spaceship::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
-    Pico_Rect ship_rct = {(int)SDL_roundf(x), Y, 15, 8};
-    Pico_Anchor ship_anc = {PICO_CENTER, PICO_TOP};
-    return state == DEPLOYED && pico_rect_vs_rect_ext(rct, ship_rct, anc, ship_anc);
+bool Spaceship::collide_rect(Pico_Abs_Rect rct, Pico_Anchor anc) const {
+    Pico_Rel_Rect ship_rct = { '!', {(float)SDL_roundf(x), (float)Y, 15, 8}, PICO_ANCHOR_N, NULL };
+    Pico_Rel_Rect other_rct = { '!', {(float)rct.x, (float)rct.y, (float)rct.w, (float)rct.h}, anc, NULL };
+    return state == DEPLOYED && pico_vs_rect_rect(&ship_rct, &other_rct);
 }
 
 void Spaceship::explode() {
@@ -38,7 +38,8 @@ Bullet* Spaceship::shoot() {
 
 void Spaceship::update(float delta) {
     const Uint8 *keys = SDL_GetKeyboardState(nullptr);
-    Pico_Dim size = pico_get_size().log;
+    Pico_Abs_Dim size;
+    pico_get_view(NULL, &size, NULL, NULL, NULL, NULL, NULL, NULL);
     timer += delta;
 
     switch (state) {
@@ -52,7 +53,7 @@ void Spaceship::update(float delta) {
     case DEPLOYED:
         x -= VX * delta * (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT]);
         x += VX * delta * (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT]);
-        x = SDL_max(X_BORDER, SDL_min(size.x - X_BORDER, x));
+        x = SDL_max(X_BORDER, SDL_min(size.w - X_BORDER, x));
         timer -= delta;
         break;
     case EXPLODING:
@@ -68,19 +69,24 @@ void Spaceship::update(float delta) {
 }
 
 void Spaceship::draw() const {
-    Pico_Pos pos = {(int)SDL_roundf(x), Y};
+    if (state == DEPLOYING) return;
 
-    pico_set_anchor_draw({PICO_CENTER, PICO_TOP});
-    switch (state) {
-    case DEPLOYING:
-        break;
-    case DEPLOYED:
-        pico_set_crop({0, 0, 16, 8});
-        pico_output_draw_image(pos, IMG_SPACESHIP);
-        break;
-    case EXPLODING:
-        pico_set_crop({16 * (1 + explosion_frames % 2), 0, 16, 8});
-        pico_output_draw_image(pos, IMG_SPACESHIP);
-        break;
+    float draw_x = (float)SDL_roundf(x);
+    float draw_y = (float)Y;
+    
+    char key[256];
+    Pico_Rel_Rect crop = { '!', {0, 0, 16, 8}, PICO_ANCHOR_NW, NULL };
+
+    if (state == DEPLOYED) {
+        snprintf(key, sizeof(key), "/crop/ship/deployed");
+        crop.x = 0;
+    } else if (state == EXPLODING) {
+        snprintf(key, sizeof(key), "/crop/ship/exploding/%d", explosion_frames % 2);
+        crop.x = 16.0f * (1 + explosion_frames % 2);
     }
+
+    pico_layer_image_mode('=', "ship", IMG_SPACESHIP);
+    pico_layer_sub_mode('=', key, "ship", &crop);
+    Pico_Rel_Rect dst = { '!', {draw_x, draw_y, 16, 8}, PICO_ANCHOR_N, NULL };
+    pico_output_draw_layer(key, &dst);
 }

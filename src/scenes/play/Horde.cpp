@@ -17,12 +17,13 @@ Horde::Horde() {
     i = 0;
 }
 
-int Horde::collide_rect(Pico_Rect rct, Pico_Anchor anc) const {
-    Pico_Anchor inv_anc = {PICO_CENTER, PICO_TOP};
+int Horde::collide_rect(Pico_Abs_Rect rct, Pico_Anchor anc) const {
+    Pico_Rel_Rect other_rct = { '!', {(float)rct.x, (float)rct.y, (float)rct.w, (float)rct.h}, anc, NULL };
     for (int i = 0; i < 55; i++) {
-        Pico_Rect inv_rct = invaders[i].get_rect();
-        bool collided = pico_rect_vs_rect_ext(rct, inv_rct, anc, inv_anc);
-        if (collided && invaders[i].is_alive()) {
+        if (!invaders[i].is_alive()) continue;
+        Pico_Abs_Rect ir = invaders[i].get_rect();
+        Pico_Rel_Rect inv_rct = { '!', {(float)ir.x, (float)ir.y, (float)ir.w, (float)ir.h}, PICO_ANCHOR_N, NULL };
+        if (pico_vs_rect_rect(&other_rct, &inv_rct)) {
             return i;
         }
     }
@@ -40,7 +41,7 @@ int Horde::kill_invader(int i) {
 }
 
 Bullet* Horde::shoot(float ship_x) {
-    Pico_Pos pos = {0, 0};
+    Pico_Abs_Pos pos = {0, 0};
 
     for (const Invader& inv : invaders) {
         bool above_ship = abs(ship_x - inv.x) <= 8;
@@ -50,7 +51,7 @@ Bullet* Horde::shoot(float ship_x) {
     }
 
     if (rand() % 3 && pos.y > 0) {
-        return new Bullet(pos.x, pos.y + 12, 120);
+        return new Bullet((float)pos.x, (float)pos.y + 12, 120);
     }
 
     std::vector<int> a;
@@ -69,16 +70,17 @@ Bullet* Horde::shoot(float ship_x) {
         }
     }
 
-    return new Bullet(pos.x, pos.y + 12, 120);
+    return new Bullet((float)pos.x, (float)pos.y + 12, 120);
 }
 
 void Horde::update(float delta) {
-    Pico_Dim size = pico_get_size().log;
+    Pico_Abs_Dim size;
+    pico_get_view(NULL, &size, NULL, NULL, NULL, NULL, NULL, NULL);
     timer += delta;
 
     switch (state) {
     case DEPLOYING:
-        while (timer >= TIME_STEP) {
+        while (timer >= TIME_STEP && i < 55) {
             invaders[i] = Invader(i); i++;
             invaders_alive++;
             timer -= TIME_STEP;
@@ -108,7 +110,7 @@ void Horde::update(float delta) {
 
                 Invader::dy = 0;
                 for (const Invader& inv : invaders) {
-                    bool out = inv.x < 16 || inv.x >= size.x - 16;
+                    bool out = inv.x < 16 || inv.x >= size.w - 16;
                     if (inv.is_alive() && out) {
                         Invader::dx = -Invader::dx;
                         Invader::dy = 8;

@@ -7,7 +7,9 @@ EXEC = cppinv.out
 
 # Compiler and flags
 CXX = g++
+CC = gcc
 CXXFLAGS = -Wall -Wextra -g -std=c++23 -Isrc
+CFLAGS = -Wall -Wextra -g -std=gnu99 -Isrc
 PKG_CONFIG = pkg-config
 PKG_FLAGS = $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
 LDFLAGS = $(shell $(PKG_CONFIG) --libs sdl2 SDL2_image SDL2_ttf SDL2_gfx SDL2_mixer)
@@ -30,7 +32,7 @@ $(OUT)/%.o: $(SRC)/%.cpp
 # Rule to compile C source files (pico-sdl)
 $(PICO_OUT)/%.o: $(PICO_SRC)/%.c
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(PKG_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(PICO_SRC) $(PKG_FLAGS) -c $< -o $@
 
 # Clean up
 .PHONY: clean

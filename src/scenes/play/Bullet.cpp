@@ -12,7 +12,7 @@ Bullet::Bullet(float x, float y, float vy) {
     show_explosion = true;
 }
 
-Pico_Rect Bullet::get_rect() const {
+Pico_Abs_Rect Bullet::get_rect() const {
     return {(int)round(x), (int)round(y), 1, 7};
 }
 
@@ -48,19 +48,22 @@ void Bullet::update(float delta) {
 }
 
 void Bullet::draw() const {
-    Pico_Pos pos = {(int)round(x), (int)round(y)};
+    float draw_x = (float)round(x);
+    float draw_y = (float)round(y);
     const char *explosion_img = vy < 0 ? IMG_EXP2 : IMG_EXP3;
 
-    pico_set_crop({0, 0, 0, 0});
-    pico_set_anchor_draw({PICO_CENTER, PICO_MIDDLE});
     switch (state) {
     case ALIVE:
-        pico_set_color_draw(WHITE);
-        pico_output_draw_rect({pos.x, pos.y, 1, 7});
+        {
+            pico_set_color_draw(PICO_COLOR_WHITE);
+            Pico_Rel_Rect r = { '!', {draw_x, draw_y, 1, 7}, PICO_ANCHOR_C, NULL };
+            pico_output_draw_rect(&r);
+        }
         break;
     case EXPLODING:
         if (show_explosion) {
-            pico_output_draw_image(pos, explosion_img);
+            Pico_Rel_Rect r = { '!', {draw_x, draw_y, 0, 0}, PICO_ANCHOR_C, NULL };
+            pico_output_draw_image(explosion_img, &r);
         }
         break;
     case DEAD:
