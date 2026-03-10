@@ -9,9 +9,7 @@ command_exists() {
 
 command_exists git
 
-if [ ! -d "deps/pico-sdl/.git" ]; then
-    git clone https://github.com/fsantanna/pico-sdl pico
-fi
+git submodule update --init --recursive
 
 command_exists gcc
 command_exists g++

@@ -1,0 +1,3 @@
+[submodule "pico"]
+	path = pico
+	url = https://github.com/fsantanna/pico-sdl
