@@ -2,7 +2,6 @@ local assets = require "assets"
 local SplashScene = require "scenes.Splash"
 
 local game = {
-    should_quit = false,
     score = 0,
     hi_score = 0,
     credits = 0,
@@ -37,18 +36,14 @@ function game.add_to_score(val)
 end
 
 local function process_event(event)
-    if event.tag == 'quit' then
-        game.should_quit = true
-    else
-        if event.tag == 'key.dn' then
-            game.keys[event.key] = true
-        elseif event.tag == 'key.up' then
-            game.keys[event.key] = false
-        end
+    if event.tag == 'key.dn' then
+        game.keys[event.key] = true
+    elseif event.tag == 'key.up' then
+        game.keys[event.key] = false
+    end
 
-        if game.current_scene and game.current_scene.process_event then
-            game.current_scene:process_event(event)
-        end
+    if game.current_scene and game.current_scene.process_event then
+        game.current_scene:process_event(event)
     end
 end
 
@@ -88,24 +83,30 @@ end
 
 function game.main()
     pico.init(true)
-    pico.set.window({ title = "CppInvaders" })
-    pico.set.window({ dim = { '!', w=448, h=512 } })
+    pico.set.window({
+        title = "CppInvaders",
+        dim = { '!', w=448, h=512 }
+    })
     pico.set.view({ dim = { '!', w=224, h=256 }, tile = { w=8, h=8 } })
-    local delta = pico.set.expert(true, 60)
     pico.set.font(assets.FONT)
+
+    local delta = pico.set.expert(true, 60)
+    local run = true
 
     math.randomseed(os.time())
     game.set_scene(SplashScene:new(game))
 
-    while not game.should_quit do
+    while run do
         if game.next_scene then
             game.current_scene = game.next_scene
             game.next_scene = nil
         end
 
-        while not game.should_quit do
+        while run do
             local event = pico.input.event()
             if event then
+                if event.tag == 'quit' then run = false
+                else run = true end
                 process_event(event)
             else
                 break
@@ -115,7 +116,7 @@ function game.main()
         if game.should_quit then break end
 
         game.draw()
-        
+
         local dt = delta * 0.001
         if dt > 0.1 then dt = 0.1 end
         if game.current_scene and game.current_scene.update then
